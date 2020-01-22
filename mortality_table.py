@@ -127,12 +127,12 @@ class MortalityTable:
         '''
         if method not in self.__methods:
             return np.nan
+        if x < 0:
+            return np.nan
         if t <= 0:
             return .0
         if x + t > self.w:
             return 1.
-        if x < 0:
-            return np.nan
         l_x = self.get_lx_method(x, method)
         l_x_t = self.get_lx_method(x + t, method)
         self.msn.append(f"{t}_q_{x}=1-({l_x_t} / {l_x})")
@@ -148,12 +148,12 @@ class MortalityTable:
         '''
         if method not in self.__methods:
             return np.nan
+        if x < 0:
+            return np.nan
         if t <= 0:
             return 1.
         if x + t > self.w:
             return 0.
-        if x < 0:
-            return np.nan
         l_x = self.get_lx_method(x, method)
         l_x_t = self.get_lx_method(x + t, method)
         self.msn.append(f"{t}_p_{x}={l_x_t} / {l_x}")

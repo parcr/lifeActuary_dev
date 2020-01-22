@@ -34,3 +34,18 @@ class CommutationFunctions(MortalityTable):
         data_lf = self.df_life_table()
         df = pd.concat([data_lf, df], axis=1, sort=False) # todo
         return df
+
+    def nEx(self, x, n):
+        if x < 0:
+            return np.nan
+        if n <= 0:
+            return 1
+        if x + n > self.w:
+            return 0.
+
+        l_x = self.get_lx_method(x, method)
+        l_x_t = self.get_lx_method(x + t, method)
+        self.msn.append(f"{t}_q_{x}=1-({l_x_t} / {l_x})")
+        return 1 - l_x_t / l_x
+
+
