@@ -36,6 +36,7 @@ class CommutationFunctions(MortalityTable):
         df = pd.concat([data_lf, df], axis=1, sort=False)  # todo
         return df
 
+    # life insurances
     def nEx(self, x, n):
         """
         Pure endowment or Deferred capital
@@ -166,8 +167,7 @@ class CommutationFunctions(MortalityTable):
         self.msn.append(f"{n}_AE_{x}_={n}_A_{x}_+{n}_E_{x}")
         return self.nAx_(x, n) + self.nEx(x, n)
 
-    # Deferred Insurance
-
+    # deferred life insurances
     def t_Ax(self, x, defer=0):
         """
         Deferred Whole life insurance
@@ -181,7 +181,7 @@ class CommutationFunctions(MortalityTable):
 
     def t_Ax_(self, x, defer=0):
         """
-        Whole life insurance
+        Deferred Whole life insurance
         :param x: age at the beginning of the contract
         :param defer: deferment period
         :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1, at the
@@ -192,7 +192,7 @@ class CommutationFunctions(MortalityTable):
 
     def t_nAx(self, x, n, defer=0):
         """
-        Term life insurance
+        Deferred Term life insurance
         :param x: age at the beginning of the contract
         :param n: period of the contract
         :param defer: deferment period
@@ -205,7 +205,7 @@ class CommutationFunctions(MortalityTable):
 
     def t_nAx_(self, x, n, defer=0):
         """
-        Term life insurance
+        Deferred Term life insurance
         :param x: age at the beginning of the contract
         :param n: period of the contract
         :param defer: deferment period
@@ -215,3 +215,29 @@ class CommutationFunctions(MortalityTable):
         """
         self.msn.append(f"{defer}|{n}_A_{x}_={defer}_E_{x}*{n}_A_{x + defer}_")
         return self.nEx(x, defer) * self.nAx_(x + defer, n)
+
+    def t_nAEx(self, x, n, defer=0):
+        """
+        Deferred Endowment insurance
+        :param x: age at the beginning of the contract
+        :param n: period of the contract
+        :param defer: deferment period
+        :return: Expected Present Value (EPV) of an Endowment life insurance (i.e. net single premium), that
+        pays 1, at the end of year of death or 1 if x survives to age x+n. It is also commonly referred to as the
+        Actuarial Value or Actuarial Present Value.
+        """
+        self.msn.append(f"{defer}|{n}_AE_{x}={defer}_E_{x}*{n}_AE_{x + defer}")
+        return self.nEx(x, defer) * self.nAEx(x + defer, n)
+
+    def t_nAEx_(self, x, n, defer=0):
+        """
+        Deferred Endowment insurance
+        :param x: age at the beginning of the contract
+        :param n: period of the contract
+        :param defer: deferment period
+        :return: Expected Present Value (EPV) of an Endowment life insurance (i.e. net single premium), that
+        pays 1, at the moment of death or 1 if x survives to age x+n. It is also commonly referred to as the
+        Actuarial Value or Actuarial Present Value.
+        """
+        self.msn.append(f"{defer}|{n}_AE_{x}={defer}_E_{x}*{n}_AE_{x + defer}_")
+        return self.nEx(x, defer) * self.nAEx_(x + defer, n)
