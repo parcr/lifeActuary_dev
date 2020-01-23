@@ -43,6 +43,7 @@ class CommutationFunctions(MortalityTable):
         :param n: years until payment, if x is alive
         :return: the present value of a pure endowment of 1 at age x+n
         """
+        self.msn.append(f"{n}_E_{x}")
         if x < 0:
             return np.nan
         if n <= 0:
@@ -51,7 +52,7 @@ class CommutationFunctions(MortalityTable):
             return 0.
         D_x = self.Dx[x]
         D_x_n = self.Dx[x + n]
-        self.msn.append(f"{n}_E_{x}={D_x_n} / {D_x}")
+        self.msn[-1] = f"{n}_E_{x}={D_x_n} / {D_x}"
         return D_x_n / D_x
 
     def Ax(self, x):
@@ -61,11 +62,87 @@ class CommutationFunctions(MortalityTable):
         :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1,at the
         end of the year of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
         """
+        self.msn.append(f"A_{x}")
         if x < 0:
             return np.nan
         if x > self.w:
-            return self.v
+            return self.v  # it will die before year's end, because already attained age>w
         D_x = self.Dx[x]
-        M_x = self.Mx[x]
+        if self.app_cont:
+            M_x = self.Mx[x] / self.cont
+        else:
+            M_x = self.Mx[x]
         self.msn.append(f"A_{x}={M_x} / {D_x}")
         return M_x / D_x
+
+    def Ax_(self, x):
+        """
+        Whole life insurance
+        :param x: age at the beginning of the contract
+        :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1, at the
+        moment of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+        """
+        self.msn.append(f"A_{x}_")
+        if x < 0:
+            return np.nan
+        if x > self.w:  # it will die before year's end, because already attained age>w
+            return self.v ** .5
+        D_x = self.Dx[x]
+        if self.app_cont:
+            M_x = self.Mx[x]
+        else:
+            M_x = self.Mx[x] * self.cont
+        self.msn.append(f"A_{x}_={M_x} / {D_x}")
+        return M_x / D_x
+
+    def nAx(self, x, n):
+        """
+        Term life insurance
+        :param x: age at the beginning of the contract
+        :param n: period of the contract
+        :return: Expected Present Value (EPV) of a term (temporary) life insurance (i.e. net single premium), that
+        pays 1, at the end of the year of death. It is also commonly referred to as the Actuarial Value or
+        Actuarial Present Value.
+        """
+        self.msn.append(f"{n}_A_{x}")
+        if x < 0:
+            return np.nan
+        if n < 0:
+            return np.nan
+        if x + n > self.w:
+            return self.Ax(x)
+        D_x = self.Dx[x]
+        if self.app_cont:
+            M_x = self.Mx[x] / self.cont
+            M_x_n = self.Mx[x + n] / self.cont
+        else:
+            M_x = self.Mx[x]
+            M_x_n = self.Mx[x + n]
+        self.msn.append(f"{n}_A_{x}=({M_x}-{M_x_n}) / {D_x}")
+        return (M_x - M_x_n) / D_x
+
+    def nAx_(self, x, n):
+        """
+        Term life insurance
+        :param x: age at the beginning of the contract
+        :param n: period of the contract
+        :return: Expected Present Value (EPV) of a term (temporary) life insurance (i.e. net single premium), that
+        pays 1, at the moment of death. It is also commonly referred to as the Actuarial Value or
+        Actuarial Present Value.
+        """
+        self.msn.append(f"{n}_A_{x}_")
+        if x < 0:
+            return np.nan
+        if n < 0:
+            return np.nan
+        if x + n > self.w:
+            return self.Ax(x)
+        D_x = self.Dx[x]
+        if self.app_cont:
+            M_x = self.Mx[x]
+            M_x_n = self.Mx[x + n]
+        else:
+            M_x = self.Mx[x] * self.cont
+            M_x_n = self.Mx[x + n] * self.cont
+        self.msn.append(f"{n}_A_{x}_=({M_x}-{M_x_n}) / {D_x}")
+        return (M_x - M_x_n) / D_x
