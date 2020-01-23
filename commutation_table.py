@@ -16,6 +16,7 @@ class CommutationFunctions(MortalityTable):
             return
         self.i = i / 100.
         self.g = g / 100.
+        self.v = 1 / (1 + self.i)
         self.d = (1 + self.g) / (1 + self.i)
         self.app_cont = app_cont
         self.cont = np.sqrt(1 + self.i)
@@ -32,20 +33,39 @@ class CommutationFunctions(MortalityTable):
         data = {'Dx': self.Dx, 'Nx': self.Nx, 'Cx': self.Cx, 'Mx': self.Mx}
         df = pd.DataFrame(data)
         data_lf = self.df_life_table()
-        df = pd.concat([data_lf, df], axis=1, sort=False) # todo
+        df = pd.concat([data_lf, df], axis=1, sort=False)  # todo
         return df
 
     def nEx(self, x, n):
+        """
+        Pure endowment or Deferred capital
+        :param x: age at the beginning of the contract
+        :param n: years until payment, if x is alive
+        :return: the present value of a pure endowment of 1 at age x+n
+        """
         if x < 0:
             return np.nan
         if n <= 0:
             return 1
         if x + n > self.w:
             return 0.
+        D_x = self.Dx[x]
+        D_x_n = self.Dx[x + n]
+        self.msn.append(f"{n}_E_{x}={D_x_n} / {D_x}")
+        return D_x_n / D_x
 
-        l_x = self.get_lx_method(x, method)
-        l_x_t = self.get_lx_method(x + t, method)
-        self.msn.append(f"{t}_q_{x}=1-({l_x_t} / {l_x})")
-        return 1 - l_x_t / l_x
-
-
+    def Ax(self, x):
+        """
+        Whole life insurance
+        :param x: age at the beginning of the contract
+        :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1,at the
+        end of the year of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+        """
+        if x < 0:
+            return np.nan
+        if x > self.w:
+            return self.v
+        D_x = self.Dx[x]
+        M_x = self.Mx[x]
+        self.msn.append(f"A_{x}={M_x} / {D_x}")
+        return M_x / D_x

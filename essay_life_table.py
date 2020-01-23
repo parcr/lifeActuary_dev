@@ -23,3 +23,7 @@ print(lt_gkm95.lx_bal(25.5))
 
 print(lt_gkm95.t_nqx(x=25.5, t=5.2, n=2.3, method='cfm'))
 print(lt_gkm95.msn)
+
+print('Insurances')
+print(cf_tv7377.nEx(30, 35), '=', cf_tv7377.msn[-1])
+print(cf_tv7377.Ax(30), '=', cf_tv7377.msn[-1])
