@@ -241,3 +241,29 @@ class CommutationFunctions(MortalityTable):
         """
         self.msn.append(f"{defer}|{n}_AE_{x}={defer}_E_{x}*{n}_AE_{x + defer}_")
         return self.nEx(x, defer) * self.nAEx_(x + defer, n)
+
+    # life annuities
+    def ax(self, x, m=1):
+        """
+        axn : Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary
+        life annuity-late. Payable 'm' per year at the ends of the period
+        :param x: age at the beginning of the contract
+        :param m: number of payments per period used to quote the interest rate
+        :return:Expected Present Value (EPV) for payments of 1/m
+        """
+        if x < 0:
+            return np.nan
+        if m < 0:
+            return np.nan
+
+        return self.Nx[x + 1] / self.Dx[x] + float(m - 1) / float(m * 2) # todo confirmar
+
+    def aax(self, x, m=1):
+        """
+        äxn : Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary
+        life annuity-anticipatory. Payable 'm' per year at the beginning of the period
+        :param x: age at the beginning of the contract
+        :param m: number of payments per period used to quote the interest rate
+        :return:Expected Present Value (EPV) for payments of 1/m
+        """
+        pass
