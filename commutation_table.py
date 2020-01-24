@@ -256,7 +256,8 @@ class CommutationFunctions(MortalityTable):
         if m < 0:
             return np.nan
 
-        return self.Nx[x + 1] / self.Dx[x] + float(m - 1) / float(m * 2) # todo confirmar
+        self.msn.append(f"ax_{x}={self.Nx[x + 1]}/{self.Dx[x]}+ ({m} + 1) / ({m} * 2)")
+        return self.Nx[x + 1] / self.Dx[x] + (m - 1) / (m * 2)
 
     def aax(self, x, m=1):
         """
@@ -266,4 +267,25 @@ class CommutationFunctions(MortalityTable):
         :param m: number of payments per period used to quote the interest rate
         :return:Expected Present Value (EPV) for payments of 1/m
         """
-        pass
+        self.msn.append(f"ax_{x}={self.Nx[x]}/{self.Dx[x]}-({m} - 1) / ({m} * 2)")
+        return 1 / m + self.ax(x, m)
+
+    def axn(self, x, n, m=1):
+        """
+        axn : Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary
+        life annuity-late. Payable 'm' per year at the ends of the period
+        :param x: age at the beginning of the contract
+        :param n: number of total periods of the interest rate used
+        :param m: number of payments per period used to quote the interest rate
+        :return:Expected Present Value (EPV) for payments of 1/m
+        """
+        if x < 0:
+            return np.nan
+        if m < 0:
+            return np.nan
+        if n < 0:
+            return 0
+
+        self.msn.append(f"ax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m} -1) / ({m} * 2)*"
+                        f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
+        return (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + (m - 1) / (m * 2) * (1 - self.nEx(x, n))
