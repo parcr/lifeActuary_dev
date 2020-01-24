@@ -265,7 +265,7 @@ class CommutationFunctions(MortalityTable):
             return np.nan
 
         aux = self.Nx[x + 1] / self.Dx[x] + (m - 1) / (m * 2)
-        self.msn.append(f"ax_{x}={self.Nx[x + 1]}/{self.Dx[x]}+ ({m} + 1)/({m}*2)")
+        self.msn.append(f"ax_{x}={self.Nx[x + 1]}/{self.Dx[x]}+({m}+1)/({m}*2)")
         return aux
 
     def aax(self, x, m=1):
@@ -297,7 +297,7 @@ class CommutationFunctions(MortalityTable):
             return 0
 
         aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + (m - 1) / (m * 2) * (1 - self.nEx(x, n))
-        self.msn.append(f"{n}_ax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m}-1)/({m}*2)*"
+        self.msn.append(f"{n}_ax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]}+({m}-1)/({m}*2)*"
                         f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
         return aux
 
@@ -320,4 +320,68 @@ class CommutationFunctions(MortalityTable):
         aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + (m + 1) / (m * 2) * (1 - self.nEx(x, n))
         self.msn.append(f"{n}_aax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m}+1)/({m}*2)*"
                         f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
+        return aux
+
+    # deferred annuities
+    def t_ax(self, x, m=1, defer=0):
+        """
+        axn : Returns the actuarial present value of an (immediate) annuity of 1 per time period
+        (whole life annuity-late), deferred t periods. Payable 'm' per year at the ends of the period Payable 'm'
+        per year at the end of the period
+        :param x: age at the beginning of the contract
+        :param m: number of payments per period used to quote the interest rate
+        :param defer: deferment period
+        :return:Expected Present Value (EPV) for payments of 1/m
+        """
+        aux = self.ax(x + defer, m) * self.nEx(x, defer)
+        self.msn.append(f"{defer}_ax_{x}=[{self.Nx[x + 1 + defer]}/{self.Dx[x + defer]}+({m} + 1)/({m}*2)]"
+                        f"*{self.Dx[x + defer]}/{self.Dx[x]}")
+        return aux
+
+    def t_aax(self, x, m=1, defer=0):
+        """
+        äxn : Returns the actuarial present value of an (immediate) annuity of 1 per time period
+        (whole life annuity-anticipatory), deferred t periods. Payable 'm' per year at the beginning of the period
+        :param x: age at the beginning of the contract
+        :param m: number of payments per period used to quote the interest rate
+        :param defer: deferment period
+        :return:Expected Present Value (EPV) for payments of 1/m
+        """
+        aux = self.aax(x + defer, m) * self.nEx(x, defer)
+        self.msn.append(f"{defer}_aax_{x}=[{self.Nx[x + defer]}/{self.Dx[x + defer]}-({m}-1)/({m}*2)]"
+                        f"*{self.Dx[x + defer]}/{self.Dx[x]}")
+        return aux
+
+    def t_nax(self, x, n, m=1, defer=0):
+        """
+        axn : Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary
+        life annuity-late, deferred t periods. Payable 'm' per year at the ends of the period
+        :param x: age at the beginning of the contract
+        :param n: number of total periods of the interest rate used
+        :param m: number of payments per period used to quote the interest rate
+        :param defer: deferment period
+        :return:Expected Present Value (EPV) for payments of 1/m
+        """
+        aux = self.nax(x, n, m) * self.nEx(x, defer)
+        self.msn.append(
+            f"{defer}|{n}_ax_{x}=[{self.Nx[x + 1 + defer] - self.Nx[x + 1 + n + defer]}/{self.Dx[x + defer]}"
+            f"+ ({m}-1)/({m}*2)*(1-{self.Dx[x + n + defer]}/{self.Dx[x + defer]})]"
+            f"*{self.Dx[x + defer]}/{self.Dx[x]}")
+        return aux
+
+    def t_naax(self, x, n, m=1, defer=0):
+        """
+        näx : Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary
+        life annuity-anticipatory, deferred t periods. Payable 'm' per year at the beginning of the period
+        :param x: age at the beginning of the contract
+        :param n: number of total periods of the interest rate used
+        :param m: number of payments per period used to quote the interest rate
+        :param defer: deferment period
+        :return:Expected Present Value (EPV) for payments of 1/m
+        """
+        aux = self.naax(x + defer, n + defer, m) * self.nEx(x, defer)
+        self.msn.append(
+            f"{defer}|{n}_aax_{x}=[{self.Nx[x + 1 + defer] - self.Nx[x + 1 + n + defer]}/{self.Dx[x + defer]}"
+            f"+({m}+1)/({m}*2)*(1-{self.Dx[x + n + defer]}/{self.Dx[x + defer]})]"
+            f"*{self.Dx[x + defer]}/{self.Dx[x]}")
         return aux
