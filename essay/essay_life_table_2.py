@@ -1,5 +1,5 @@
 # author: PedroCR #
-from mortality_tables_old import TV7377, GKM95, GKM95_15, GKM95_lx_15
+from toDelete.mortality_tables_old import TV7377, GKM95_lx_15
 import mortality_table
 import commutation_table
 
