@@ -164,8 +164,9 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the moment of death or 1 if x survives to age x+n. It is also commonly referred to as the
         Actuarial Value or Actuarial Present Value.
         """
+        aux = self.nAx_(x, n) + self.nEx(x, n)
         self.msn.append(f"{n}_AE_{x}_={n}_A_{x}_+{n}_E_{x}")
-        return self.nAx_(x, n) + self.nEx(x, n)
+        return aux
 
     # deferred life insurances
     def t_Ax(self, x, defer=0):
@@ -176,8 +177,9 @@ class CommutationFunctions(MortalityTable):
         :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1,at the
         end of the year of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
         """
+        aux = self.nEx(x, defer) * self.Ax(x + defer)
         self.msn.append(f"{defer}|_A_{x}={defer}_E_{x}*A_{x + defer}")
-        return self.nEx(x, defer) * self.Ax(x + defer)
+        return aux
 
     def t_Ax_(self, x, defer=0):
         """
@@ -187,8 +189,9 @@ class CommutationFunctions(MortalityTable):
         :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1, at the
         moment of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
         """
+        aux = self.nEx(x, defer) * self.Ax_(x + defer)
         self.msn.append(f"{defer}|_A_{x}_={defer}_E_{x}*A_{x + defer}_")
-        return self.nEx(x, defer) * self.Ax_(x + defer)
+        return aux
 
     def t_nAx(self, x, n, defer=0):
         """
@@ -200,8 +203,9 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the end of the year of death. It is also commonly referred to as the Actuarial Value or
         Actuarial Present Value.
         """
+        aux = self.nEx(x, defer) * self.nAx(x + defer, n)
         self.msn.append(f"{defer}|{n}_A_{x}={defer}_E_{x}*{n}_A_{x + defer}")
-        return self.nEx(x, defer) * self.nAx(x + defer, n)
+        return aux
 
     def t_nAx_(self, x, n, defer=0):
         """
@@ -213,8 +217,9 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the moment of death. It is also commonly referred to as the Actuarial Value or
         Actuarial Present Value.
         """
+        aux = self.nEx(x, defer) * self.nAx_(x + defer, n)
         self.msn.append(f"{defer}|{n}_A_{x}_={defer}_E_{x}*{n}_A_{x + defer}_")
-        return self.nEx(x, defer) * self.nAx_(x + defer, n)
+        return aux
 
     def t_nAEx(self, x, n, defer=0):
         """
@@ -226,8 +231,9 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the end of year of death or 1 if x survives to age x+n. It is also commonly referred to as the
         Actuarial Value or Actuarial Present Value.
         """
+        aux = self.nEx(x, defer) * self.nAEx(x + defer, n)
         self.msn.append(f"{defer}|{n}_AE_{x}={defer}_E_{x}*{n}_AE_{x + defer}")
-        return self.nEx(x, defer) * self.nAEx(x + defer, n)
+        return aux
 
     def t_nAEx_(self, x, n, defer=0):
         """
@@ -239,14 +245,16 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the moment of death or 1 if x survives to age x+n. It is also commonly referred to as the
         Actuarial Value or Actuarial Present Value.
         """
+        aux = self.nEx(x, defer) * self.nAEx_(x + defer, n)
         self.msn.append(f"{defer}|{n}_AE_{x}={defer}_E_{x}*{n}_AE_{x + defer}_")
-        return self.nEx(x, defer) * self.nAEx_(x + defer, n)
+        return aux
 
     # life annuities
     def ax(self, x, m=1):
         """
-        axn : Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary
-        life annuity-late. Payable 'm' per year at the ends of the period
+        axn : Returns the actuarial present value of an (immediate) annuity of 1 per time period
+        (whole life annuity-late). Payable 'm' per year at the ends of the period Payable 'm' per year at the end of
+        the period
         :param x: age at the beginning of the contract
         :param m: number of payments per period used to quote the interest rate
         :return:Expected Present Value (EPV) for payments of 1/m
@@ -256,21 +264,23 @@ class CommutationFunctions(MortalityTable):
         if m < 0:
             return np.nan
 
-        self.msn.append(f"ax_{x}={self.Nx[x + 1]}/{self.Dx[x]}+ ({m} + 1) / ({m} * 2)")
-        return self.Nx[x + 1] / self.Dx[x] + (m - 1) / (m * 2)
+        aux = self.Nx[x + 1] / self.Dx[x] + (m - 1) / (m * 2)
+        self.msn.append(f"ax_{x}={self.Nx[x + 1]}/{self.Dx[x]}+ ({m} + 1)/({m}*2)")
+        return aux
 
     def aax(self, x, m=1):
         """
-        äxn : Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary
-        life annuity-anticipatory. Payable 'm' per year at the beginning of the period
+        äxn : Returns the actuarial present value of an (immediate) annuity of 1 per time period
+        (whole life annuity-anticipatory). Payable 'm' per year at the beginning of the period
         :param x: age at the beginning of the contract
         :param m: number of payments per period used to quote the interest rate
         :return:Expected Present Value (EPV) for payments of 1/m
         """
-        self.msn.append(f"ax_{x}={self.Nx[x]}/{self.Dx[x]}-({m} - 1) / ({m} * 2)")
+        aux = 1 / m + self.ax(x, m)
+        self.msn.append(f"ax_{x}={self.Nx[x]}/{self.Dx[x]}-({m}-1)/({m}*2)")
         return 1 / m + self.ax(x, m)
 
-    def axn(self, x, n, m=1):
+    def nax(self, x, n, m=1):
         """
         axn : Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary
         life annuity-late. Payable 'm' per year at the ends of the period
@@ -286,6 +296,28 @@ class CommutationFunctions(MortalityTable):
         if n < 0:
             return 0
 
-        self.msn.append(f"ax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m} -1) / ({m} * 2)*"
+        aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + (m - 1) / (m * 2) * (1 - self.nEx(x, n))
+        self.msn.append(f"ax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m}-1)/({m}*2)*"
                         f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
-        return (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + (m - 1) / (m * 2) * (1 - self.nEx(x, n))
+        return aux
+
+    def naax(self, x, n, m=1):
+        """
+        näx : Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary
+        life annuity-anticipatory. Payable 'm' per year at the beginning of the period
+        :param x: age at the beginning of the contract
+        :param n: number of total periods of the interest rate used
+        :param m: number of payments per period used to quote the interest rate
+        :return:Expected Present Value (EPV) for payments of 1/m
+        """
+        if x < 0:
+            return np.nan
+        if m < 0:
+            return np.nan
+        if n < 0:
+            return 0
+
+        aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + (m + 1) / (m * 2) * (1 - self.nEx(x, n))
+        self.msn.append(f"ax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m}+1)/({m}*2)*"
+                        f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
+        return aux
