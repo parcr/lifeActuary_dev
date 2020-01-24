@@ -9,4 +9,4 @@ cf_tv7377 = commutation_table.CommutationFunctions(i=4, g=0, mt=TV7377)
 print(cf_tv7377.df_commutation_table())
 
 print(cf_tv7377.nAx(40, 25), cf_tv7377.msn[-1])
-print(cf_tv7377.aax(75), cf_tv7377.msn[-1])
+print(cf_tv7377.naax(40, 25), cf_tv7377.msn[-1])

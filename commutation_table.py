@@ -277,8 +277,8 @@ class CommutationFunctions(MortalityTable):
         :return:Expected Present Value (EPV) for payments of 1/m
         """
         aux = 1 / m + self.ax(x, m)
-        self.msn.append(f"ax_{x}={self.Nx[x]}/{self.Dx[x]}-({m}-1)/({m}*2)")
-        return 1 / m + self.ax(x, m)
+        self.msn.append(f"aax_{x}={self.Nx[x]}/{self.Dx[x]}-({m}-1)/({m}*2)")
+        return aux
 
     def nax(self, x, n, m=1):
         """
@@ -297,7 +297,7 @@ class CommutationFunctions(MortalityTable):
             return 0
 
         aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + (m - 1) / (m * 2) * (1 - self.nEx(x, n))
-        self.msn.append(f"ax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m}-1)/({m}*2)*"
+        self.msn.append(f"{n}_ax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m}-1)/({m}*2)*"
                         f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
         return aux
 
@@ -318,6 +318,6 @@ class CommutationFunctions(MortalityTable):
             return 0
 
         aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + (m + 1) / (m * 2) * (1 - self.nEx(x, n))
-        self.msn.append(f"ax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m}+1)/({m}*2)*"
+        self.msn.append(f"{n}_aax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m}+1)/({m}*2)*"
                         f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
         return aux
