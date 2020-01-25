@@ -26,7 +26,9 @@ print(lt_gkm95.msn)
 
 print('Insurances')
 print(cf_tv7377.nEx(30, 350))
-print(cf_tv7377.Ax(30), '=', cf_tv7377.msn[-1])
+print(cf_tv7377.Ax(cf_tv7377.w), '=', cf_tv7377.msn[-1])
+print(cf_tv7377.Ax(150), '=', cf_tv7377.msn[-1])
+
 print(cf_tv7377.Ax_(30), '=', cf_tv7377.msn[-1])
 print(cf_tv7377.nAx(30, 10), '=', cf_tv7377.msn[-1])
 print(cf_tv7377.nAx_(30, 10), '=', cf_tv7377.msn[-1])
