@@ -33,7 +33,7 @@ class CommutationFunctions(MortalityTable):
         data = {'Dx': self.Dx, 'Nx': self.Nx, 'Cx': self.Cx, 'Mx': self.Mx}
         df = pd.DataFrame(data)
         data_lf = self.df_life_table()
-        df = pd.concat([data_lf, df], axis=1, sort=False)  # todo
+        df = pd.concat([data_lf, df], axis=1, sort=False)
         return df
 
     # life insurances
@@ -53,7 +53,7 @@ class CommutationFunctions(MortalityTable):
         D_x = self.Dx[x]
         D_x_n = self.Dx[x + n]
         self.msn.append(f"{n}_E_{x}={D_x_n} / {D_x}")
-        return D_x_n / D_x
+        return D_x_n / D_x / np.power(1 + self.g, n)
 
     def Ax(self, x):
         """
@@ -72,7 +72,7 @@ class CommutationFunctions(MortalityTable):
         else:
             M_x = self.Mx[x]
         self.msn.append(f"A_{x}={M_x} / {D_x}")
-        return M_x / D_x
+        return M_x / D_x / (1 + self.g)
 
     def Ax_(self, x):
         """
@@ -91,7 +91,7 @@ class CommutationFunctions(MortalityTable):
         else:
             M_x = self.Mx[x] * self.cont
         self.msn.append(f"A_{x}_={M_x} / {D_x}")
-        return M_x / D_x
+        return M_x / D_x / (1 + self.g)
 
     def nAx(self, x, n):
         """
@@ -116,7 +116,7 @@ class CommutationFunctions(MortalityTable):
             M_x = self.Mx[x]
             M_x_n = self.Mx[x + n]
         self.msn.append(f"{n}_A_{x}=({M_x}-{M_x_n}) / {D_x}")
-        return (M_x - M_x_n) / D_x
+        return (M_x - M_x_n) / D_x / (1 + self.g)
 
     def nAx_(self, x, n):
         """
@@ -141,7 +141,7 @@ class CommutationFunctions(MortalityTable):
             M_x = self.Mx[x] * self.cont
             M_x_n = self.Mx[x + n] * self.cont
         self.msn.append(f"{n}_A_{x}_=({M_x}-{M_x_n}) / {D_x}")
-        return (M_x - M_x_n) / D_x
+        return (M_x - M_x_n) / D_x / (1 + self.g)
 
     def nAEx(self, x, n):
         """
