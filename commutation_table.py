@@ -217,7 +217,7 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the moment of death. It is also commonly referred to as the Actuarial Value or
         Actuarial Present Value.
         """
-        aux = self.nEx(x, defer) * self.nAx_(x + defer, n)/ (1 + self.g) ** defer
+        aux = self.nEx(x, defer) * self.nAx_(x + defer, n) / (1 + self.g) ** defer
         self.msn.append(f"{defer}|{n}_A_{x}_={defer}_E_{x}*{n}_A_{x + defer}_")
         return aux
 
@@ -231,7 +231,7 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the end of year of death or 1 if x survives to age x+n. It is also commonly referred to as the
         Actuarial Value or Actuarial Present Value.
         """
-        aux = self.nEx(x, defer) * self.nAEx(x + defer, n)/ (1 + self.g) ** defer
+        aux = self.nEx(x, defer) * self.nAEx(x + defer, n) / (1 + self.g) ** defer
         self.msn.append(f"{defer}|{n}_AE_{x}={defer}_E_{x}*{n}_AE_{x + defer}")
         return aux
 
@@ -245,7 +245,7 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the moment of death or 1 if x survives to age x+n. It is also commonly referred to as the
         Actuarial Value or Actuarial Present Value.
         """
-        aux = self.nEx(x, defer) * self.nAEx_(x + defer, n)
+        aux = self.nEx(x, defer) * self.nAEx_(x + defer, n) / (1 + self.g) ** defer
         self.msn.append(f"{defer}|{n}_AE_{x}={defer}_E_{x}*{n}_AE_{x + defer}_")
         return aux
 
@@ -265,7 +265,7 @@ class CommutationFunctions(MortalityTable):
             return np.nan
         if x >= self.w:
             return 0
-        aux = self.Nx[x + 1] / self.Dx[x] / (1 + self.g) + (m - 1) / (m * 2)  # todo confirm formula for deferment
+        aux = self.Nx[x + 1] / self.Dx[x] / (1 + self.g) + (m - 1) / (m * 2)
         self.msn.append(f"ax_{x}={self.Nx[x + 1]}/{self.Dx[x]}+({m}-1)/({m}*2)")
         return aux
 
