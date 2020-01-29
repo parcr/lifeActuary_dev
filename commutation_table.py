@@ -265,7 +265,7 @@ class CommutationFunctions(MortalityTable):
             return np.nan
         if x >= self.w:
             return 0
-        aux = self.Nx[x + 1] / self.Dx[x] / (1 + self.g) + (m - 1) / (m * 2)  # todo confirm formula for annuities
+        aux = self.Nx[x + 1] / self.Dx[x] / (1 + self.g) + (m - 1) / (m * 2)  # todo confirm formula for deferment
         self.msn.append(f"ax_{x}={self.Nx[x + 1]}/{self.Dx[x]}+({m}-1)/({m}*2)")
         return aux
 
