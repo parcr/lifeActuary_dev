@@ -177,7 +177,7 @@ class CommutationFunctions(MortalityTable):
         :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1,at the
         end of the year of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
         """
-        aux = self.nEx(x, defer) * self.Ax(x + defer)
+        aux = self.nEx(x, defer) * self.Ax(x + defer) / (1 + self.g) ** defer
         self.msn.append(f"{defer}|_A_{x}={defer}_E_{x}*A_{x + defer}")
         return aux
 
@@ -189,7 +189,7 @@ class CommutationFunctions(MortalityTable):
         :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1, at the
         moment of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
         """
-        aux = self.nEx(x, defer) * self.Ax_(x + defer)
+        aux = self.nEx(x, defer) * self.Ax_(x + defer) / (1 + self.g) ** defer
         self.msn.append(f"{defer}|_A_{x}_={defer}_E_{x}*A_{x + defer}_")
         return aux
 
@@ -203,7 +203,7 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the end of the year of death. It is also commonly referred to as the Actuarial Value or
         Actuarial Present Value.
         """
-        aux = self.nEx(x, defer) * self.nAx(x + defer, n)
+        aux = self.nEx(x, defer) * self.nAx(x + defer, n) / (1 + self.g) ** defer
         self.msn.append(f"{defer}|{n}_A_{x}={defer}_E_{x}*{n}_A_{x + defer}")
         return aux
 
@@ -217,7 +217,7 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the moment of death. It is also commonly referred to as the Actuarial Value or
         Actuarial Present Value.
         """
-        aux = self.nEx(x, defer) * self.nAx_(x + defer, n)
+        aux = self.nEx(x, defer) * self.nAx_(x + defer, n)/ (1 + self.g) ** defer
         self.msn.append(f"{defer}|{n}_A_{x}_={defer}_E_{x}*{n}_A_{x + defer}_")
         return aux
 
@@ -231,7 +231,7 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the end of year of death or 1 if x survives to age x+n. It is also commonly referred to as the
         Actuarial Value or Actuarial Present Value.
         """
-        aux = self.nEx(x, defer) * self.nAEx(x + defer, n)
+        aux = self.nEx(x, defer) * self.nAEx(x + defer, n)/ (1 + self.g) ** defer
         self.msn.append(f"{defer}|{n}_AE_{x}={defer}_E_{x}*{n}_AE_{x + defer}")
         return aux
 
@@ -265,8 +265,8 @@ class CommutationFunctions(MortalityTable):
             return np.nan
         if x >= self.w:
             return 0
-        aux = self.Nx[x + 1] / self.Dx[x] + (m - 1) / (m * 2)
-        self.msn.append(f"ax_{x}={self.Nx[x + 1]}/{self.Dx[x]}+({m}+1)/({m}*2)")
+        aux = self.Nx[x + 1] / self.Dx[x] / (1 + self.g) + (m - 1) / (m * 2)  # todo confirm formula for annuities
+        self.msn.append(f"ax_{x}={self.Nx[x + 1]}/{self.Dx[x]}+({m}-1)/({m}*2)")
         return aux
 
     def aax(self, x, m=1):
@@ -279,7 +279,7 @@ class CommutationFunctions(MortalityTable):
         """
         if x > self.w:
             return 0
-        aux = 1 / m + self.ax(x, m)
+        aux = self.Nx[x] / self.Dx[x]
         self.msn.append(f"aax_{x}={self.Nx[x]}/{self.Dx[x]}-({m}-1)/({m}*2)")
         return aux
 
@@ -299,7 +299,8 @@ class CommutationFunctions(MortalityTable):
         if n < 0:
             return 0
 
-        aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + (m - 1) / (m * 2) * (1 - self.nEx(x, n))
+        aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] / (1 + self.g) + \
+              (m - 1) / (m * 2) * (1 - self.nEx(x, n))
         self.msn.append(f"{n}_ax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]}+({m}-1)/({m}*2)*"
                         f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
         return aux
@@ -320,7 +321,7 @@ class CommutationFunctions(MortalityTable):
         if n < 0:
             return 0
 
-        aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + (m + 1) / (m * 2) * (1 - self.nEx(x, n))
+        aux = (self.Nx[x] - self.Nx[x + n]) / self.Dx[x] + (m + 1) / (m * 2) * (1 - self.nEx(x, n))
         self.msn.append(f"{n}_aax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m}+1)/({m}*2)*"
                         f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
         return aux
@@ -336,7 +337,7 @@ class CommutationFunctions(MortalityTable):
         :param defer: deferment period
         :return:Expected Present Value (EPV) for payments of 1/m
         """
-        aux = self.ax(x + defer, m) * self.nEx(x, defer)
+        aux = self.ax(x + defer, m) * self.nEx(x, defer) / (1 + self.g) ** defer
         self.msn.append(f"{defer}_ax_{x}=[{self.Nx[x + 1 + defer]}/{self.Dx[x + defer]}+({m} + 1)/({m}*2)]"
                         f"*{self.Dx[x + defer]}/{self.Dx[x]}")
         return aux
@@ -350,7 +351,7 @@ class CommutationFunctions(MortalityTable):
         :param defer: deferment period
         :return:Expected Present Value (EPV) for payments of 1/m
         """
-        aux = self.aax(x + defer, m) * self.nEx(x, defer)
+        aux = self.aax(x + defer, m) * self.nEx(x, defer) / (1 + self.g) ** defer
         self.msn.append(f"{defer}_aax_{x}=[{self.Nx[x + defer]}/{self.Dx[x + defer]}-({m}-1)/({m}*2)]"
                         f"*{self.Dx[x + defer]}/{self.Dx[x]}")
         return aux
@@ -365,7 +366,7 @@ class CommutationFunctions(MortalityTable):
         :param defer: deferment period
         :return:Expected Present Value (EPV) for payments of 1/m
         """
-        aux = self.nax(x, n, m) * self.nEx(x, defer)
+        aux = self.nax(x, n, m) * self.nEx(x, defer) / (1 + self.g) ** defer
         self.msn.append(
             f"{defer}|{n}_ax_{x}=[{self.Nx[x + 1 + defer] - self.Nx[x + 1 + n + defer]}/{self.Dx[x + defer]}"
             f"+ ({m}-1)/({m}*2)*(1-{self.Dx[x + n + defer]}/{self.Dx[x + defer]})]"
@@ -382,7 +383,7 @@ class CommutationFunctions(MortalityTable):
         :param defer: deferment period
         :return:Expected Present Value (EPV) for payments of 1/m
         """
-        aux = self.naax(x + defer, n + defer, m) * self.nEx(x, defer)
+        aux = self.naax(x + defer, n + defer, m) * self.nEx(x, defer) / (1 + self.g) ** defer
         self.msn.append(
             f"{defer}|{n}_aax_{x}=[{self.Nx[x + 1 + defer] - self.Nx[x + 1 + n + defer]}/{self.Dx[x + defer]}"
             f"+({m}+1)/({m}*2)*(1-{self.Dx[x + n + defer]}/{self.Dx[x + defer]})]"
