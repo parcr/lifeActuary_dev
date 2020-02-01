@@ -1,4 +1,7 @@
-from urllib.request import urlopen
-response = urlopen('https://mort.soa.org/data/t1.xml')
-html = response.read()
-print(html)
+from xml.dom import minidom
+# xmldoc = minidom.parse('t1.xml')
+xmldoc = minidom.parse('t34059.xml')
+itemlist = xmldoc.getElementsByTagName('Y')
+
+for s in itemlist:
+    print(f"{s.attributes['t'].value}: {s.childNodes[0].data}")
