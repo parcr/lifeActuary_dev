@@ -279,7 +279,7 @@ class CommutationFunctions(MortalityTable):
         """
         if x > self.w:
             return 0
-        aux = self.Nx[x] / self.Dx[x]
+        aux = self.Nx[x] / self.Dx[x] - (m - 1) / (m * 2)
         self.msn.append(f"aax_{x}={self.Nx[x]}/{self.Dx[x]}-({m}-1)/({m}*2)")
         return aux
 

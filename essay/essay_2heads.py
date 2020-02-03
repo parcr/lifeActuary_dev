@@ -11,4 +11,6 @@ mt_GRF95 = mt.MortalityTable(mt=soa_GRF95.table_qx)
 mt_TV7377 = mt.MortalityTable(mt=soa_TV7377.table_qx)
 
 a1 = annuities.axy(mtx=mt_GRF95, mty=mt_TV7377, x=45, y=45, i=2, g=0, m=1)
+a2 = annuities.aaxy(mtx=mt_GRF95, mty=mt_TV7377, x=45, y=45, i=2, g=0, m=1)
 print(a1)
+print(a2)
