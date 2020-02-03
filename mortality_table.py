@@ -37,9 +37,9 @@ class MortalityTable:
             self.qx = (mt[:-1] - mt[1:]) / mt[:-1] * pperc
             # self.qx = np.append(np.zeros(self.x0), self.qx)
         if data_type == 'q':
-            self.qx = mt / 1000 * pperc
+            self.qx = mt * pperc
         if data_type == 'p':
-            self.qx = (1 - mt / 1000) * pperc
+            self.qx = (1 - mt) * pperc
 
         if self.qx[-1] < 1 - .1e-10:
             self.qx = np.append(self.qx, 1)
