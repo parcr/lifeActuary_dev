@@ -1,7 +1,6 @@
 __author__ = "PedroCR"
 
 import numpy as np
-import mortality_table as mt
 
 
 # life annuities
