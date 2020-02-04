@@ -14,3 +14,8 @@ a1 = annuities.axy(mtx=mt_GRF95, mty=mt_TV7377, x=45, y=45.7, i=2, g=1, m=1, def
 a2 = annuities.aaxy(mtx=mt_GRF95, mty=mt_TV7377, x=45, y=45.7, i=2, g=1, m=1, defer=1)
 print(a1)
 print(a2)
+
+a1 = annuities.ax(mtx=mt_GRF95, x=45, i=2, g=0, m=1, defer=0)
+a2 = annuities.aax(mtx=mt_GRF95, x=45, i=2, g=0, m=1, defer=1)
+print(a1)
+print(a2)

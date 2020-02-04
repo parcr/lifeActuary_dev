@@ -53,7 +53,7 @@ def aax(mtx, x, i=None, g=0, m=1, defer=0, method='udd'):
     d = float((1 + g) / (1 + i))
     if years_to_end == 0:  # at least one will die before the end of the period
         return .0
-    number_of_payments = int(years_to_end * m)
+    number_of_payments = int((years_to_end + 1) * m) ** # todo: esta contagem está errada
     # starts paying immediately after the deferment
     payments_instants = np.linspace(defer + 1 / m * 0, years_to_end, number_of_payments)
     instalments = [mtx.tpx(x, t=t, method=method) *
