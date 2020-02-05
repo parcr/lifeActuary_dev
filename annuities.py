@@ -67,7 +67,7 @@ def aax(mt, x, i=None, g=0, m=1, defer=0, method='udd'):
 
 
 # life annuities 2 heads
-def axy(mtx, mty, x, y, i=None, g=0, m=1, defer=0, method='udd'):
+def axy(mtx, mty, x, y, i=None, g=0, m=1, defer=0, method='udd'): # todo: recalculate besed on the generic anuuity but now for 2 heads
     '''
     computes a whole life annuity immediate paying while both lives are alive
     :param mtx: table for life x
