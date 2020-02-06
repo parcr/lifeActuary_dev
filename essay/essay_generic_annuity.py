@@ -14,7 +14,7 @@ a1 = annuities.annuity_x(mt=mt_TV7377, x=50, x_first=51, x_last=55, i=2, g=.0, m
 print(a1)
 
 
-a2 = annuities.aax(mt=mt_GRF95, x=45, i=2, g=0, m=10, defer=0)
+a2 = annuities.aax(mt=mt_GRF95, x=45, i=2, g=0, m=10)
 print(a2)
-a3 = annuities.ax(mt=mt_GRF95, x=45, i=2, g=0, m=10, defer=0)
+a3 = annuities.ax(mt=mt_GRF95, x=45, i=2, g=0, m=10)
 print(a3)
