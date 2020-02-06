@@ -68,6 +68,26 @@ def test_nax():
     assert a_tv == pytest.approx(cf_tv7377.nax(x=x, m=m, n=n), rel=1e-16)
 
 
+def test_t_nax():
+    i = 2
+    g = 0
+    m = 1
+    x = 45
+    defer = 10
+    n = 5
+    method = 'udd'
+    cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
+    cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)
+
+    a_grf = annuities.t_nax(mt=mt_GRF95, x=x, n=n, i=i, g=g, m=m, defer=defer, method=method)
+    a_tv = annuities.t_nax(mt=mt_TV7377, x=x, n=n, i=i, g=g, m=m, defer=defer, method=method)
+    a_grf_2 = cf_grf95.t_nax(x=x, n=n, m=m, defer=defer)
+    a_tv_2 = cf_tv7377.t_nax(x=x, n=n, m=m, defer=defer)
+
+    assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
+    assert a_tv == pytest.approx(a_tv_2, rel=1e-16)
+
+
 def test_aax():
     i = 2
     g = 0
@@ -117,4 +137,24 @@ def test_naax():
     a_tv_2 = cf_tv7377.naax(x=x, m=m, n=n)
 
     assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
-    # assert a_tv == pytest.approx(a_tv_2, rel=1e-16)
+    assert a_tv == pytest.approx(a_tv_2, rel=1e-16)
+
+
+def test_t_naax():
+    i = 2
+    g = 0
+    m = 1
+    x = 45
+    defer = 10
+    n = 5
+    method = 'udd'
+    cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
+    cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)
+
+    a_grf = annuities.t_naax(mt=mt_GRF95, x=x, n=n, i=i, g=g, m=m, defer=defer, method=method)
+    a_tv = annuities.t_naax(mt=mt_TV7377, x=x, n=n, i=i, g=g, m=m, defer=defer, method=method)
+    a_grf_2 = cf_grf95.t_naax(x=x, n=n, m=m, defer=defer)
+    a_tv_2 = cf_tv7377.t_naax(x=x, n=n, m=m, defer=defer)
+
+    assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
+    assert a_tv == pytest.approx(a_tv_2, rel=1e-16)
