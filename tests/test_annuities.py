@@ -34,6 +34,23 @@ def test_ax():
     assert a_tv == pytest.approx(cf_tv7377.ax(x=x, m=m), rel=1e-16)
 
 
+def test_t_ax():
+    i = 2
+    g = 0
+    m = 1
+    x = 45
+    defer = 5
+    method = 'udd'
+    cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
+    cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)
+
+    a_grf = annuities.t_ax(mt=mt_GRF95, x=x, i=i, g=g, m=m, defer=defer, method=method)
+    a_tv = annuities.ax(mt=mt_TV7377, x=x, i=i, g=g, m=m, defer=defer, method=method)
+
+    assert a_grf == pytest.approx(cf_grf95.t_ax(x=x, m=m, defer=defer), rel=1e-16)
+    assert a_tv == pytest.approx(cf_tv7377.t_ax(x=x, m=m, defer=defer), rel=1e-16)
+
+
 def test_aax():
     i = 2
     g = 0

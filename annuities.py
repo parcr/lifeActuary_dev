@@ -37,7 +37,7 @@ def annuity_x(mt, x, x_first, x_last, i=None, g=.0, m=1, method='udd'):
 # immediate
 def ax(mt, x, i=None, g=0, m=1, method='udd'):
     '''
-    computes a whole life annuity immediate
+    Returns a whole life annuity immediate
     :param mt: table for life x
     :param x: age x
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
@@ -53,7 +53,7 @@ def ax(mt, x, i=None, g=0, m=1, method='udd'):
 
 def t_ax(mt, x, i=None, g=0, m=1, defer=0, method='udd'):
     '''
-    computes a whole life annuity immediate
+    Returns a whole life annuity immediate, deferred
     :param mt: table for life x
     :param x: age x
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
@@ -70,9 +70,10 @@ def t_ax(mt, x, i=None, g=0, m=1, defer=0, method='udd'):
 def nax(mt, x, n, i=None, g=0, m=1, method='udd'):
     '''
     Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary
-        life annuity-late. Payable 'm' per year at the ends of the period
+    life annuity-late. Payable 'm' per year at the ends of the period
     :param mt: table for life x
     :param x: age x
+    :param n: total amount payed
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
     :param g: growth rate (flat rate) in percentage, e.g., 2 for 2%
     :param m: frequency of payments per unit of interest rate quoted
@@ -86,9 +87,10 @@ def nax(mt, x, n, i=None, g=0, m=1, method='udd'):
 def t_nax(mt, x, n, i=None, g=0, m=1, defer=0, method='udd'):
     '''
     Return the actuarial present value of a (immediate) temporal (term certain) annuity: n-year temporary
-        life annuity-late. Payable 'm' per year at the ends of the period
+    life annuity-late. Payable 'm' per year at the ends of the period, deferred
     :param mt: table for life x
     :param x: age x
+    :param n: total amount payed
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
     :param g: growth rate (flat rate) in percentage, e.g., 2 for 2%
     :param m: frequency of payments per unit of interest rate quoted
@@ -103,7 +105,7 @@ def t_nax(mt, x, n, i=None, g=0, m=1, defer=0, method='udd'):
 # due
 def aax(mt, x, i=None, g=0, m=1, method='udd'):
     '''
-    computes a whole life annuity due
+    Returns a whole life annuity due
     :param mt: table for life x
     :param x: age x
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
@@ -115,3 +117,53 @@ def aax(mt, x, i=None, g=0, m=1, method='udd'):
     '''
 
     return annuity_x(mt=mt, x=x, x_first=x, x_last=mt.w, i=i, g=g, m=m, method=method)
+
+
+def t_aax(mt, x, i=None, g=0, m=1, defer=0, method='udd'):
+    '''
+    Returns a whole life annuity due, deferred
+    :param mt: table for life x
+    :param x: age x
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param g: growth rate (flat rate) in percentage, e.g., 2 for 2%
+    :param m: frequency of payments per unit of interest rate quoted
+    :param defer: deferment period
+    :param method: the method to approximate the fractional periods
+    :return: the actuarial present value
+    '''
+
+    return annuity_x(mt=mt, x=x, x_first=x + defer, x_last=mt.w, i=i, g=g, m=m, method=method)
+
+
+def naax(mt, x, n, i=None, g=0, m=1, method='udd'):
+    '''
+    Return the actuarial present value of a (due) temporal (term certain) annuity: n-year temporary
+    life annuity-due. Payable 'm' per year at the ends of the period
+    :param mt: table for life x
+    :param x: age x
+    :param n: total amount payed
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param g: growth rate (flat rate) in percentage, e.g., 2 for 2%
+    :param m: frequency of payments per unit of interest rate quoted
+    :param method: the method to approximate the fractional periods
+    :return: the actuarial present value
+    '''
+
+    return annuity_x(mt=mt, x=x, x_first=x, x_last=x + n - 1 / m, i=i, g=g, m=m, method=method)
+
+
+def t_naax(mt, x, n, i=None, g=0, m=1, defer=0, method='udd'):
+    '''
+    Return the actuarial present value of a (due) temporal (term certain) annuity: n-year temporary
+    life annuity-due. Payable 'm' per year at the ends of the period, deferred
+    :param mt: table for life x
+    :param x: age x
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param g: growth rate (flat rate) in percentage, e.g., 2 for 2%
+    :param m: frequency of payments per unit of interest rate quoted
+    :param defer: deferment period
+    :param method: the method to approximate the fractional periods
+    :return: the actuarial present value
+    '''
+
+    return annuity_x(mt=mt, x=x, x_first=x + defer, x_last=x + n + defer - 1 / m, i=i, g=g, m=m, method=method)
