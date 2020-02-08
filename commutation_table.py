@@ -5,6 +5,7 @@ import pandas as pd
 from mortality_table import MortalityTable
 
 # todo: confirm all the messages
+# todo: confirm all deferments in mortality cases
 class CommutationFunctions(MortalityTable):
     '''
     Instantiates a for a specific mortality table and interest rate, all the usual commutation functions.
@@ -178,7 +179,7 @@ class CommutationFunctions(MortalityTable):
         :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1,at the
         end of the year of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
         """
-        aux = self.nEx(x, defer) * self.Ax(x + defer) / (1 + self.g) ** defer
+        aux = self.nEx(x, defer) * self.Ax(x + defer)
         self.msn.append(f"{defer}|_A_{x}={defer}_E_{x}*A_{x + defer}")
         return aux
 
@@ -190,7 +191,7 @@ class CommutationFunctions(MortalityTable):
         :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1, at the
         moment of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
         """
-        aux = self.nEx(x, defer) * self.Ax_(x + defer) / (1 + self.g) ** defer
+        aux = self.nEx(x, defer) * self.Ax_(x + defer)
         self.msn.append(f"{defer}|_A_{x}_={defer}_E_{x}*A_{x + defer}_")
         return aux
 
@@ -204,7 +205,7 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the end of the year of death. It is also commonly referred to as the Actuarial Value or
         Actuarial Present Value.
         """
-        aux = self.nEx(x, defer) * self.nAx(x + defer, n) / (1 + self.g) ** defer
+        aux = self.nEx(x, defer) * self.nAx(x + defer, n)
         self.msn.append(f"{defer}|{n}_A_{x}={defer}_E_{x}*{n}_A_{x + defer}")
         return aux
 
@@ -218,7 +219,7 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the moment of death. It is also commonly referred to as the Actuarial Value or
         Actuarial Present Value.
         """
-        aux = self.nEx(x, defer) * self.nAx_(x + defer, n) / (1 + self.g) ** defer
+        aux = self.nEx(x, defer) * self.nAx_(x + defer, n)
         self.msn.append(f"{defer}|{n}_A_{x}_={defer}_E_{x}*{n}_A_{x + defer}_")
         return aux
 
@@ -232,7 +233,7 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the end of year of death or 1 if x survives to age x+n. It is also commonly referred to as the
         Actuarial Value or Actuarial Present Value.
         """
-        aux = self.nEx(x, defer) * self.nAEx(x + defer, n) / (1 + self.g) ** defer
+        aux = self.nEx(x, defer) * self.nAEx(x + defer, n)
         self.msn.append(f"{defer}|{n}_AE_{x}={defer}_E_{x}*{n}_AE_{x + defer}")
         return aux
 
@@ -246,7 +247,7 @@ class CommutationFunctions(MortalityTable):
         pays 1, at the moment of death or 1 if x survives to age x+n. It is also commonly referred to as the
         Actuarial Value or Actuarial Present Value.
         """
-        aux = self.nEx(x, defer) * self.nAEx_(x + defer, n) / (1 + self.g) ** defer
+        aux = self.nEx(x, defer) * self.nAEx_(x + defer, n)
         self.msn.append(f"{defer}|{n}_AE_{x}={defer}_E_{x}*{n}_AE_{x + defer}_")
         return aux
 
