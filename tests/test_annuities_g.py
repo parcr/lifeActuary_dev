@@ -70,6 +70,7 @@ def test_nax():
     assert a_tv == pytest.approx(cf_tv7377.nax(x=x, m=m, n=n), rel=1e-16)
 
 
+'''
 def test_t_nax():
     i = 2
     g = 0
@@ -160,3 +161,4 @@ def test_t_naax():
 
     assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
     assert a_tv == pytest.approx(a_tv_2, rel=1e-16)
+'''

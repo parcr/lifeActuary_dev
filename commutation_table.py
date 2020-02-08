@@ -53,6 +53,7 @@ class CommutationFunctions(MortalityTable):
         D_x = self.Dx[x]
         D_x_n = self.Dx[x + n]
         self.msn.append(f"{n}_E_{x}={D_x_n} / {D_x}")
+        # note: nEx discounts the growth rate np.power(1 + self.g, defer + 1) so only survival is considered
         return D_x_n / D_x / np.power(1 + self.g, n)
 
     def Ax(self, x):
@@ -337,7 +338,8 @@ class CommutationFunctions(MortalityTable):
         :param defer: deferment period
         :return:Expected Present Value (EPV) for payments of 1/m
         """
-        aux = self.ax(x + defer, m) * self.nEx(x, defer) / (1 + self.g) ** defer
+        # note: nEx discounts the growth rate np.power(1 + self.g, defer + 1)
+        aux = self.ax(x + defer, m) * self.nEx(x, defer)
         self.msn.append(f"{defer}_ax_{x}=[{self.Nx[x + 1 + defer]}/{self.Dx[x + defer]}+({m} + 1)/({m}*2)]"
                         f"*{self.Dx[x + defer]}/{self.Dx[x]}")
         return aux
@@ -366,7 +368,7 @@ class CommutationFunctions(MortalityTable):
         :param defer: deferment period
         :return:Expected Present Value (EPV) for payments of 1/m
         """
-        aux = self.nax(x+defer, n, m) * self.nEx(x, defer) / (1 + self.g) ** defer
+        aux = self.nax(x + defer, n, m) * self.nEx(x, defer) / (1 + self.g) ** defer
         self.msn.append(
             f"{defer}|{n}_ax_{x}=[{self.Nx[x + 1 + defer] - self.Nx[x + 1 + n + defer]}/{self.Dx[x + defer]}"
             f"+ ({m}-1)/({m}*2)*(1-{self.Dx[x + n + defer]}/{self.Dx[x + defer]})]"
