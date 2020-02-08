@@ -29,9 +29,11 @@ def test_ax():
 
     a_grf = annuities.ax(mt=mt_GRF95, x=x, i=i, g=g, m=m, method=method)
     a_tv = annuities.ax(mt=mt_TV7377, x=x, i=i, g=g, m=m, method=method)
+    a_grf_2 = cf_grf95.ax(x=x, m=m)
+    cf_tv_2 = cf_tv7377.ax(x=x, m=m)
 
-    assert a_grf == pytest.approx(cf_grf95.ax(x=x, m=m), rel=1e-16)
-    assert a_tv == pytest.approx(cf_tv7377.ax(x=x, m=m), rel=1e-16)
+    assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
+    assert a_tv == pytest.approx(cf_tv_2, rel=1e-16)
 
 
 def test_t_ax():
