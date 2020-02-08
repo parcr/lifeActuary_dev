@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from mortality_table import MortalityTable
 
-
+# todo: confirm all the messages
 class CommutationFunctions(MortalityTable):
     '''
     Instantiates a for a specific mortality table and interest rate, all the usual commutation functions.
@@ -322,7 +322,8 @@ class CommutationFunctions(MortalityTable):
         if n < 0:
             return 0
 
-        aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + (m + 1) / (m * 2) * (1 - self.nEx(x, n))
+        aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + \
+              (m + 1) / (m * 2) * (1 - self.nEx(x, n) * np.power(1 + self.g, n))
         self.msn.append(f"{n}_aax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m}+1)/({m}*2)*"
                         f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
         return aux
@@ -385,7 +386,7 @@ class CommutationFunctions(MortalityTable):
         :param defer: deferment period
         :return:Expected Present Value (EPV) for payments of 1/m
         """
-        aux = self.naax(x + defer, n, m) * self.nEx(x, defer) / (1 + self.g) ** defer
+        aux = self.naax(x + defer, n, m) * self.nEx(x, defer)
         self.msn.append(
             f"{defer}|{n}_aax_{x}=[{self.Nx[x + 1 + defer] - self.Nx[x + 1 + n + defer]}/{self.Dx[x + defer]}"
             f"+({m}+1)/({m}*2)*(1-{self.Dx[x + n + defer]}/{self.Dx[x + defer]})]"
