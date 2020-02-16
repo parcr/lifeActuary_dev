@@ -136,13 +136,3 @@ class Age(object):
         """
         if isinstance(years, int):
             return Age(self.__date1, self.__date2 + relativedelta(years=years))
-
-
-# Examples
-sd = '1956-12-24'
-sd2 = '1841-03-02'
-sd3 = '2000/04-23'
-
-d1 = datetime.date(2000, 4, 23)
-d2 = datetime.date(2002, 7, 18)
-a = Age(d1, d2)
