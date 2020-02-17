@@ -3,6 +3,7 @@ import numpy as np
 import datetime
 import calendar
 from dateutil.relativedelta import relativedelta
+import logging
 
 
 class Age(object):
@@ -74,7 +75,8 @@ class Age(object):
                 else:
                     return datetime.date(d.year, d.month, d.day)
         if tries:
-            print(err_str, tries)
+            # print(err_str, tries)
+            logging.critical(err_str)
 
     @property
     def date1(self):
@@ -87,7 +89,8 @@ class Age(object):
         elif isinstance(d, str) and isinstance(self.create_date(d), datetime.date):
             self.__date1 = self.create_date(d)
         else:
-            raise TypeError('We need an instance of datetime.')
+            # raise TypeError('We need an instance of datetime.')
+            logging.warning('We need an instance of datetime.')
 
     @date1.deleter
     def date1(self):
@@ -104,7 +107,8 @@ class Age(object):
         elif isinstance(d, str) and isinstance(self.create_date(d), datetime.date):
             self.__date2 = self.create_date(d)
         else:
-            raise TypeError('We need an instance of datetime.')
+            # raise TypeError('We need an instance of datetime.')
+            logging.warning('We need an instance of datetime.')
 
     @date2.deleter
     def date2(self):
