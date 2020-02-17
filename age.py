@@ -1,4 +1,4 @@
-# author: PedroCR #
+__author__ = "PedroCR"
 import numpy as np
 import datetime
 import calendar
@@ -76,7 +76,7 @@ class Age(object):
                     return datetime.date(d.year, d.month, d.day)
         if tries:
             # print(err_str, tries)
-            logging.critical(err_str)
+            logging.critical(err_str + ' ' + str(tries))
 
     @property
     def date1(self):
