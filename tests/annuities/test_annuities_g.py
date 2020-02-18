@@ -12,8 +12,8 @@ import commutation_table
 lt_tv7377 = mortality_table.MortalityTable(mt=TV7377)
 lt_grf95 = mortality_table.MortalityTable(mt=GRF95)
 
-soa_TV7377 = rst.SoaTable('../soa_tables/TV7377.xml')
-soa_GRF95 = rst.SoaTable('../soa_tables/GRF95.xml')
+soa_TV7377 = rst.SoaTable('../../soa_tables/TV7377.xml')
+soa_GRF95 = rst.SoaTable('../../soa_tables/GRF95.xml')
 mt_GRF95 = mt.MortalityTable(mt=soa_GRF95.table_qx)
 mt_TV7377 = mt.MortalityTable(mt=soa_TV7377.table_qx)
 
