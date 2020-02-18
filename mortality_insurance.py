@@ -26,5 +26,19 @@ def A_x(mt, x, x_first, x_last, i=None, g=.0, method='udd'):
     payments_instants = np.linspace(x_first - x, x_last - x, number_of_payments)
     instalments = [mt.tpx(x, t=t, method=method) * mt.tqx(x + t, t=1, method=method) * np.power(d, t)
                    for t in payments_instants]
-    instalments = np.array(instalments) / np.power(1 + g, x_first - x) / m
+    instalments = np.array(instalments) / np.power(1 + g, x_first - x)
     return np.sum(instalments)
+
+
+def Ax(mt, x, i=None, g=.0, method='udd'):
+    """
+    Whole life insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param g: growth rate (flat rate) in percentage, e.g., 2 for 2%
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1,at the
+    end of the year of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+    """
+    return A_x(mt=mt, x=x, x_first=x + 1, x_last=mt.w, i=i, g=g, method=method)

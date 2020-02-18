@@ -6,8 +6,8 @@ import numpy as np
 # life generic annuity 1 head
 def annuity_x(mt, x, x_first, x_last, i=None, g=.0, m=1, method='udd'):
     '''
-    Computes the present value of an annuity that starts paying 1 ate age x, increasing by (1+g/100) and stops
-    at age x_t_w, paying (1+g)^{t-1}
+    Computes the present value of an annuity that starts paying 1 at age x, increasing by (1+g/100) and stops
+    at age x_w, paying (1+g)^{t-1}
     :param mt: table for life x
     :param x: age x
     :param x_first: age of first payment
