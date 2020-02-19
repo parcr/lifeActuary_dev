@@ -62,6 +62,7 @@ def Ax_(mt, x, i=None, g=.0, method='udd'):
 def nAx(mt, x, n, i=None, g=.0, method='udd'):
     """
     Term life insurance
+    :param mt: table for life x
     :param x: age at the beginning of the contract
     :param n: period of the contract
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
@@ -77,6 +78,7 @@ def nAx(mt, x, n, i=None, g=.0, method='udd'):
 def nAx_(mt, x, n, i=None, g=.0, method='udd'):
     """
     Term life insurance
+    :param mt: table for life x
     :param x: age at the beginning of the contract
     :param n: period of the contract
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
@@ -91,6 +93,7 @@ def nAx_(mt, x, n, i=None, g=.0, method='udd'):
 def nAEx(mt, x, n, i=None, g=.0, method='udd'):
     """
     Endowment insurance
+    :param mt: table for life x
     :param x: age at the beginning of the contract
     :param n: period of the contract
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
@@ -106,6 +109,7 @@ def nAEx(mt, x, n, i=None, g=.0, method='udd'):
 def nAEx_(mt, x, n, i=None, g=.0, method='udd'):
     """
     Endowment insurance
+    :param mt: table for life x
     :param x: age at the beginning of the contract
     :param n: period of the contract
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
@@ -122,6 +126,7 @@ def nAEx_(mt, x, n, i=None, g=.0, method='udd'):
 def t_Ax(mt, x, defer=0, i=None, g=.0, method='udd'):
     """
     Deferred Whole life insurance
+    :param mt: table for life x
     :param x: age at the beginning of the contract
     :param defer: deferment period
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
@@ -137,6 +142,7 @@ def t_Ax(mt, x, defer=0, i=None, g=.0, method='udd'):
 def t_Ax_(mt, x, defer=0, i=None, g=.0, method='udd'):
     """
     Deferred Whole life insurance
+    :param mt: table for life x
     :param x: age at the beginning of the contract
     :param defer: deferment period
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
@@ -151,6 +157,7 @@ def t_Ax_(mt, x, defer=0, i=None, g=.0, method='udd'):
 def t_nAx(mt, x, n, defer=0, i=None, g=.0, method='udd'):
     """
     Deferred Term life insurance
+    :param mt: table for life x
     :param x: age at the beginning of the contract
     :param n: period of the contract
     :param defer: deferment period
@@ -167,6 +174,7 @@ def t_nAx(mt, x, n, defer=0, i=None, g=.0, method='udd'):
 def t_nAx_(mt, x, n, defer=0, i=None, g=.0, method='udd'):
     """
     Deferred Term life insurance
+    :param mt: table for life x
     :param x: age at the beginning of the contract
     :param n: period of the contract
     :param defer: deferment period
@@ -177,4 +185,42 @@ def t_nAx_(mt, x, n, defer=0, i=None, g=.0, method='udd'):
     pays 1, at the end of the year of death. It is also commonly referred to as the Actuarial Value or
     Actuarial Present Value.
     """
-    return t_nAx(mt=mt, x=x, n=n, defer=defer, i=i, g=g, method=method) * np.sqrt(1 + i/100)
+    return t_nAx(mt=mt, x=x, n=n, defer=defer, i=i, g=g, method=method) * np.sqrt(1 + i / 100)
+
+
+def t_nAEx(mt, x, n, defer=0, i=None, g=.0, method='udd'):
+    """
+    Deferred Endowment insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param n: period of the contract
+    :param defer: deferment period
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param g: growth rate (flat rate) in percentage, e.g., 2 for 2%
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of an Endowment life insurance (i.e. net single premium), that
+    pays 1, at the end of year of death or 1 if x survives to age x+n. It is also commonly referred to as the
+    Actuarial Value or Actuarial Present Value.
+
+    """
+    return A_x(mt=mt, x=x, x_first=x + 1 + defer, x_last=x + n + defer, i=i, g=g, method=method) + \
+           annuities.nEx(mt=mt, x=x, i=i, g=g, defer=n + defer, method=method)
+
+
+def t_nAEx_(mt, x, n, defer=0, i=None, g=.0, method='udd'):
+    """
+    Deferred Endowment insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param n: period of the contract
+    :param defer: deferment period
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param g: growth rate (flat rate) in percentage, e.g., 2 for 2%
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of an Endowment life insurance (i.e. net single premium), that
+    pays 1, at the moment of death or 1 if x survives to age x+n. It is also commonly referred to as the
+    Actuarial Value or Actuarial Present Value.
+
+    """
+    return A_x(mt=mt, x=x, x_first=x + 1 + defer, x_last=x + n + defer, i=i, g=g, method=method)*np.sqrt(1+i/100) + \
+           annuities.nEx(mt=mt, x=x, i=i, g=g, defer=n + defer, method=method)
