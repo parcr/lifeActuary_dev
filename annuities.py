@@ -167,3 +167,18 @@ def t_naax(mt, x, n, i=None, g=0, m=1, defer=0, method='udd'):
     '''
 
     return annuity_x(mt=mt, x=x, x_first=x + defer, x_last=x + n + defer - 1 / m, i=i, g=g, m=m, method=method)
+
+
+def nEx(mt, x, i=None, g=0, defer=0, method='udd'):
+    """
+    Pure endowment or Deferred capital
+    :param x: age at the beginning of the contract
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param g: growth rate (flat rate) in percentage, e.g., 2 for 2%
+    :param m: frequency of payments per unit of interest rate quoted
+    :param defer: deferment period
+    :param method: the method to approximate the fractional periods
+    :return: the present value of a pure endowment of 1 at age x+n
+    """
+
+    return t_naax(mt, x, n=1, i=i, g=g, m=1, defer=defer, method=method)
