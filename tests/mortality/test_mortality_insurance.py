@@ -217,6 +217,7 @@ def test_t_nAEx():
     assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
     assert a_tv == pytest.approx(cf_tv_2, rel=1e-16)
 
+
 def test_t_nAEx_():
     i = 2
     g = 0
