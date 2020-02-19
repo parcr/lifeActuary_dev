@@ -158,3 +158,40 @@ def test_t_Ax_():
 
     assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
     assert a_tv == pytest.approx(cf_tv_2, rel=1e-16)
+
+def test_t_nAx():
+    i = 2
+    g = 0
+    x = 45
+    defer = 10
+    n=5
+    method = 'udd'
+    cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
+    cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)
+
+    a_grf = mortality_insurance.t_nAx(mt=mt_GRF95, x=x, n=n, defer=defer, i=i, g=g, method=method)
+    a_tv = mortality_insurance.t_nAx(mt=mt_TV7377, x=x, n=n, defer=defer, i=i, g=g, method=method)
+    a_grf_2 = cf_grf95.t_nAx(x=x, n=n, defer=defer)
+    cf_tv_2 = cf_tv7377.t_nAx(x=x, n=n, defer=defer)
+
+    assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
+    assert a_tv == pytest.approx(cf_tv_2, rel=1e-16)
+
+
+def test_t_nAx_():
+    i = 2
+    g = 0
+    x = 45
+    defer = 10
+    n=5
+    method = 'udd'
+    cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
+    cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)
+
+    a_grf = mortality_insurance.t_nAx_(mt=mt_GRF95, x=x, n=n, defer=defer, i=i, g=g, method=method)
+    a_tv = mortality_insurance.t_nAx_(mt=mt_TV7377, x=x, n=n, defer=defer, i=i, g=g, method=method)
+    a_grf_2 = cf_grf95.t_nAx_(x=x, n=n, defer=defer)
+    cf_tv_2 = cf_tv7377.t_nAx_(x=x, n=n, defer=defer)
+
+    assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
+    assert a_tv == pytest.approx(cf_tv_2, rel=1e-16)
