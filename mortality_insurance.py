@@ -227,7 +227,9 @@ def t_nAEx_(mt, x, n, defer=0, i=None, g=.0, method='udd'):
            annuities.nEx(mt=mt, x=x, i=i, g=g, defer=n + defer, method=method)
 
 
-''' Situations of linear increment'''
+''' 
+Situations of linear increment
+'''
 
 
 def IA_x(mt, x, x_first, x_last, i=None, inc=1., method='udd'):
