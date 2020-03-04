@@ -22,10 +22,10 @@ def A_x(mt, x, x_first, x_last, i=None, g=.0, method='udd'):
     if x == x_first == x_last: return 0
     i = i / 100
     g = g / 100
-    d = float((1 + g) / (1 + i))
+    v = float((1 + g) / (1 + i))
     number_of_payments = int((x_last - x_first) + 1)
     payments_instants = np.linspace(x_first - x, x_last - x, number_of_payments)
-    instalments = [mt.tpx(x, t=t - 1, method=method) * mt.tqx(x + t - 1, t=1, method=method) * np.power(d, t)
+    instalments = [mt.tpx(x, t=t - 1, method=method) * mt.tqx(x + t - 1, t=1, method=method) * np.power(v, t)
                    for t in payments_instants]
     instalments = np.array(instalments) / np.power(1 + g, payments_instants[0])
     return np.sum(instalments)
@@ -222,5 +222,53 @@ def t_nAEx_(mt, x, n, defer=0, i=None, g=.0, method='udd'):
     Actuarial Value or Actuarial Present Value.
 
     """
-    return A_x(mt=mt, x=x, x_first=x + 1 + defer, x_last=x + n + defer, i=i, g=g, method=method)*np.sqrt(1+i/100) + \
+    return A_x(mt=mt, x=x, x_first=x + 1 + defer, x_last=x + n + defer, i=i, g=g, method=method) * np.sqrt(
+        1 + i / 100) + \
            annuities.nEx(mt=mt, x=x, i=i, g=g, defer=n + defer, method=method)
+
+
+''' Situations of linear increment'''
+
+
+def IA_x(mt, x, x_first, x_last, i=None, inc=1., method='udd'):
+    """
+    Whole life insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param x_first: age of first payment
+    :param x_last: age of final payment
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param inc: linear increment in monetary units, e.g., 1 for one monetary unit
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m,at the
+    end of the year of death, that pays 1+m, if death happens between age x+m and x+m+1.
+    It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+    """
+    if x_first < x: return np.nan
+    if x_last < x_first == x: return np.nan
+    if x == x_first == x_last: return 0
+    i = i / 100
+    i = float(1 / (1 + i))
+    number_of_payments = int((x_last - x_first) + 1)
+    payments_instants = np.linspace(x_first - x, x_last - x, number_of_payments)
+    instalments = [mt.tpx(x, t=t - 1, method=method) * mt.tqx(x + t - 1, t=1, method=method) * np.power(i, t) *
+                   ((t - (x_first - x)) * inc + 1) for t in payments_instants]
+    instalments = np.array(instalments)
+    return np.sum(instalments)
+
+
+def IAx(mt, x, i=None, inc=1., method='udd'):
+    """
+    Whole life insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param x_first: age of first payment
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param inc: linear increment in monetary units, e.g., 1 for one monetary unit
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m,at the
+    end of the year of death, that pays 1+m, if death happens between age x+m and x+m+1.
+    It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+    """
+
+    return IA_x(mt=mt, x=x, x_first=x + 1, x_last=mt.w + 1, i=i, inc=inc, method=method)

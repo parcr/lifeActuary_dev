@@ -2,7 +2,6 @@ __author__ = "PedroCR"
 
 import pytest
 
-import annuities
 import mortality_table as mt
 from soa_tables import read_soa_table_xml as rst
 from toDelete.mortality_tables_old import TV7377, GKM95_lx_15, GRF95

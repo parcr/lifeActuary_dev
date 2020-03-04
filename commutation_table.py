@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 from mortality_table import MortalityTable
 
+
 # todo: confirm all the messages
-# todo: confirm all deferments in mortality cases
 class CommutationFunctions(MortalityTable):
     '''
     Instantiates a for a specific mortality table and interest rate, all the usual commutation functions.
@@ -27,11 +27,13 @@ class CommutationFunctions(MortalityTable):
         self.Nx = np.array([np.sum(self.Dx[x:]) for x in range(len(self.lx[:-1]))])
         self.Cx = self.dx * np.power(self.d, range(1, len(self.dx) + 1))
         self.Mx = np.array([np.sum(self.Cx[x:]) for x in range(len(self.Cx))])
+        self.Rx = np.array([np.sum(self.Mx[x:]) for x in range(len(self.Mx))])
         if self.app_cont:
             self.Mx = self.Mx * self.cont
+            self.Rx = self.Rx * self.cont
 
     def df_commutation_table(self):
-        data = {'Dx': self.Dx, 'Nx': self.Nx, 'Cx': self.Cx, 'Mx': self.Mx}
+        data = {'Dx': self.Dx, 'Nx': self.Nx, 'Cx': self.Cx, 'Mx': self.Mx, 'Rx': self.Rx}
         df = pd.DataFrame(data)
         data_lf = self.df_life_table()
         df = pd.concat([data_lf, df], axis=1, sort=False)
@@ -61,7 +63,7 @@ class CommutationFunctions(MortalityTable):
         """
         Whole life insurance
         :param x: age at the beginning of the contract
-        :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1,at the
+        :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1, at the
         end of the year of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
         """
         if x < 0:
@@ -75,6 +77,28 @@ class CommutationFunctions(MortalityTable):
             M_x = self.Mx[x]
         self.msn.append(f"A_{x}={M_x} / {D_x}")
         return M_x / D_x / (1 + self.g)
+
+    def IAx(self, x):
+        """
+        Whole life insurance
+        :param x: age at the beginning of the contract
+        :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m, at the
+        end of the year of death, if death happens between age x+m and x+m+1.
+        It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+        """
+        if x < 0:
+            return np.nan
+        if x > self.w:
+            return self.v  # it will die before year's end, because already attained age>w
+        D_x = self.Dx[x]
+        if self.app_cont:
+            M_x = self.Mx[x] / self.cont
+            R_x = self.Rx[x] / self.cont
+        else:
+            M_x = self.Mx[x]
+            R_x = self.Rx[x]
+        self.msn.append(f"A_{x}={R_x} / {D_x}")
+        return R_x / D_x
 
     def Ax_(self, x):
         """
