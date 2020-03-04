@@ -262,13 +262,199 @@ def IAx(mt, x, i=None, inc=1., method='udd'):
     Whole life insurance
     :param mt: table for life x
     :param x: age at the beginning of the contract
-    :param x_first: age of first payment
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
     :param inc: linear increment in monetary units, e.g., 1 for one monetary unit
     :param method: the method to approximate the fractional periods
     :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m,at the
-    end of the year of death, that pays 1+m, if death happens between age x+m and x+m+1.
+    end of the year of death, if death happens between age x+m and x+m+1.
     It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
     """
 
     return IA_x(mt=mt, x=x, x_first=x + 1, x_last=mt.w + 1, i=i, inc=inc, method=method)
+
+
+def IAx_(mt, x, i=None, inc=1., method='udd'):
+    """
+    Whole life insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param inc: linear increment in monetary units, e.g., 1 for one monetary unit
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m,at the
+    moment of death, if death happens between age x+m and x+m+1.
+    It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+    """
+
+    return IAx(mt=mt, x=x, i=None, inc=inc, method=method) * np.sqrt(1 + i / 100)
+
+
+def nIAx(mt, x, n, i=None, inc=1., method='udd'):
+    """
+    Whole life insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param n: period of the contract
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param inc: linear increment in monetary units, e.g., 1 for one monetary unit
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m,at the
+    end of the year of death, if death happens between age x+m and x+m+1.
+    It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+    """
+
+    return IA_x(mt=mt, x=x, x_first=x + 1, x_last=x + n, i=i, inc=inc, method=method)
+
+
+def nIAx_(mt, x, n, i=None, inc=1., method='udd'):
+    """
+    Whole life insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param n: period of the contract
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param inc: linear increment in monetary units, e.g., 1 for one monetary unit
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m, at the
+    moment of death, if death happens between age x+m and x+m+1.
+    It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+    """
+
+    return nIAx(mt=mt, x=x, n=n, i=i, inc=inc, method=method) * np.sqrt(1 + i / 100)
+
+
+def nIAEx(mt, x, n, i=None, inc=1, method='udd'):
+    """
+    Endowment insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param n: period of the contract
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param inc: linear increment in monetary units, e.g., 1 for one monetary unit
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of an Endowment life insurance (i.e. net single premium), that pays 1+m,
+    at the end of year of death, if death happens between age x+m and x+m+1, or 1 if x survives to age x+n.
+     It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+    """
+    return nIAx(mt=mt, x=x, n=n, i=i, inc=inc, method=method) + \
+           annuities.nEx(mt=mt, x=x, i=i, g=0, defer=n, method=method)
+
+
+def nIAEx_(mt, x, n, i=None, inc=1, method='udd'):
+    """
+    Endowment insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param n: period of the contract
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param inc: linear increment in monetary units, e.g., 1 for one monetary unit
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of an Endowment life insurance (i.e. net single premium), that pays 1+m,
+    at the moment of death, if death happens between age x+m and x+m+1, or 1 if x survives to age x+n.
+     It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+    """
+    return nIAx(mt=mt, x=x, n=n, i=i, inc=inc, method=method) * np.sqrt(1 + i / 100) + \
+           annuities.nEx(mt=mt, x=x, i=i, g=0, defer=n, method=method)
+
+
+# deferred life insurances
+def t_IAx(mt, x, defer=0, i=None, inc=1., method='udd'):
+    """
+    Deferred Whole life insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param defer: deferment period
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param inc: linear increment in monetary units, e.g., 1 for one monetary unit
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1, at the
+    end of the year of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+    """
+
+    return IA_x(mt=mt, x=x, x_first=x + 1 + defer, x_last=mt.w + 1, i=i, inc=inc, method=method)
+
+
+def t_IAx_(mt, x, defer=0, i=None, inc=1., method='udd'):
+    """
+    Deferred Whole life insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param defer: deferment period
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param inc: linear increment in monetary units, e.g., 1 for one monetary unit
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1, at the
+    moment of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+    """
+
+    return t_IAx(mt=mt, x=x, defer=defer, i=i, inc=inc, method=method) * np.sqrt(1 + i / 100)
+
+
+def t_nIAx(mt, x, n, defer=0, i=None, inc=1., method='udd'):
+    """
+    Deferred Term life insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param n: period of the contract
+    :param defer: deferment period
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param inc: linear increment in monetary units, e.g., 1 for one monetary unit
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m, at the
+    end of the year of death, if death happens between age x+m and x+m+1.
+    It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+    """
+    return IA_x(mt=mt, x=x, x_first=x + 1 + defer, x_last=x + n + defer, i=i, inc=inc, method=method)
+
+
+def t_nIAx_(mt, x, n, defer=0, i=None, inc=1., method='udd'):
+    """
+    Deferred Term life insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param n: period of the contract
+    :param defer: deferment period
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param inc: linear increment in monetary units, e.g., 1 for one monetary unit
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m, at the
+    moment of death, if death happens between age x+m and x+m+1.
+    It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+    """
+    return t_IAx(mt=mt, x=x, n=n, defer=defer, i=i, inc=inc, method=method) * np.sqrt(1 + i / 100)
+
+
+def t_nIAEx(mt, x, n, defer=0, i=None, inc=1., method='udd'):
+    """
+    Deferred Endowment insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param n: period of the contract
+    :param defer: deferment period
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param inc: linear increment in monetary units, e.g., 1 for one monetary unit
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m, at the
+    end of the year of death, if death happens between age x+m and x+m+1 or 1 if x survives to age x+n+defer.
+    It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+    """
+    return IA_x(mt=mt, x=x, x_first=x + 1 + defer, x_last=x + n + defer, i=i, inc=inc, method=method) + \
+           annuities.nEx(mt=mt, x=x, i=i, g=0, defer=n + defer, method=method)
+
+
+def t_nIAEx_(mt, x, n, defer=0, i=None, inc=1., method='udd'):
+    """
+    Deferred Endowment insurance
+    :param mt: table for life x
+    :param x: age at the beginning of the contract
+    :param n: period of the contract
+    :param defer: deferment period
+    :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
+    :param inc: linear increment in monetary units, e.g., 1 for one monetary unit
+    :param method: the method to approximate the fractional periods
+    :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m, at the
+    end of the year of death, if death happens between age x+m and x+m+1 or 1 if x survives to age x+n+defer.
+    It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+    """
+    return IA_x(mt=mt, x=x, x_first=x + 1 + defer, x_last=x + n + defer, i=i, inc=inc, method=method) \
+           * np.sqrt(1 + i / 100) + annuities.nEx(mt=mt, x=x, i=i, g=0, defer=n + defer, method=method)
