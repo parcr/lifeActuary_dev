@@ -421,7 +421,7 @@ def t_nIAx_(mt, x, n, defer=0, i=None, inc=1., method='udd'):
     moment of death, if death happens between age x+m and x+m+1.
     It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
     """
-    return t_IAx(mt=mt, x=x, n=n, defer=defer, i=i, inc=inc, method=method) * np.sqrt(1 + i / 100)
+    return t_nIAx(mt=mt, x=x, n=n, defer=defer, i=i, inc=inc, method=method) * np.sqrt(1 + i / 100)
 
 
 def t_nIAEx(mt, x, n, defer=0, i=None, inc=1., method='udd'):
@@ -456,5 +456,5 @@ def t_nIAEx_(mt, x, n, defer=0, i=None, inc=1., method='udd'):
     end of the year of death, if death happens between age x+m and x+m+1 or 1 if x survives to age x+n+defer.
     It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
     """
-    return IA_x(mt=mt, x=x, x_first=x + 1 + defer, x_last=x + n + defer, i=i, inc=inc, method=method) \
-           * np.sqrt(1 + i / 100) + annuities.nEx(mt=mt, x=x, i=i, g=0, defer=n + defer, method=method)
+    return IA_x(mt=mt, x=x, x_first=x + 1 + defer, x_last=x + n + defer, i=i, inc=inc, method=method) * \
+           np.sqrt(1 + i / 100) + annuities.nEx(mt=mt, x=x, i=i, g=0, defer=n + defer, method=method)
