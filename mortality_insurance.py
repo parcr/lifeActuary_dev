@@ -43,6 +43,8 @@ def Ax(mt, x, i=None, g=.0, method='udd'):
     :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1,at the
     end of the year of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
     """
+    if x > mt.w:
+        return np.power(1 + i / 100, -1)  # it will die before year's end, because already attained age>w
     return A_x(mt=mt, x=x, x_first=x + 1, x_last=mt.w + 1, i=i, g=g, method=method)
 
 
@@ -57,6 +59,8 @@ def Ax_(mt, x, i=None, g=.0, method='udd'):
     :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1, at the
     moment of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
     """
+    if x > mt.w:
+        return np.power(1 + i / 100, -.5)
     return Ax(mt=mt, x=x, i=i, g=g, method=method) * np.sqrt(1 + i / 100)
 
 
@@ -73,6 +77,8 @@ def nAx(mt, x, n, i=None, g=.0, method='udd'):
     pays 1, at the end of the year of death. It is also commonly referred to as the Actuarial Value or
     Actuarial Present Value.
     """
+    if x > mt.w:
+        return np.power(1 + i / 100, -1)
     return A_x(mt=mt, x=x, x_first=x + 1, x_last=x + n, i=i, g=g, method=method)
 
 
@@ -88,6 +94,8 @@ def nAx_(mt, x, n, i=None, g=.0, method='udd'):
     :return: Expected Present Value (EPV) of a term (temporary) life insurance (i.e. net single premium), that
     pays 1, at the moment of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
     """
+    if x > mt.w:
+        return np.power(1 + i / 100, -.5)
     return nAx(mt=mt, x=x, n=n, i=i, g=g, method=method) * np.sqrt(1 + i / 100)
 
 

@@ -22,16 +22,38 @@ def test_aax():
     g = 0
     m = 1
     x = 200
-    defer = 10
     n = 5
     method = 'udd'
     cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
     cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)
 
     a_grf = annuities.aax(mt=mt_GRF95, x=x, i=i, g=g, m=m, method=method)
-    a_tv = annuities.ax(mt=mt_TV7377, x=x, i=i, g=g, m=m, method=method)
+    a_tv = annuities.aax(mt=mt_TV7377, x=x, i=i, g=g, m=m, method=method)
     a_grf_2 = cf_grf95.aax(x=x, m=m)
     a_tv_2 = cf_tv7377.aax(x=x, m=m)
 
-    assert a_grf==pytest.approx(1, rel=1e-16)
+    assert a_grf == pytest.approx(1, rel=1e-16)
     assert a_tv == pytest.approx(1, rel=1e-16)
+    assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
+    assert a_tv == pytest.approx(a_tv_2, rel=1e-16)
+
+
+def test_ax():
+    i = 2
+    g = 0
+    m = 1
+    x = 200
+    n = 5
+    method = 'udd'
+    cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
+    cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)
+
+    a_grf = annuities.ax(mt=mt_GRF95, x=x, i=i, g=g, m=m, method=method)
+    a_tv = annuities.ax(mt=mt_TV7377, x=x, i=i, g=g, m=m, method=method)
+    a_grf_2 = cf_grf95.ax(x=x, m=m)
+    a_tv_2 = cf_tv7377.ax(x=x, m=m)
+
+    assert a_grf == pytest.approx(0, rel=1e-16)
+    assert a_tv == pytest.approx(0, rel=1e-16)
+    assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
+    assert a_tv == pytest.approx(a_tv_2, rel=1e-16)

@@ -47,6 +47,7 @@ def ax(mt, x, i=None, g=0, m=1, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
+    if x + 1 / m > mt.w: return 0
 
     return annuity_x(mt=mt, x=x, x_first=x + 1 / m, x_last=mt.w, i=i, g=g, m=m, method=method)
 
@@ -63,6 +64,7 @@ def t_ax(mt, x, i=None, g=0, m=1, defer=0, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
+    if x + 1 / m + defer > mt.w: return 0
 
     return annuity_x(mt=mt, x=x, x_first=x + 1 / m + defer, x_last=mt.w, i=i, g=g, m=m, method=method)
 
@@ -80,6 +82,7 @@ def nax(mt, x, n, i=None, g=0, m=1, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
+    if x + 1 / m > mt.w: return 0
 
     return annuity_x(mt=mt, x=x, x_first=x + 1 / m, x_last=x + n, i=i, g=g, m=m, method=method)
 
@@ -98,6 +101,7 @@ def t_nax(mt, x, n, i=None, g=0, m=1, defer=0, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
+    if x + 1 / m + defer > mt.w: return 0
 
     return annuity_x(mt=mt, x=x, x_first=x + 1 / m + defer, x_last=x + n + defer, i=i, g=g, m=m, method=method)
 
@@ -115,6 +119,7 @@ def aax(mt, x, i=None, g=0, m=1, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
+    if x > mt.w: return 1
 
     return annuity_x(mt=mt, x=x, x_first=x, x_last=mt.w, i=i, g=g, m=m, method=method)
 
@@ -131,6 +136,7 @@ def t_aax(mt, x, i=None, g=0, m=1, defer=0, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
+    if x + defer > mt.w: return 0
 
     return annuity_x(mt=mt, x=x, x_first=x + defer, x_last=mt.w, i=i, g=g, m=m, method=method)
 
@@ -148,6 +154,7 @@ def naax(mt, x, n, i=None, g=0, m=1, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
+    if x > mt.w: return 1
 
     return annuity_x(mt=mt, x=x, x_first=x, x_last=x + n - 1 / m, i=i, g=g, m=m, method=method)
 
@@ -165,6 +172,7 @@ def t_naax(mt, x, n, i=None, g=0, m=1, defer=0, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
+    if x + defer > mt.w: return 0
 
     return annuity_x(mt=mt, x=x, x_first=x + defer, x_last=x + n + defer - 1 / m, i=i, g=g, m=m, method=method)
 

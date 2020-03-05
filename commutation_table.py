@@ -304,7 +304,7 @@ class CommutationFunctions(MortalityTable):
         :return:Expected Present Value (EPV) for payments of 1/m
         """
         if x > self.w:
-            return 0
+            return 1
         aux = self.Nx[x] / self.Dx[x] - (m - 1) / (m * 2)
         self.msn.append(f"aax_{x}={self.Nx[x]}/{self.Dx[x]}-({m}-1)/({m}*2)")
         return aux
@@ -318,6 +318,8 @@ class CommutationFunctions(MortalityTable):
         :param m: number of payments per period used to quote the interest rate
         :return:Expected Present Value (EPV) for payments of 1/m
         """
+        if x >= self.w:
+            return 0
         if x < 0:
             return np.nan
         if m < 0:
@@ -340,6 +342,8 @@ class CommutationFunctions(MortalityTable):
         :param m: number of payments per period used to quote the interest rate
         :return:Expected Present Value (EPV) for payments of 1/m
         """
+        if x >= self.w:
+            return 1
         if x < 0:
             return np.nan
         if m < 0:
