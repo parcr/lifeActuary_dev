@@ -370,8 +370,9 @@ class CommutationFunctions(MortalityTable):
         """
         # note: nEx discounts the growth rate np.power(1 + self.g, defer + 1)
         aux = self.ax(x + defer, m) * self.nEx(x, defer)
-        self.msn.append(f"{defer}_ax_{x}=[{self.Nx[x + 1 + defer]}/{self.Dx[x + defer]}+({m} + 1)/({m}*2)]"
-                        f"*{self.Dx[x + defer]}/{self.Dx[x]}")
+        if aux > 0:
+            self.msn.append(f"{defer}_ax_{x}=[{self.Nx[x + 1 + defer]}/{self.Dx[x + defer]}+({m} + 1)/({m}*2)]"
+                            f"*{self.Dx[x + defer]}/{self.Dx[x]}")
         return aux
 
     def t_aax(self, x, m=1, defer=0):
