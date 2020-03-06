@@ -126,8 +126,9 @@ def test_naax():
     i = 2
     g = 0
     m = 1
+    # this works with almost all ages and fails with some other, e.g. fails with 116
     x = 45
-    n = 5
+    n = 10
     method = 'udd'
     cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
     cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)

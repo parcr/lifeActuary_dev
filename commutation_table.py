@@ -327,10 +327,14 @@ class CommutationFunctions(MortalityTable):
         if n < 0:
             return 0
 
-        aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] / (1 + self.g) + \
-              (m - 1) / (m * 2) * (1 - self.nEx(x, n))
-        self.msn.append(f"{n}_ax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]}+({m}-1)/({m}*2)*"
-                        f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
+        if x + 1 + n <= self.w:
+            aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] / (1 + self.g) + \
+                  (m - 1) / (m * 2) * (1 - self.nEx(x, n))
+            self.msn.append(f"{n}_ax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]}+({m}-1)/({m}*2)*"
+                            f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
+        else:
+            return self.ax(x=x, m=m)
+
         return aux
 
     def naax(self, x, n, m=1):
@@ -351,10 +355,13 @@ class CommutationFunctions(MortalityTable):
         if n < 0:
             return 0
 
-        aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + \
-              (m + 1) / (m * 2) * (1 - self.nEx(x, n) * np.power(1 + self.g, n))
-        self.msn.append(f"{n}_aax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m}+1)/({m}*2)*"
-                        f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
+        if x + 1 + n <= self.w:
+            aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + \
+                  (m + 1) / (m * 2) * (1 - self.nEx(x, n) * np.power(1 + self.g, n))
+            self.msn.append(f"{n}_aax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m}+1)/({m}*2)*"
+                            f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
+        else:
+            return self.aax(x=x, m=m)
         return aux
 
     # deferred annuities
@@ -385,8 +392,9 @@ class CommutationFunctions(MortalityTable):
         :return:Expected Present Value (EPV) for payments of 1/m
         """
         aux = self.aax(x + defer, m) * self.nEx(x, defer)
-        self.msn.append(f"{defer}_aax_{x}=[{self.Nx[x + defer]}/{self.Dx[x + defer]}-({m}-1)/({m}*2)]"
-                        f"*{self.Dx[x + defer]}/{self.Dx[x]}")
+        if x + defer < self.w:
+            self.msn.append(f"{defer}_aax_{x}=[{self.Nx[x + defer]}/{self.Dx[x + defer]}-({m}-1)/({m}*2)]"
+                            f"*{self.Dx[x + defer]}/{self.Dx[x]}")
         return aux
 
     def t_nax(self, x, n, m=1, defer=0):
@@ -400,10 +408,13 @@ class CommutationFunctions(MortalityTable):
         :return:Expected Present Value (EPV) for payments of 1/m
         """
         aux = self.nax(x + defer, n, m) * self.nEx(x, defer)
-        self.msn.append(
-            f"{defer}|{n}_ax_{x}=[{self.Nx[x + 1 + defer] - self.Nx[x + 1 + n + defer]}/{self.Dx[x + defer]}"
-            f"+ ({m}-1)/({m}*2)*(1-{self.Dx[x + n + defer]}/{self.Dx[x + defer]})]"
-            f"*{self.Dx[x + defer]}/{self.Dx[x]}")
+        if x + 1 + n + defer <= self.w:
+            self.msn.append(
+                f"{defer}|{n}_ax_{x}=[{self.Nx[x + 1 + defer] - self.Nx[x + 1 + n + defer]}/{self.Dx[x + defer]}"
+                f"+ ({m}-1)/({m}*2)*(1-{self.Dx[x + n + defer]}/{self.Dx[x + defer]})]"
+                f"*{self.Dx[x + defer]}/{self.Dx[x]}")
+        else:
+            return self.t_ax(x=x, m=m, defer=defer)
         return aux
 
     def t_naax(self, x, n, m=1, defer=0):
@@ -417,8 +428,11 @@ class CommutationFunctions(MortalityTable):
         :return:Expected Present Value (EPV) for payments of 1/m
         """
         aux = self.naax(x + defer, n, m) * self.nEx(x, defer)
-        self.msn.append(
-            f"{defer}|{n}_aax_{x}=[{self.Nx[x + 1 + defer] - self.Nx[x + 1 + n + defer]}/{self.Dx[x + defer]}"
-            f"+({m}+1)/({m}*2)*(1-{self.Dx[x + n + defer]}/{self.Dx[x + defer]})]"
-            f"*{self.Dx[x + defer]}/{self.Dx[x]}")
+        if x + 1 + n + defer <= self.w:
+            self.msn.append(
+                f"{defer}|{n}_aax_{x}=[{self.Nx[x + 1 + defer] - self.Nx[x + 1 + n + defer]}/{self.Dx[x + defer]}"
+                f"+({m}+1)/({m}*2)*(1-{self.Dx[x + n + defer]}/{self.Dx[x + defer]})]"
+                f"*{self.Dx[x + defer]}/{self.Dx[x]}")
+        else:
+            return self.t_aax(x=x, m=m, defer=defer)
         return aux
