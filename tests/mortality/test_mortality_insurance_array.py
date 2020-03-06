@@ -21,15 +21,15 @@ mt_TV7377 = mt.MortalityTable(mt=soa_TV7377.table_qx)
 def test_Ax():
     i = 2
     g = 0
-    x = 45
     method = 'udd'
     cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
     cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)
+    ages = range(0, max(mt_TV7377.w, mt_GRF95.w) + 10)
 
-    a_grf = mortality_insurance.Ax(mt=mt_GRF95, x=x, i=i, g=g, method=method)
-    a_tv = mortality_insurance.Ax(mt=mt_TV7377, x=x, i=i, g=g, method=method)
-    a_grf_2 = cf_grf95.Ax(x=x)
-    a_tv_2 = cf_tv7377.Ax(x=x)
+    a_grf = [mortality_insurance.Ax(mt=mt_GRF95, x=x, i=i, g=g, method=method) for x in ages]
+    a_tv = [mortality_insurance.Ax(mt=mt_TV7377, x=x, i=i, g=g, method=method) for x in ages]
+    a_grf_2 = [cf_grf95.Ax(x=x) for x in ages]
+    a_tv_2 = [cf_tv7377.Ax(x=x) for x in ages]
 
     assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
     assert a_tv == pytest.approx(a_tv_2, rel=1e-16)
@@ -38,54 +38,56 @@ def test_Ax():
 def test_Ax_():
     i = 2
     g = 0
-    x = 45
     method = 'udd'
     cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
     cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)
+    ages = range(0, max(mt_TV7377.w, mt_GRF95.w) + 10)
 
-    a_grf = mortality_insurance.Ax_(mt=mt_GRF95, x=x, i=i, g=g, method=method)
-    a_tv = mortality_insurance.Ax_(mt=mt_TV7377, x=x, i=i, g=g, method=method)
-    a_grf_2 = cf_grf95.Ax_(x=x)
-    cf_tv_2 = cf_tv7377.Ax_(x=x)
+    a_grf = [mortality_insurance.Ax_(mt=mt_GRF95, x=x, i=i, g=g, method=method) for x in ages]
+    a_tv = [mortality_insurance.Ax_(mt=mt_TV7377, x=x, i=i, g=g, method=method) for x in ages]
+    a_grf_2 = [cf_grf95.Ax_(x=x) for x in ages]
+    a_tv_2 = [cf_tv7377.Ax_(x=x) for x in ages]
 
     assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
-    assert a_tv == pytest.approx(cf_tv_2, rel=1e-16)
+    assert a_tv == pytest.approx(a_tv_2, rel=1e-16)
 
 
 def test_nAx():
     i = 2
     g = 0
-    x = 45
     n = 5
     method = 'udd'
     cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
     cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)
+    ages = range(0, max(mt_TV7377.w, mt_GRF95.w) + 10)
 
-    a_grf = mortality_insurance.nAx(mt=mt_GRF95, x=x, n=n, i=i, g=g, method=method)
-    a_tv = mortality_insurance.nAx(mt=mt_TV7377, x=x, n=n, i=i, g=g, method=method)
-    a_grf_2 = cf_grf95.nAx(x=x, n=n)
-    cf_tv_2 = cf_tv7377.nAx(x=x, n=n)
+    a_grf = [mortality_insurance.nAx(mt=mt_GRF95, x=x, n=n, i=i, g=g, method=method) for x in ages]
+    a_tv = [mortality_insurance.nAx(mt=mt_TV7377, x=x, n=n, i=i, g=g, method=method) for x in ages]
+    a_grf_2 = [cf_grf95.nAx(x=x, n=n) for x in ages]
+    a_tv_2 = [cf_tv7377.nAx(x=x, n=n) for x in ages]
 
     assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
-    assert a_tv == pytest.approx(cf_tv_2, rel=1e-16)
+    assert a_tv == pytest.approx(a_tv_2, rel=1e-16)
 
 
 def test_nAx_():
     i = 2
     g = 0
-    x = 45
     n = 5
     method = 'udd'
     cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
     cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)
+    ages = range(0, max(mt_TV7377.w, mt_GRF95.w) + 10)
 
-    a_grf = mortality_insurance.nAx_(mt=mt_GRF95, x=x, n=n, i=i, g=g, method=method)
-    a_tv = mortality_insurance.nAx_(mt=mt_TV7377, x=x, n=n, i=i, g=g, method=method)
-    a_grf_2 = cf_grf95.nAx_(x=x, n=n)
-    cf_tv_2 = cf_tv7377.nAx_(x=x, n=n)
+    a_grf = [mortality_insurance.nAx_(mt=mt_GRF95, x=x, n=n, i=i, g=g, method=method) for x in ages]
+    a_tv = [mortality_insurance.nAx_(mt=mt_TV7377, x=x, n=n, i=i, g=g, method=method) for x in ages]
+    a_grf_2 = [cf_grf95.nAx_(x=x, n=n) for x in ages]
+    a_tv_2 = [cf_tv7377.nAx_(x=x, n=n) for x in ages]
 
-    assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
-    assert a_tv == pytest.approx(cf_tv_2, rel=1e-16)
+    for idx_a, a in enumerate(a_grf):
+        assert (idx_a, a_grf[idx_a]) == pytest.approx((idx_a, a_grf_2[idx_a]), rel=1e-16)
+    for idx_a, a in enumerate(a_tv):
+        assert (idx_a, a_tv[idx_a]) == pytest.approx((idx_a, a_tv_2[idx_a]), rel=1e-12)
 
 
 def test_nAEx():
