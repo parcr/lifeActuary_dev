@@ -355,8 +355,8 @@ class CommutationFunctions(MortalityTable):
         if n < 0:
             return 0
 
-        if x + 1 + n <= self.w:
-            aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] + \
+        if x + 1 + n <= self.w+1:
+            aux = self.ax(x=x, m=m) + \
                   (m + 1) / (m * 2) * (1 - self.nEx(x, n) * np.power(1 + self.g, n))
             self.msn.append(f"{n}_aax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m}+1)/({m}*2)*"
                             f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
