@@ -355,11 +355,16 @@ class CommutationFunctions(MortalityTable):
         if n < 0:
             return 0
 
-        if x + 1 + n <= self.w+1:
-            aux = self.ax(x=x, m=m) + \
+        if x + 1 + n <= self.w + 1:  # todo we've here a problem, because of the fractional approximation
+            aux = self.nax(x=x, n=n, m=m) * np.power(1 + self.g, 1) + \
                   (m + 1) / (m * 2) * (1 - self.nEx(x, n) * np.power(1 + self.g, n))
-            self.msn.append(f"{n}_aax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]} + ({m}+1)/({m}*2)*"
-                            f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
+            if x + 1 + n <= self.w:
+                Nx2 = self.Nx[x + 1 + n]
+            else:
+                Nx2 = 0
+            self.msn.append(
+                f"{n}_aax_{x}={self.Nx[x + 1] - Nx2}/{self.Dx[x]}*(1+{self.g}) + ({m}+1)/({m}*2)*"
+                f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
         else:
             return self.aax(x=x, m=m)
         return aux
@@ -428,9 +433,13 @@ class CommutationFunctions(MortalityTable):
         :return:Expected Present Value (EPV) for payments of 1/m
         """
         aux = self.naax(x + defer, n, m) * self.nEx(x, defer)
-        if x + 1 + n + defer <= self.w:
+        if x + 1 + n + defer <= self.w + 1:
+            if x + 1 + n + defer <= self.w:
+                Nx2 = self.Nx[x + 1 + n + defer]
+            else:
+                Nx2 = 0
             self.msn.append(
-                f"{defer}|{n}_aax_{x}=[{self.Nx[x + 1 + defer] - self.Nx[x + 1 + n + defer]}/{self.Dx[x + defer]}"
+                f"{defer}|{n}_aax_{x}=[{self.Nx[x + 1 + defer] - Nx2}/{self.Dx[x + defer]}"
                 f"+({m}+1)/({m}*2)*(1-{self.Dx[x + n + defer]}/{self.Dx[x + defer]})]"
                 f"*{self.Dx[x + defer]}/{self.Dx[x]}")
         else:
