@@ -87,22 +87,22 @@ def test_nAx_():
     for idx_a, a in enumerate(a_grf):
         assert (idx_a, a_grf[idx_a]) == pytest.approx((idx_a, a_grf_2[idx_a]), rel=1e-16)
     for idx_a, a in enumerate(a_tv):
-        assert (idx_a, a_tv[idx_a]) == pytest.approx((idx_a, a_tv_2[idx_a]), rel=1e-12)
+        assert (idx_a, a_tv[idx_a]) == pytest.approx((idx_a, a_tv_2[idx_a]), rel=1e-16)
 
 
 def test_nAEx():
     i = 2
     g = 0
-    x = 45
     n = 5
     method = 'udd'
     cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
     cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)
+    ages = range(0, max(mt_TV7377.w, mt_GRF95.w) + 10)
 
-    a_grf = mortality_insurance.nAEx(mt=mt_GRF95, x=x, n=n, i=i, g=g, method=method)
-    a_tv = mortality_insurance.nAEx(mt=mt_TV7377, x=x, n=n, i=i, g=g, method=method)
-    a_grf_2 = cf_grf95.nAEx(x=x, n=n)
-    cf_tv_2 = cf_tv7377.nAEx(x=x, n=n)
+    a_grf = [mortality_insurance.nAEx(mt=mt_GRF95, x=x, n=n, i=i, g=g, method=method) for x in ages]
+    a_tv = [mortality_insurance.nAEx(mt=mt_TV7377, x=x, n=n, i=i, g=g, method=method) for x in ages]
+    a_grf_2 = [cf_grf95.nAEx(x=x, n=n) for x in ages]
+    cf_tv_2 = [cf_tv7377.nAEx(x=x, n=n) for x in ages]
 
     assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
     assert a_tv == pytest.approx(cf_tv_2, rel=1e-16)
@@ -111,16 +111,16 @@ def test_nAEx():
 def test_nAEx_():
     i = 2
     g = 0
-    x = 45
     n = 5
     method = 'udd'
     cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
     cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)
+    ages = range(0, max(mt_TV7377.w, mt_GRF95.w) + 10)
 
-    a_grf = mortality_insurance.nAEx_(mt=mt_GRF95, x=x, n=n, i=i, g=g, method=method)
-    a_tv = mortality_insurance.nAEx_(mt=mt_TV7377, x=x, n=n, i=i, g=g, method=method)
-    a_grf_2 = cf_grf95.nAEx_(x=x, n=n)
-    cf_tv_2 = cf_tv7377.nAEx_(x=x, n=n)
+    a_grf = [mortality_insurance.nAEx_(mt=mt_GRF95, x=x, n=n, i=i, g=g, method=method) for x in ages]
+    a_tv = [mortality_insurance.nAEx_(mt=mt_TV7377, x=x, n=n, i=i, g=g, method=method) for x in ages]
+    a_grf_2 = [cf_grf95.nAEx_(x=x, n=n) for x in ages]
+    cf_tv_2 = [cf_tv7377.nAEx_(x=x, n=n) for x in ages]
 
     assert a_grf == pytest.approx(a_grf_2, rel=1e-16)
     assert a_tv == pytest.approx(cf_tv_2, rel=1e-16)

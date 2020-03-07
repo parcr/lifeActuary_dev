@@ -148,9 +148,9 @@ def test_naax():
     a_tv_2 = [cf_tv7377.naax(x=x, m=m, n=n) for x in ages]
 
     for idx_a, a in enumerate(a_grf):
-        assert (idx_a, a_grf[idx_a]) == pytest.approx((idx_a, a_grf_2[idx_a]), rel=1e-116)
+        assert (idx_a, a_grf[idx_a]) == pytest.approx((idx_a, a_grf_2[idx_a]), rel=1e-16)
     for idx_a, a in enumerate(a_tv):
-        assert (idx_a, a_tv[idx_a]) == pytest.approx((idx_a, a_tv_2[idx_a]), rel=1e-116)
+        assert (idx_a, a_tv[idx_a]) == pytest.approx((idx_a, a_tv_2[idx_a]), rel=1e-16)
 
 
 def test_t_naax():

@@ -158,7 +158,7 @@ class CommutationFunctions(MortalityTable):
         if n < 0:
             return np.nan
         if x + n > self.w:
-            return self.Ax(x)
+            return self.Ax(x) * self.cont
         D_x = self.Dx[x]
         if self.app_cont:
             M_x = self.Mx[x]
