@@ -54,7 +54,7 @@ def axy(mtx, mty, x, y, i=None, g=0, m=1, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
-    if x + 1 / m > mtx.w: return 0
+    if x + 1 / m > min(mtx.w, mty.w): return 0
 
     return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x + 1 / m, x_last=mtx.w, y=y, i=i, g=g, m=m, method=method)
 
@@ -73,7 +73,7 @@ def t_axy(mtx, mty, x, y, i=None, g=0, m=1, defer=0, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
-    if x + 1 / m + defer > mtx.w: return 0
+    if x + 1 / m + defer > min(mtx.w, mty.w): return 0
 
     return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x + 1 / m + defer, x_last=mtx.w, y=y, i=i, g=g, m=m, method=method)
 
@@ -93,7 +93,7 @@ def naxy(mtx, mty, x, y, n, i=None, g=0, m=1, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
-    if x + 1 / m > mtx.w: return 0
+    if x + 1 / m > min(mtx.w, mty.w): return 0
 
     return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x + 1 / m, x_last=x + n, y=y, i=i, g=g, m=m, method=method)
 
@@ -114,7 +114,7 @@ def t_naxy(mtx, mty, x, y, n, i=None, g=0, m=1, defer=0, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
-    if x + 1 / m + defer > mtx.w: return 0
+    if x + 1 / m + defer > min(mtx.w, mty.w): return 0
 
     return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x + 1 / m + defer, x_last=x + n + defer, y=y,
                       i=i, g=g, m=m, method=method)
@@ -135,7 +135,7 @@ def aaxy(mtx, mty, x, y, i=None, g=0, m=1, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
-    if x > mtx.w: return 1
+    if x > min(mtx.w, mty.w): return 1
 
     return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x, x_last=mtx.w, y=y, i=i, g=g, m=m, method=method)
 
@@ -154,7 +154,7 @@ def t_aaxy(mtx, mty, x, y, i=None, g=0, m=1, defer=0, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
-    if x + defer > mtx.w: return 0
+    if x + defer > min(mtx.w, mty.w): return 0
 
     return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x + defer, x_last=mtx.w, y=y, i=i, g=g, m=m, method=method)
 
@@ -174,7 +174,7 @@ def naaxy(mtx, mty, x, y, n, i=None, g=0, m=1, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
-    if x > mtx.w: return 1
+    if x > min(mtx.w, mty.w): return 1
 
     return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x, x_last=x + n - 1 / m, y=y, i=i, g=g, m=m, method=method)
 
@@ -195,7 +195,7 @@ def t_naaxy(mtx, mty, x, y, n, i=None, g=0, m=1, defer=0, method='udd'):
     :param method: the method to approximate the fractional periods
     :return: the actuarial present value
     '''
-    if x + defer > mtx.w: return 0
+    if x + defer > min(mtx.w, mty.w): return 0
 
     return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x + defer, x_last=x + n + defer - 1 / m, y=y,
                       i=i, g=g, m=m, method=method)
