@@ -183,7 +183,6 @@ def nEx(mt, x, i=None, g=0, defer=0, method='udd'):
     :param x: age at the beginning of the contract
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
     :param g: growth rate (flat rate) in percentage, e.g., 2 for 2%
-    :param m: frequency of payments per unit of interest rate quoted
     :param defer: deferment period
     :param method: the method to approximate the fractional periods
     :return: the present value of a pure endowment of 1 at age x+n

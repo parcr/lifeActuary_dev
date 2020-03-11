@@ -56,7 +56,7 @@ def axy(mtx, mty, x, y, i=None, g=0, m=1, method='udd'):
     '''
     if x + 1 / m > mtx.w: return 0
 
-    return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x + 1 / m, x_last=mt.w, y=y, i=i, g=g, m=m, method=method)
+    return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x + 1 / m, x_last=mtx.w, y=y, i=i, g=g, m=m, method=method)
 
 
 def t_axy(mtx, mty, x, y, i=None, g=0, m=1, defer=0, method='udd'):
@@ -75,7 +75,7 @@ def t_axy(mtx, mty, x, y, i=None, g=0, m=1, defer=0, method='udd'):
     '''
     if x + 1 / m + defer > mtx.w: return 0
 
-    return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x + 1 / m + defer, x_last=mt.w, y=y, i=i, g=g, m=m, method=method)
+    return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x + 1 / m + defer, x_last=mtx.w, y=y, i=i, g=g, m=m, method=method)
 
 
 def naxy(mtx, mty, x, y, n, i=None, g=0, m=1, method='udd'):
@@ -95,7 +95,7 @@ def naxy(mtx, mty, x, y, n, i=None, g=0, m=1, method='udd'):
     '''
     if x + 1 / m > mtx.w: return 0
 
-    return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x + 1 / m, x_last=x + n, y=y, i, g=g, m=m, method=method)
+    return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x + 1 / m, x_last=x + n, y=y, i=i, g=g, m=m, method=method)
 
 
 def t_naxy(mtx, mty, x, y, n, i=None, g=0, m=1, defer=0, method='udd'):
@@ -137,7 +137,7 @@ def aaxy(mtx, mty, x, y, i=None, g=0, m=1, method='udd'):
     '''
     if x > mtx.w: return 1
 
-    return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x, x_last=mt.w, y=y, i=i, g=g, m=m, method=method)
+    return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x, x_last=mtx.w, y=y, i=i, g=g, m=m, method=method)
 
 
 def t_aaxy(mtx, mty, x, y, i=None, g=0, m=1, defer=0, method='udd'):
@@ -156,7 +156,7 @@ def t_aaxy(mtx, mty, x, y, i=None, g=0, m=1, defer=0, method='udd'):
     '''
     if x + defer > mtx.w: return 0
 
-    return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x + defer, x_last=mt.w, y=y, i=i, g=g, m=m, method=method)
+    return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x + defer, x_last=mtx.w, y=y, i=i, g=g, m=m, method=method)
 
 
 def naaxy(mtx, mty, x, y, n, i=None, g=0, m=1, method='udd'):
@@ -179,7 +179,7 @@ def naaxy(mtx, mty, x, y, n, i=None, g=0, m=1, method='udd'):
     return annuity_xy(mtx=mtx, mty=mty, x=x, x_first=x, x_last=x + n - 1 / m, y=y, i=i, g=g, m=m, method=method)
 
 
-def t_naaxy(mtx, mty, x, n, i=None, g=0, m=1, defer=0, method='udd'):
+def t_naaxy(mtx, mty, x, y, n, i=None, g=0, m=1, defer=0, method='udd'):
     '''
     Return the actuarial present value of a (due) temporal (term certain) annuity: n-year temporary
     life annuity-due. Payable 'm' per year at the ends of the period, deferred
@@ -208,7 +208,6 @@ def nExy(mtx, mty, x, y, i=None, g=0, defer=0, method='udd'):
     :param y: y age at the beginning of the contract
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
     :param g: growth rate (flat rate) in percentage, e.g., 2 for 2%
-    :param m: frequency of payments per unit of interest rate quoted
     :param defer: deferment period
     :param method: the method to approximate the fractional periods
     :return: the present value of a pure endowment of 1 at age x+n
