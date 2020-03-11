@@ -189,4 +189,4 @@ def nEx(mt, x, i=None, g=0, defer=0, method='udd'):
     :return: the present value of a pure endowment of 1 at age x+n
     """
 
-    return t_naax(mt, x, n=1, i=i, g=g, m=1, defer=defer, method=method)
+    return t_naax(mt=mt, x=x, n=1, i=i, g=g, m=1, defer=defer, method=method)
