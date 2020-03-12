@@ -204,6 +204,8 @@ def t_naaxy(mtx, mty, x, y, n, i=None, g=0, m=1, defer=0, method='udd'):
 def nExy(mtx, mty, x, y, i=None, g=0, defer=0, method='udd'):
     """
     Pure endowment or Deferred capital
+    :param mtx: table for life x
+    :param mty: table for life y
     :param x: x age at the beginning of the contract
     :param y: y age at the beginning of the contract
     :param i: technical interest rate (flat rate) in percentage, e.g., 2 for 2%
