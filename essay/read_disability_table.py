@@ -10,4 +10,6 @@ pcr1 = tt.pcr_turnover
 pcr2 = tt.pcr_turnover_65
 
 dt_ekv80 = mt.MortalityTable(mt=ekv80)
+dt_ekv80.force_qw_0()
 tt_pcr = mt.MortalityTable(mt=pcr1)
+tt_pcr.force_qw_0()

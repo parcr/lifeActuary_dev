@@ -172,3 +172,14 @@ class MortalityTable:
         l_x_t_n = self.get_lx_method(x + t + n, method)
         self.msn.append(f"{t}|{n}_q_{x}={t}_p_{x}  {n}_q_{x + t}={l_x_t} / {l_x} ({l_x_t}-{l_x_t_n}) / {l_x_t}")
         return (l_x_t - l_x_t_n) / l_x
+
+    def force_qw_0(self):
+        '''
+        forces the last qx to be equal to zero, to state that there are no more decrements after w
+        :return: the qx, px and lx adjusted
+        '''
+        self.qx[-1] = 0
+        self.px[-1] = 1
+        self.lx[-1] = self.lx[-2:-1][0]
+        self.dx[-1] = 0
+
