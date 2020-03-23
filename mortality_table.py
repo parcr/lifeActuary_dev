@@ -132,7 +132,7 @@ class MortalityTable:
         if t <= 0:
             return .0
         if x + t > self.w:
-            return 1.
+            return self.qx[-1]
         l_x = self.get_lx_method(x, method)
         l_x_t = self.get_lx_method(x + t, method)
         self.msn.append(f"{t}_q_{x}=1-({l_x_t} / {l_x})")
@@ -153,7 +153,7 @@ class MortalityTable:
         if t <= 0:
             return 1.
         if x + t > self.w:
-            return 0.
+            return self.px[-1]
         l_x = self.get_lx_method(x, method)
         l_x_t = self.get_lx_method(x + t, method)
         self.msn.append(f"{t}_p_{x}={l_x_t} / {l_x}")
@@ -164,8 +164,9 @@ class MortalityTable:
         Obtains the probability that a life x dies survives to age x+t and dies before x+t+n
         :param method: the method used to approximate lx for non-integer x's
         :param x: age at beginning
-        :param t: period
-        :return: probability of x dying before x+t
+        :param t: deferment period
+        :param n: period
+        :return: probability of x dying after age x+t and before x+t+n
         '''
         l_x = self.get_lx_method(x, method)
         l_x_t = self.get_lx_method(x + t, method)
@@ -182,4 +183,3 @@ class MortalityTable:
         self.px[-1] = 1
         self.lx[-1] = self.lx[-2:-1][0]
         self.dx[-1] = 0
-
