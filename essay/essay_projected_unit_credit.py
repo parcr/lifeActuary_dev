@@ -6,6 +6,7 @@ from turnover_tables import turnover_tables as tt
 import mortality_table as mt
 from multidecrement_table import MultiDecrementTable as mdt
 import age
+from amortization_schemes.projected_unit_credit import puc
 
 soa_TV7377 = rst.SoaTable('../soa_tables/TV7377.xml')
 soa_GRF95 = rst.SoaTable('../soa_tables/GRF95.xml')
@@ -27,7 +28,7 @@ tables_multidecrement = mdt(dict_tables=tables_unidecrement)
 tables_multidecrement.create_udd_multidecrement_table()
 
 dict_dates = {'date_of_birth': '1977-03-12', 'date_of_entry': '1997-05-15'}
-date_of_valuation = '2020-12-31'
+date_of_valuation = '2019-12-31'
 dict_ages = dict()
 for k_d, v_d in dict_dates.items():
     new_age = age.Age(date1=v_d, date2=date_of_valuation)
@@ -38,4 +39,10 @@ age_cost_2 = age.Age(date1=dict_dates['date_of_birth'], date2=dict_dates['date_o
 
 print(dict_ages)
 print('date_at_term_cost:', age_cost.date2, 'or', age_cost_2.date2)
-print('the oldest date is:', max(age_cost.date2, age_cost_2.date2))
+max_date = max(age_cost.date2, age_cost_2.date2)
+print('the oldest date is:', max_date)
+
+# PUC
+pUC = puc.PUC(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
+              date_of_entry=dict_dates['date_of_entry'], date_of_term_cost=str(max_date),
+              net_table=tables_multidecrement, decrement=1, waiting=0)
