@@ -5,6 +5,7 @@ from disability_tables import disability_tables as dt
 from turnover_tables import turnover_tables as tt
 import mortality_table as mt
 from multidecrement_table import MultiDecrementTable as mdt
+import age
 
 soa_TV7377 = rst.SoaTable('../soa_tables/TV7377.xml')
 soa_GRF95 = rst.SoaTable('../soa_tables/GRF95.xml')
@@ -25,4 +26,11 @@ tables_unidecrement = {'mortality': mt_TV7377, 'disability': dt_ekv80, 'turnover
 tables_multidecrement = mdt(dict_tables=tables_unidecrement)
 tables_multidecrement.create_udd_multidecrement_table()
 
-dict_dates = {'date_of_birth': '12-03-1987', 'date_of_entry': '15-05-2007', 'date_of_valuation': '31-12-2020'}
+dict_dates = {'date_of_birth': '1997-03-12', 'date_of_entry': '2007-05-15'}
+date_of_valuation = '2020-12-31'
+dict_ages = dict()
+for k_d, v_d in dict_dates.items():
+    new_age = age.Age(date1=v_d, date2=date_of_valuation)
+    dict_ages[k_d.replace('date', 'age')] = new_age.age_act()
+
+print(dict_ages)
