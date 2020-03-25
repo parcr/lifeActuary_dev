@@ -98,7 +98,7 @@ class Age(object):
 
     @property
     def date2(self):
-        return self.__date1
+        return self.__date2
 
     @date2.setter
     def date2(self, d):

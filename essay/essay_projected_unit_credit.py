@@ -26,11 +26,15 @@ tables_unidecrement = {'mortality': mt_TV7377, 'disability': dt_ekv80, 'turnover
 tables_multidecrement = mdt(dict_tables=tables_unidecrement)
 tables_multidecrement.create_udd_multidecrement_table()
 
-dict_dates = {'date_of_birth': '1997-03-12', 'date_of_entry': '2007-05-15'}
+dict_dates = {'date_of_birth': '1977-03-12', 'date_of_entry': '1997-05-15'}
 date_of_valuation = '2020-12-31'
 dict_ages = dict()
 for k_d, v_d in dict_dates.items():
     new_age = age.Age(date1=v_d, date2=date_of_valuation)
-    dict_ages[k_d.replace('date', 'age')] = new_age.age_act()
+    dict_ages[k_d.replace('date_of', 'age_at')] = new_age.age_act()
+
+age_cost = age.Age(date1=dict_dates['date_of_entry'], date2=dict_dates['date_of_entry'])
+age_cost = age_cost.date_inc_years(40)
 
 print(dict_ages)
+print('date_at_term_cost:', age_cost.date2)
