@@ -15,12 +15,12 @@ pcr2 = tt.pcr_turnover_65
 
 mt_GRF95 = mt.MortalityTable(mt=soa_GRF95.table_qx)
 mt_TV7377 = mt.MortalityTable(mt=soa_TV7377.table_qx)
-dt_ekv80 = mt.MortalityTable(mt=ekv80)
-dt_ekv80.force_qw_0()
-tt_pcr = mt.MortalityTable(mt=pcr1)
-tt_pcr.force_qw_0()
+dt_ekv80 = mt.MortalityTable(mt=ekv80, last_q=0)
+# dt_ekv80.force_qw_0()
+tt_pcr = mt.MortalityTable(mt=pcr1, last_q=0)
+# tt_pcr.force_qw_0()
 
-tables_unidecrement = {'mortality': mt_GRF95, 'disability': dt_ekv80, 'turnover': tt_pcr}
+tables_unidecrement = {'mortality': mt_TV7377, 'disability': dt_ekv80, 'turnover': tt_pcr}
 
 tables_multidecrement = mdt(dict_tables=tables_unidecrement)
 tables_multidecrement.create_udd_multidecrement_table()

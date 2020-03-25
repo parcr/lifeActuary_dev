@@ -11,7 +11,7 @@ class MortalityTable:
     The life table will be complete, that is, from age 0 to age w, that is, the last age where lx>0.
     '''
 
-    def __init__(self, data_type='q', mt=None, perc=100):
+    def __init__(self, data_type='q', mt=None, perc=100, last_q=1):
         if data_type not in ('l', 'q', 'p'):
             return
         if not mt:
@@ -19,6 +19,7 @@ class MortalityTable:
         self.__methods = ('udd', 'cfm', 'bal')
         self.mt = mt
         self.x0 = mt[0]
+        self.last_q = last_q
         self.w = 0
         self.lx = []
         self.px = []
@@ -41,8 +42,10 @@ class MortalityTable:
         if data_type == 'p':
             self.qx = (1 - mt) * pperc
 
-        if self.qx[-1] < 1 - .1e-10:
+        if self.last_q == 1 and self.qx[-1] < 1 - .1e-10:
             self.qx = np.append(self.qx, 1)
+        if self.last_q == 0 and self.qx[-1] > .1e-10:
+            self.qx = np.append(self.qx, 0)
         self.qx = np.append(np.zeros(self.x0), self.qx)
 
         self.px = 1 - self.qx
