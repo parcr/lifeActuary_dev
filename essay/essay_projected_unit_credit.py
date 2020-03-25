@@ -33,8 +33,9 @@ for k_d, v_d in dict_dates.items():
     new_age = age.Age(date1=v_d, date2=date_of_valuation)
     dict_ages[k_d.replace('date_of', 'age_at')] = new_age.age_act()
 
-age_cost = age.Age(date1=dict_dates['date_of_entry'], date2=dict_dates['date_of_entry'])
-age_cost = age_cost.date_inc_years(40)
+age_cost = age.Age(date1=dict_dates['date_of_entry'], date2=dict_dates['date_of_entry']).date_inc_years(40)
+age_cost_2 = age.Age(date1=dict_dates['date_of_birth'], date2=dict_dates['date_of_birth']).date_inc_years(65)
 
 print(dict_ages)
-print('date_at_term_cost:', age_cost.date2)
+print('date_at_term_cost:', age_cost.date2, 'or', age_cost_2.date2)
+print('the oldest date is:', max(age_cost.date2, age_cost_2.date2))
