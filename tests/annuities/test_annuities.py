@@ -8,8 +8,8 @@ from toDelete.mortality_tables_old import TV7377, GKM95_lx_15, GRF95
 import mortality_table
 import commutation_table
 
-lt_tv7377 = mortality_table.MortalityTable(mt=TV7377)
-lt_grf95 = mortality_table.MortalityTable(mt=GRF95)
+# lt_tv7377 = mortality_table.MortalityTable(mt=TV7377)
+# lt_grf95 = mortality_table.MortalityTable(mt=GRF95)
 
 soa_TV7377 = rst.SoaTable('../../soa_tables/TV7377.xml')
 soa_GRF95 = rst.SoaTable('../../soa_tables/GRF95.xml')
