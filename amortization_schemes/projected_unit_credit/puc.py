@@ -1,5 +1,6 @@
 __author__ = "PedroCR"
 
+import numpy as np
 import age
 
 
@@ -12,7 +13,7 @@ def default_waiting_periods(date_of_entry, date_of_term_cost):
 
 class PUC:
     def __init__(self, date_of_valuation, date_of_birth,
-                 date_of_entry, date_of_term_cost, net_table=None, decrement=1,
+                 date_of_entry, date_of_term_cost, multi_table=None, decrement=1, i=None,
                  waiting_first_instalment=None, waiting_last_instalment=None, waiting_first_payment=None):
         '''
         Creates an instance of a Projected Unit Credit amortization scheme
@@ -20,8 +21,9 @@ class PUC:
         :param date_of_birth: date of birth
         :param date_of_entry: date of entry
         :param date_of_term_cost: date of the first payment of the term cost
-        :param net_table: the net table, that is, the multidecrement table used
+        :param multi_table: the net table, that is, the multidecrement table used
         :param decrement: the decrement that originates the payment
+        :param i: the technical rate of interest
         :param waiting_first_instalment: how many periods we wait, after entry age, untilthe first instalment to
         start amortizing the term cost
         :param waiting_last_instalment: how many periods we wait, after entry age, until the last instalment to finish
@@ -29,11 +31,12 @@ class PUC:
         :param waiting_first_payment: how many periods, after the age of the term cost, until the first payment
         of the term cost
         '''
+        self.i = i / 100
         self.date_of_valuation = date_of_valuation
         self.date_of_birth = date_of_birth
         self.date_of_entry = date_of_entry
         self.date_of_term_cost = date_of_term_cost
-        self.net_table = net_table
+        self.multi_table = multi_table
         self.decrement = decrement
         self.waiting_first_instalment = waiting_first_instalment
         self.waiting_last_instalment = waiting_last_instalment
@@ -75,5 +78,8 @@ class PUC:
         self.waiting_last_instalment = wp[1]
         self.waiting_first_payment = wp[2]
 
-    def pvfb(self):
-        pass
+    def pvfb(self, x):
+        tpx_T = self.multi_table.net_table.tpx(x, t=self.z - 1, method='udd')
+        q_d_x = self.multi_table.multidecrement_tables[self.decrement].tqx(x + self.z - 1, t=1, method='udd')
+        v = 1 / (1 + self.i)
+        return tpx_T * q_d_x * np.power(v, self.z - x) * np.power(v, self.waiting_first_payment)
