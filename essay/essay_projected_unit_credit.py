@@ -43,6 +43,10 @@ max_date = max(age_cost.date2, age_cost_2.date2)
 print('the oldest date is:', max_date)
 
 # PUC
+print('\n')
 pUC = puc.PUC(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
               date_of_entry=dict_dates['date_of_entry'], date_of_term_cost=str(max_date),
-              net_table=tables_multidecrement, decrement=1, waiting=0)
+              net_table=tables_multidecrement, decrement=1, waiting_first_instalment=None,
+              waiting_last_instalment=None, waiting_first_payment=None)
+
+pUC.set_default_waiting_periods()
