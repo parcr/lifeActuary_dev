@@ -35,18 +35,23 @@ for k_d, v_d in dict_dates.items():
     dict_ages[k_d.replace('date_of', 'age_at')] = new_age.age_act()
 
 age_cost = age.Age(date1=dict_dates['date_of_entry'], date2=dict_dates['date_of_entry']).date_inc_years(40)
-age_cost_2 = age.Age(date1=dict_dates['date_of_birth'], date2=dict_dates['date_of_birth']).date_inc_years(65)
+age_cost_2 = age.Age(date1=dict_dates['date_of_birth'], date2=dict_dates['date_of_birth']).date_inc_years(55)
 
 print(dict_ages)
 print('date_at_term_cost:', age_cost.date2, 'or', age_cost_2.date2)
-max_date = max(age_cost.date2, age_cost_2.date2)
+max_date = min(age_cost.date2, age_cost_2.date2)
 print('the oldest date is:', max_date)
 
 # PUC
 print('\n')
 pUC = puc.PUC(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
               date_of_entry=dict_dates['date_of_entry'], date_of_term_cost=str(max_date),
-              net_table=tables_multidecrement, decrement=1, waiting_first_instalment=None,
+              multi_table=tables_multidecrement, decrement=1, i=2, waiting_first_instalment=None,
               waiting_last_instalment=None, waiting_first_payment=None)
 
 pUC.set_default_waiting_periods()
+
+# compute pvfb
+x = 45
+print(f"PVBT({pUC.y}, {pUC.x}, {pUC.z}|{x})={pUC.pvfb(x=x)}")
+print(f"PVBT({pUC.y}, {pUC.x}, {pUC.z}|{pUC.x})={pUC.pvfb_x()}")

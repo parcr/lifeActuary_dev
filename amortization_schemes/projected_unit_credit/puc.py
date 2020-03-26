@@ -79,7 +79,11 @@ class PUC:
         self.waiting_first_payment = wp[2]
 
     def pvfb(self, x):
-        tpx_T = self.multi_table.net_table.tpx(x, t=self.z - 1, method='udd')
-        q_d_x = self.multi_table.multidecrement_tables[self.decrement].tqx(x + self.z - 1, t=1, method='udd')
+        tpx_T = self.multi_table.net_table.tpx(x, t=self.z - x - 1, method='udd')
+        key_decrement = list(self.multi_table.multidecrement_tables.keys())[self.decrement]
+        q_d_x = self.multi_table.multidecrement_tables[key_decrement].tqx(self.z - 1, t=1, method='udd')
         v = 1 / (1 + self.i)
         return tpx_T * q_d_x * np.power(v, self.z - x) * np.power(v, self.waiting_first_payment)
+
+    def pvfb_x(self):
+        return self.pvfb(self.x)
