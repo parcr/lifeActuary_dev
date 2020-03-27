@@ -24,7 +24,7 @@ class PUC:
         :param multi_table: the net table, that is, the multidecrement table used
         :param decrement: the decrement that originates the payment
         :param i: the technical rate of interest
-        :param waiting_first_instalment: how many periods we wait, after entry age, untilthe first instalment to
+        :param waiting_first_instalment: how many periods we wait, after entry age, until the first instalment to
         start amortizing the term cost
         :param waiting_last_instalment: how many periods we wait, after entry age, until the last instalment to finish
         amortizing the term cost
@@ -32,6 +32,7 @@ class PUC:
         of the term cost
         '''
         self.i = i / 100
+        self.v = 1 / (1 + self.i)
         self.date_of_valuation = date_of_valuation
         self.date_of_birth = date_of_birth
         self.date_of_entry = date_of_entry
@@ -79,6 +80,12 @@ class PUC:
         self.waiting_first_payment = wp[2]
 
     def pvfb(self, x):
+        if x < self.y: return 0  # no liability before entry age
+        if x >= self.z + self.waiting_first_payment: return 1  # full amortization
+        if self.z <= x < self.z + self.waiting_first_payment:
+            # no more instalments but still compounding until the first payment
+            return np.power(self.v, self.z + self.waiting_first_payment - x)
+
         if self.decrement:
             tpx_T = self.multi_table.net_table.tpx(x, t=self.z - x - 1, method='udd')
             key_decrement = list(self.multi_table.multidecrement_tables.keys())[self.decrement]
@@ -86,12 +93,11 @@ class PUC:
         else:
             tpx_T = self.multi_table.net_table.tpx(x, t=self.z - x, method='udd')
             q_d_x = 1
-        v = 1 / (1 + self.i)
-        pvft = tpx_T * q_d_x * np.power(v, self.z - x)
+        pvft = tpx_T * q_d_x * np.power(self.v, self.z - x)
         if self.waiting_first_payment > 0:
             tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x=self.z, t=self.waiting_first_payment,
                                                                         method='udd')
-            deferment = tpx * np.power(v, self.waiting_first_payment)
+            deferment = tpx * np.power(self.v, self.waiting_first_payment)
             pvft *= deferment
         return pvft
 
