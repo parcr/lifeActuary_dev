@@ -56,8 +56,12 @@ class PUC:
         self.future_time_service_years = self.future_time_service.age_act()
         self.total_time_service_years = self.total_time_service.age_act()
 
-        dates_to_consider = list(range(self.past_time_service.date2.year, self.future_time_service.date2.year + 1))
-        print(dates_to_consider)
+        # careful when counting years because of the actuarial ages
+        self.ages_dates = [(self.x + j, self.age_x.date2.year + j) for j in range(self.z - self.x + 1)]
+        self.ages_dates_all = [(self.ages_dates[0][0] - j, self.ages_dates[0][1] - j) for j in
+                               range(1, self.x - self.y)]
+        self.ages_dates_all.reverse()
+        self.ages_dates_all = self.ages_dates_all + self.ages_dates
 
     def set_default_waiting_periods(self):
         '''
@@ -103,3 +107,8 @@ class PUC:
 
     def pvfb_x(self):
         return self.pvfb(self.x)
+
+    def pvfb_all_ages(self):
+        return [x[1] for x in self.ages_dates_all], \
+               [x[0] for x in self.ages_dates_all], \
+               [self.pvfb(x=x[0]) for x in self.ages_dates_all]

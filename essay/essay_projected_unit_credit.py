@@ -7,6 +7,7 @@ import mortality_table as mt
 from multidecrement_table import MultiDecrementTable as mdt
 import age
 from amortization_schemes.projected_unit_credit import puc
+from matplotlib import pyplot as plt
 
 soa_TV7377 = rst.SoaTable('../soa_tables/TV7377.xml')
 soa_GRF95 = rst.SoaTable('../soa_tables/GRF95.xml')
@@ -71,3 +72,5 @@ pUC_retirement.set_default_waiting_periods()
 x = 45
 print(f"PVBT({pUC_retirement.y}, {pUC_retirement.x}, {pUC_retirement.z}|{x})={pUC_retirement.pvfb(x=x)}")
 print(f"PVBT({pUC_retirement.y}, {pUC_retirement.x}, {pUC_retirement.z}|{pUC_retirement.x})={pUC_retirement.pvfb_x()}")
+pvfb_all = pUC_retirement.pvfb_all_ages()
+plt.plot(pvfb_all[1], pvfb_all[2])
