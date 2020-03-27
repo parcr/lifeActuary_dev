@@ -83,7 +83,13 @@ class PUC:
         key_decrement = list(self.multi_table.multidecrement_tables.keys())[self.decrement]
         q_d_x = self.multi_table.multidecrement_tables[key_decrement].tqx(self.z - 1, t=1, method='udd')
         v = 1 / (1 + self.i)
-        return tpx_T * q_d_x * np.power(v, self.z - x) * np.power(v, self.waiting_first_payment)
+        pvft = tpx_T * q_d_x * np.power(v, self.z - x)
+        if self.waiting_first_payment > 0:
+            tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x=self.z, t=self.waiting_first_payment,
+                                                                        method='udd')
+            deferment = tpx * np.power(v, self.waiting_first_payment)
+            pvft *= deferment
+        return pvft
 
     def pvfb_x(self):
         return self.pvfb(self.x)
