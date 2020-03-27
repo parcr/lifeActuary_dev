@@ -1,2 +1,2 @@
 # lifeActuary
-A life actuary module
+A life actuary module for python
