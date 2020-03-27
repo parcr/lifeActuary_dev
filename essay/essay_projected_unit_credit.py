@@ -57,6 +57,11 @@ pUC_disability.set_default_waiting_periods()
 x = 45
 print(f"PVBT({pUC_disability.y}, {pUC_disability.x}, {pUC_disability.z}|{x})={pUC_disability.pvfb(x=x)}")
 print(f"PVBT({pUC_disability.y}, {pUC_disability.x}, {pUC_disability.z}|{pUC_disability.x})={pUC_disability.pvfb_x()}")
+pvfb_all = pUC_disability.pvfb_all_ages()
+plt.plot(pvfb_all[1], pvfb_all[2])
+
+
+
 
 print('\n')
 print('Testing for Retirement at 65')
