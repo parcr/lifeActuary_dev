@@ -13,7 +13,7 @@ def default_waiting_periods(date_of_entry, date_of_term_cost):
 
 class PUC:
     def __init__(self, date_of_valuation, date_of_birth,
-                 date_of_entry, date_of_term_cost, multi_table=None, decrement=1, i=None,
+                 date_of_entry, date_of_term_cost, multi_table=None, decrement=None, i=None,
                  waiting_first_instalment=None, waiting_last_instalment=None, waiting_first_payment=None):
         '''
         Creates an instance of a Projected Unit Credit amortization scheme
@@ -79,9 +79,13 @@ class PUC:
         self.waiting_first_payment = wp[2]
 
     def pvfb(self, x):
-        tpx_T = self.multi_table.net_table.tpx(x, t=self.z - x - 1, method='udd')
-        key_decrement = list(self.multi_table.multidecrement_tables.keys())[self.decrement]
-        q_d_x = self.multi_table.multidecrement_tables[key_decrement].tqx(self.z - 1, t=1, method='udd')
+        if self.decrement:
+            tpx_T = self.multi_table.net_table.tpx(x, t=self.z - x - 1, method='udd')
+            key_decrement = list(self.multi_table.multidecrement_tables.keys())[self.decrement]
+            q_d_x = self.multi_table.multidecrement_tables[key_decrement].tqx(self.z - 1, t=1, method='udd')
+        else:
+            tpx_T = self.multi_table.net_table.tpx(x, t=self.z - x, method='udd')
+            q_d_x = 1
         v = 1 / (1 + self.i)
         pvft = tpx_T * q_d_x * np.power(v, self.z - x)
         if self.waiting_first_payment > 0:
