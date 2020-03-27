@@ -83,6 +83,42 @@ class PUC:
         self.waiting_last_instalment = wp[1]
         self.waiting_first_payment = wp[2]
 
+    def pts(self, x):
+        '''
+        computes past time service at age x
+        '''
+        return self.past_time_service_years + (x - self.x)
+
+    def fts(self, x):
+        '''
+        computes future time service at age x
+        '''
+        return self.future_time_service_years - (x - self.x)
+
+    def pts_nc(self, x):
+        '''
+        computes past time service at age x for the normal contributions, that is the instalments
+        '''
+        if self.y + self.waiting_first_instalment <= x <= self.y + self.waiting_last_instalment:
+            return x - (self.y + self.waiting_first_instalment)
+        if x > self.y + self.waiting_last_instalment:
+            return self.waiting_last_instalment - self.waiting_first_instalment
+        return 0
+
+    def fts_nc(self, x):
+        '''
+        computes future time service at age x for the normal contributions, that is the instalments
+        '''
+        if self.y + self.waiting_first_instalment <= x <= self.y + self.waiting_last_instalment:
+            return (self.y + self.waiting_last_instalment) - x
+        return 0
+
+    def tts_nc(self):
+        '''
+        computes total time service for the normal contributions, that is the instalments
+        '''
+        return self.waiting_last_instalment - self.waiting_first_instalment
+
     def pvfb(self, x):
         if x < self.y: return 0  # no liability before entry age
         if x >= self.z + self.waiting_first_payment: return 1  # full amortization
@@ -112,3 +148,27 @@ class PUC:
         return [x[1] for x in self.ages_dates_all], \
                [x[0] for x in self.ages_dates_all], \
                [self.pvfb(x=x[0]) for x in self.ages_dates_all]
+
+    def al(self, x):
+        return self.pvfb(x=x) * self.pts_nc(x) / self.tts_nc()
+
+    def al_x(self):
+        return self.al(x=self.x)
+
+    def al_all_ages(self):
+        return [x[1] for x in self.ages_dates_all], \
+               [x[0] for x in self.ages_dates_all], \
+               [self.al(x=x[0]) for x in self.ages_dates_all]
+
+    def nc(self, x):
+        if x <= self.y + self.waiting_last_instalment:
+            return self.pvfb(x=x) / self.tts_nc()
+        return 0
+
+    def nc_x(self):
+        return self.nc(x=self.x)
+
+    def nc_all_ages(self):
+        return [x[1] for x in self.ages_dates_all], \
+               [x[0] for x in self.ages_dates_all], \
+               [self.nc(x=x[0]) for x in self.ages_dates_all]

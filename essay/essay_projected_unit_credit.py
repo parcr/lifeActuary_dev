@@ -58,10 +58,15 @@ x = 45
 print(f"PVBT({pUC_disability.y}, {pUC_disability.x}, {pUC_disability.z}|{x})={pUC_disability.pvfb(x=x)}")
 print(f"PVBT({pUC_disability.y}, {pUC_disability.x}, {pUC_disability.z}|{pUC_disability.x})={pUC_disability.pvfb_x()}")
 pvfb_all = pUC_disability.pvfb_all_ages()
-plt.plot(pvfb_all[1], pvfb_all[2])
+al_all = pUC_disability.al_all_ages()
+nc_all = pUC_disability.nc_all_ages()
 
-
-
+fig, ax =fig, axs = plt.subplots()
+# forget the last one, because is equal to 1
+plt.plot(pvfb_all[1][:-1], pvfb_all[2][:-1], 'o-', label='pvfb disability')
+plt.plot(al_all[1][:-1], al_all[2][:-1], 'o-', label='al disability')
+plt.plot(nc_all[1][:-1], nc_all[2][:-1], 'o-', label='nc disability')
+plt.legend()
 
 print('\n')
 print('Testing for Retirement at 65')
@@ -77,5 +82,12 @@ pUC_retirement.set_default_waiting_periods()
 x = 45
 print(f"PVBT({pUC_retirement.y}, {pUC_retirement.x}, {pUC_retirement.z}|{x})={pUC_retirement.pvfb(x=x)}")
 print(f"PVBT({pUC_retirement.y}, {pUC_retirement.x}, {pUC_retirement.z}|{pUC_retirement.x})={pUC_retirement.pvfb_x()}")
-pvfb_all = pUC_retirement.pvfb_all_ages()
-plt.plot(pvfb_all[1], pvfb_all[2])
+pvfb_all_retirement = pUC_retirement.pvfb_all_ages()
+al_all_retirement = pUC_retirement.al_all_ages()
+nc_all_retirement = pUC_retirement.nc_all_ages()
+
+fig, ax =fig, axs = plt.subplots()
+plt.plot(pvfb_all_retirement[1], pvfb_all_retirement[2], 'o-', label='pvfb retirement')
+plt.plot(al_all_retirement[1], al_all_retirement[2], 'o-', label='al retirement')
+plt.plot(nc_all_retirement[1], nc_all_retirement[2], 'o-', label='nc retirement')
+plt.legend()
