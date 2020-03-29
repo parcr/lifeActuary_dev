@@ -91,3 +91,5 @@ plt.plot(pvfb_all_retirement[1], pvfb_all_retirement[2], 'o-', label='pvfb retir
 plt.plot(al_all_retirement[1], al_all_retirement[2], 'o-', label='al retirement')
 plt.plot(nc_all_retirement[1], nc_all_retirement[2], 'o-', label='nc retirement')
 plt.legend()
+
+plt.show()
