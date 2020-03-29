@@ -4,6 +4,14 @@ import numpy as np
 import age
 
 
+@staticmethod
+def default_waiting_periods(date_of_entry, date_of_term_cost):
+    waiting_first_instalment = 0
+    waiting_last_instalment = age.Age(date1=date_of_entry, date2=date_of_term_cost).age_act() - 1
+    waiting_first_payment = 0
+    return waiting_first_instalment, waiting_last_instalment, waiting_first_payment
+
+
 class PVFB:
     def __init__(self, date_of_valuation, date_of_birth,
                  date_of_entry, age_of_term_cost, multi_table=None, decrement=None, i=None,
@@ -39,3 +47,6 @@ class PVFB:
 
         self.age_date_of_entry_ = age.Age(date1=date_of_birth, date2=date_of_entry)
         self.age_date_of_valuation_ = age.Age(date1=self.date_of_birth, date2=self.date_of_valuation)
+
+    def default_waiting_periods(self):
+        pass
