@@ -37,4 +37,5 @@ class PVFB:
         self.age_last_instalment = None
         self.age_first_payment = None
 
-
+        self.age_date_of_entry_ = age.Age(date1=date_of_birth, date2=date_of_entry)
+        self.age_date_of_valuation_ = age.Age(date1=self.date_of_birth, date2=self.date_of_valuation)
