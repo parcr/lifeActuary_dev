@@ -45,8 +45,28 @@ class PVFB:
         self.age_last_instalment = None
         self.age_first_payment = None
 
-        self.age_date_of_entry_ = age.Age(date1=date_of_birth, date2=date_of_entry)
-        self.age_date_of_valuation_ = age.Age(date1=self.date_of_birth, date2=self.date_of_valuation)
+        self.age_date_of_entry = age.Age(date1=date_of_birth, date2=date_of_entry)
+        self.age_date_of_valuation = age.Age(date1=self.date_of_birth, date2=self.date_of_valuation)
+        self.x = self.age_date_of_valuation.age_act()
+        self.y_ = self.age_date_of_entry.age_f()[3]
+        self.y = int(np.ceil(self.y_))
 
-    def default_waiting_periods(self):
-        pass
+        self.past_time_service_years = self.x - self.y
+        self.future_time_service_years = self.age_of_term_cost - self.x
+        self.total_time_service_years = self.age_of_term_cost - self.y
+
+        # careful when counting years because of the actuarial ages
+        self.ages_dates_past = [
+            (self.x - j, age.Age(date1=self.date_of_valuation,
+                                 date2=self.date_of_valuation).date_inc_years(-j).date2.year)
+            for j in range(self.past_time_service_years + 1)]
+        self.ages_dates_future = [
+            (self.x +j, age.Age(date1=self.date_of_valuation,
+                                 date2=self.date_of_valuation).date_inc_years(j).date2.year)
+            for j in range(1, self.future_time_service_years + 1)]
+        a = []
+
+    def set_default_waiting_periods(self):
+        self.age_first_instalment = self.y
+        self.age_last_instalment = self.age_of_term_cost - 1
+        self.age_first_payment = self.age_of_term_cost

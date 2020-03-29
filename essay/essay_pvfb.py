@@ -35,3 +35,5 @@ pvfb_d = pvfb.PVFB(date_of_valuation=date_of_valuation, date_of_birth=dict_dates
                    date_of_entry=dict_dates['date_of_entry'], age_of_term_cost=age_term_cost_years,
                    multi_table=tables_multidecrement, decrement='disability', i=2,
                    age_first_instalment=None, age_last_instalment=None, age_first_payment=None)
+
+pvfb_d.set_default_waiting_periods()
