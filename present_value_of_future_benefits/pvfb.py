@@ -64,7 +64,6 @@ class PVFB:
             (self.x +j, age.Age(date1=self.date_of_valuation,
                                  date2=self.date_of_valuation).date_inc_years(j).date2.year)
             for j in range(1, self.future_time_service_years + 1)]
-        a = []
 
     def set_default_waiting_periods(self):
         self.age_first_instalment = self.y
