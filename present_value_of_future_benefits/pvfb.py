@@ -38,9 +38,10 @@ class PVFB:
         self.date_of_birth = date_of_birth
         self.date_of_entry = date_of_entry
         self.age_of_term_cost = age_of_term_cost
-        self.multi_table = None
-        self.decrement = None
+        self.multi_table = multi_table
+        self.decrement = decrement
         self.i = i / 100,
+        self.v = 1 / (1 + i / 100)
         self.age_first_instalment = None
         self.age_last_instalment = None
         self.age_first_payment = None
@@ -74,3 +75,31 @@ class PVFB:
         self.age_last_instalment = self.age_of_term_cost - 1
         self.age_first_payment = self.age_of_term_cost
         self.__create_dates_ages()
+
+    def pvfb(self, x):
+        if x < self.y: return 0  # no liability before entry age
+        if x >= self.age_first_payment: return 1  # full amortization
+        waiting = self.age_first_payment - self.age_of_term_cost
+        if self.y <= x < self.age_of_term_cost:
+            if self.decrement:
+                tpx_T = self.multi_table.net_table.tpx(x, t=self.age_of_term_cost - x - 1, method='udd')
+                q_d_x = self.multi_table.multidecrement_tables[self.decrement].tqx(self.age_of_term_cost - 1, t=1,
+                                                                                   method='udd')
+            else:
+                tpx_T = self.multi_table.net_table.tpx(x, t=self.age_of_term_cost - x, method='udd')
+                q_d_x = 1
+            pvft = tpx_T * q_d_x * np.power(self.v, self.age_of_term_cost - x)
+            if waiting > 0:
+                tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x=self.age_of_term_cost, t=waiting,
+                                                                            method='udd')
+                deferment = tpx * np.power(self.v, waiting)
+                pvft *= deferment
+        else:  # no more instalments but still compounding until the first payment
+            tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x, t=self.age_first_payment - x,
+                                                                        method='udd')
+            deferment = np.power(self.v, self.age_first_payment - x)
+            pvft = tpx * deferment
+        return pvft
+
+    def pvfb_x(self):
+        return self.pvfb(self.x)

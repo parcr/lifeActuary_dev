@@ -35,7 +35,7 @@ class MultiDecrementTable:
             # append the first age to the vector of qx
             qx = [0] + qx
             # prepare the table with the probabilities, considering the value of qw=1 or qw=0
-            self.multidecrement_tables[k_t + '_probability'] = mt.MortalityTable(mt=qx, last_q=t.last_q)
+            self.multidecrement_tables[k_t] = mt.MortalityTable(mt=qx, last_q=t.last_q)
 
         # compute the net table, that is the multidecrement qx's and all the remaining fields in a mortality table
         qx = []
