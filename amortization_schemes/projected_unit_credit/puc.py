@@ -1,15 +1,15 @@
 __author__ = "PedroCR"
 
-from present_value_of_future_benefits import pvfb
+from present_value_of_future_benefits.pvfb import PVFB
 
 
-class PUC(pvfb.PVFB):
+class PUC(PVFB):
     def __init__(self, date_of_valuation, date_of_birth,
                  date_of_entry, age_of_term_cost, multi_table=None, decrement=None, i=None,
                  age_first_instalment=None, age_last_instalment=None, age_first_payment=None):
-        pvfb.PVFB.__init__(self, date_of_valuation, date_of_birth,
-                           date_of_entry, age_of_term_cost, multi_table, decrement, i,
-                           age_first_instalment, age_last_instalment, age_first_payment)
+        PVFB.__init__(self, date_of_valuation, date_of_birth,
+                      date_of_entry, age_of_term_cost, multi_table, decrement, i,
+                      age_first_instalment, age_last_instalment, age_first_payment)
 
     def al(self, x):
         return self.pvfb(x=x) * self.pts_nc(x) / self.tts_nc()
