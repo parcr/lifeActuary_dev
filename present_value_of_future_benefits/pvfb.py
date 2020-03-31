@@ -102,3 +102,39 @@ class PVFB:
         return [x[0] for x in self.dates_ages], \
                [x[1] for x in self.dates_ages], \
                [self.pvfb(x=x[1]) for x in self.dates_ages]
+
+    def pts(self, x):
+        '''
+        computes past time service at age x
+        '''
+        return self.past_time_service_years + (x - self.x)
+
+    def fts(self, x):
+        '''
+        computes future time service at age x
+        '''
+        return self.future_time_service_years - (x - self.x)
+
+    def pts_nc(self, x):
+        '''
+        computes past time service at age x for the normal contributions, that is the instalments
+        '''
+        if self.age_first_instalment <= x <= self.age_last_instalment:
+            return x - self.age_first_instalment
+        if x > self.age_last_instalment:
+            return self.age_last_instalment - self.age_first_instalment
+        return 0
+
+    def fts_nc(self, x):
+        '''
+        computes future time service at age x for the normal contributions, that is the instalments
+        '''
+        if self.age_first_instalment <= x <= self.age_last_instalment:
+            return self.age_last_instalment - x
+        return 0
+
+    def tts_nc(self):
+        '''
+        computes total time service for the normal contributions, that is the instalments
+        '''
+        return self.age_last_instalment - self.age_first_instalment
