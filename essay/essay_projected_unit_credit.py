@@ -79,7 +79,7 @@ pUC_retirement = puc.PUC(date_of_valuation=date_of_valuation, date_of_birth=dict
 pUC_retirement.set_default_waiting_periods()
 
 # compute pvfb
-x = 45
+x = 65
 print(f"PVBT({pUC_retirement.y}, {pUC_retirement.x}, {pUC_retirement.z}|{x})={pUC_retirement.pvfb(x=x)}")
 print(f"PVBT({pUC_retirement.y}, {pUC_retirement.x}, {pUC_retirement.z}|{pUC_retirement.x})={pUC_retirement.pvfb_x()}")
 pvfb_all_retirement = pUC_retirement.pvfb_all_ages()

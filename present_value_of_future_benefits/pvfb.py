@@ -51,21 +51,23 @@ class PVFB:
     def __create_dates_ages(self):
         # careful when counting years because of the actuarial ages
         dates_ages_past = [
-            (self.x - j, age.Age(date1=self.date_of_valuation,
-                                 date2=self.date_of_valuation).date_inc_years(-j).date2.year)
+            (age.Age(date1=self.date_of_valuation,
+                     date2=self.date_of_valuation).date_inc_years(-j).date2.year,
+             self.x - j)
             for j in range(self.past_time_service_years + 1)]
 
         waiting = self.age_first_payment - self.age_of_term_cost
         dates_ages_future = [
-            (self.x + j, age.Age(date1=self.date_of_valuation,
-                                 date2=self.date_of_valuation).date_inc_years(j).date2.year)
+            (age.Age(date1=self.date_of_valuation,
+                     date2=self.date_of_valuation).date_inc_years(j).date2.year,
+             self.x + j)
             for j in range(1, self.future_time_service_years + waiting + 1)]
-        self.ages_dates = dates_ages_past[::-1] + dates_ages_future
+        self.dates_ages = dates_ages_past[::-1] + dates_ages_future
 
     def set_default_waiting_periods(self):
         self.age_first_instalment = self.y
         self.age_last_instalment = self.age_of_term_cost - 1
-        self.age_first_payment = self.age_of_term_cost + 10
+        self.age_first_payment = self.age_of_term_cost
         self.__create_dates_ages()
 
     def pvfb(self, x):
@@ -95,3 +97,8 @@ class PVFB:
 
     def pvfb_x(self):
         return self.pvfb(self.x)
+
+    def pvfb_all_ages(self):
+        return [x[0] for x in self.dates_ages], \
+               [x[1] for x in self.dates_ages], \
+               [self.pvfb(x=x[1]) for x in self.dates_ages]
