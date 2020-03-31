@@ -4,14 +4,6 @@ import numpy as np
 import age
 
 
-@staticmethod
-def default_waiting_periods(date_of_entry, date_of_term_cost):
-    waiting_first_instalment = 0
-    waiting_last_instalment = age.Age(date1=date_of_entry, date2=date_of_term_cost).age_act() - 1
-    waiting_first_payment = 0
-    return waiting_first_instalment, waiting_last_instalment, waiting_first_payment
-
-
 class PVFB:
     def __init__(self, date_of_valuation, date_of_birth,
                  date_of_entry, age_of_term_cost, multi_table=None, decrement=None, i=None,
@@ -73,7 +65,7 @@ class PVFB:
     def set_default_waiting_periods(self):
         self.age_first_instalment = self.y
         self.age_last_instalment = self.age_of_term_cost - 1
-        self.age_first_payment = self.age_of_term_cost
+        self.age_first_payment = self.age_of_term_cost + 10
         self.__create_dates_ages()
 
     def pvfb(self, x):
@@ -95,9 +87,9 @@ class PVFB:
                 deferment = tpx * np.power(self.v, waiting)
                 pvft *= deferment
         else:  # no more instalments but still compounding until the first payment
-            tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x, t=self.age_first_payment - x,
-                                                                        method='udd')
-            deferment = np.power(self.v, self.age_first_payment - x)
+            waiting = self.age_first_payment - x
+            tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x, t=waiting, method='udd')
+            deferment = np.power(self.v, waiting)
             pvft = tpx * deferment
         return pvft
 

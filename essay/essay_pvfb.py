@@ -39,6 +39,6 @@ pvfb_d = pvfb.PVFB(date_of_valuation=date_of_valuation, date_of_birth=dict_dates
 pvfb_d.set_default_waiting_periods()
 
 # compute pvfb
-x = 45
+x = 58
 print(f"PVBT({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{x})={pvfb_d.pvfb(x=x)}")
 print(f"PVBT({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{pvfb_d.x})={pvfb_d.pvfb_x()}")
