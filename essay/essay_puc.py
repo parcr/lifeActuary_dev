@@ -21,7 +21,7 @@ mt_TV7377 = mt.MortalityTable(mt=soa_TV7377.table_qx)
 dt_ekv80 = mt.MortalityTable(mt=ekv80, last_q=0)
 tt_pcr = mt.MortalityTable(mt=pcr1, last_q=0)
 
-tables_unidecrement = {'mortality': mt_TV7377, 'retirement': dt_ekv80, 'turnover': tt_pcr}
+tables_unidecrement = {'mortality': mt_TV7377, 'disability': dt_ekv80, 'turnover': tt_pcr}
 
 tables_multidecrement = mdt(dict_tables=tables_unidecrement)
 tables_multidecrement.create_udd_multidecrement_table()
@@ -33,7 +33,7 @@ dates_for_term_cost = age.Age(date1=dict_dates['date_of_birth'], date2=dict_date
 age_term_cost_years = dates_for_term_cost.age_act()
 puc_d = puc.PUC(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
                 date_of_entry=dict_dates['date_of_entry'], age_of_term_cost=age_term_cost_years,
-                multi_table=tables_multidecrement, decrement='retirement', i=2,
+                multi_table=tables_multidecrement, decrement='disability', i=2,
                 age_first_instalment=None, age_last_instalment=None, age_first_payment=None)
 
 puc_d.set_default_waiting_periods()

@@ -6,7 +6,7 @@ from turnover_tables import turnover_tables as tt
 import mortality_table as mt
 from multidecrement_table import MultiDecrementTable as mdt
 import age
-from amortization_schemes.projected_unit_credit import puc_old
+from toDelete import puc_old
 from matplotlib import pyplot as plt
 
 soa_TV7377 = rst.SoaTable('../soa_tables/TV7377.xml')
