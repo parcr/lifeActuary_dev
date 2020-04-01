@@ -6,7 +6,7 @@ from turnover_tables import turnover_tables as tt
 import mortality_table as mt
 from multidecrement_table import MultiDecrementTable as mdt
 import age
-from amortization_schemes.projected_unit_credit import puc
+from toDelete import puc_old
 from matplotlib import pyplot as plt
 
 soa_TV7377 = rst.SoaTable('../soa_tables/TV7377.xml')
@@ -46,10 +46,10 @@ print('the oldest date is:', max_date)
 # PUC
 print('\n')
 print('Testing for Desability')
-pUC_disability = puc.PUC(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
-                         date_of_entry=dict_dates['date_of_entry'], date_of_term_cost=str(max_date),
-                         multi_table=tables_multidecrement, decrement=1, i=2, waiting_first_instalment=None,
-                         waiting_last_instalment=None, waiting_first_payment=None)
+pUC_disability = puc_old.PUC(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
+                             date_of_entry=dict_dates['date_of_entry'], date_of_term_cost=str(max_date),
+                             multi_table=tables_multidecrement, decrement=1, i=2, waiting_first_instalment=None,
+                             waiting_last_instalment=None, waiting_first_payment=None)
 
 pUC_disability.set_default_waiting_periods()
 
@@ -71,15 +71,15 @@ plt.legend()
 print('\n')
 print('Testing for Retirement at 65')
 age_retirement_65 = age.Age(date1=dict_dates['date_of_birth'], date2=dict_dates['date_of_birth']).date_inc_years(65)
-pUC_retirement = puc.PUC(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
-                         date_of_entry=dict_dates['date_of_entry'], date_of_term_cost=age_retirement_65.date2,
-                         multi_table=tables_multidecrement, decrement=None, i=2, waiting_first_instalment=None,
-                         waiting_last_instalment=None, waiting_first_payment=None)
+pUC_retirement = puc_old.PUC(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
+                             date_of_entry=dict_dates['date_of_entry'], date_of_term_cost=age_retirement_65.date2,
+                             multi_table=tables_multidecrement, decrement=None, i=2, waiting_first_instalment=None,
+                             waiting_last_instalment=None, waiting_first_payment=None)
 
 pUC_retirement.set_default_waiting_periods()
 
 # compute pvfb
-x = 45
+x = 65
 print(f"PVBT({pUC_retirement.y}, {pUC_retirement.x}, {pUC_retirement.z}|{x})={pUC_retirement.pvfb(x=x)}")
 print(f"PVBT({pUC_retirement.y}, {pUC_retirement.x}, {pUC_retirement.z}|{pUC_retirement.x})={pUC_retirement.pvfb_x()}")
 pvfb_all_retirement = pUC_retirement.pvfb_all_ages()

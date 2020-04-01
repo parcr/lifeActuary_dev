@@ -1,4 +1,5 @@
 __author__ = "PedroCR"
+
 import numpy as np
 import datetime
 import calendar
@@ -45,8 +46,8 @@ class Age(object):
         else:
             print('Construction failed @ __init__!')
 
-    def __del__(self):
-        print('Object killed')
+    def __del__(self):  # print('Object killed')
+        pass
 
     def __repr__(self) -> str:
         return f"Age('{self.__date1}', '{self.__date2}')"

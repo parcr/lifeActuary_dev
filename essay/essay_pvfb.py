@@ -37,3 +37,35 @@ pvfb_d = pvfb.PVFB(date_of_valuation=date_of_valuation, date_of_birth=dict_dates
                    age_first_instalment=None, age_last_instalment=None, age_first_payment=None)
 
 pvfb_d.set_default_waiting_periods()
+
+# compute pvfb
+x = 45
+print(f"PVBT({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{x})={pvfb_d.pvfb(x=x)}")
+print(f"PVBT({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{pvfb_d.x})={pvfb_d.pvfb_x()}")
+
+pvfb_all_d = pvfb_d.pvfb_all_ages()
+fig, ax = fig, axs = plt.subplots()
+plt.plot(pvfb_all_d[1][:-1], pvfb_all_d[2][:-1], 'o-', label='pvfb disability')
+plt.legend()
+
+print('\n')
+print('Testing for Retirement at 65')
+age_retirement_65 = age.Age(date1=dict_dates['date_of_birth'], date2=dict_dates['date_of_birth']).date_inc_years(65)
+pvfb_retirement = pvfb.PVFB(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
+                            date_of_entry=dict_dates['date_of_entry'], age_of_term_cost=65,
+                            multi_table=tables_multidecrement, decrement=None, i=2,
+                            age_first_instalment=None, age_last_instalment=None, age_first_payment=None)
+
+pvfb_retirement.set_default_waiting_periods()
+
+# compute pvfb
+x = 65
+print(
+    f"PVBT({pvfb_retirement.y}, {pvfb_retirement.x}, {pvfb_retirement.age_of_term_cost}|{x})={pvfb_retirement.pvfb(x=x)}")
+print(
+    f"PVBT({pvfb_retirement.y}, {pvfb_retirement.x}, {pvfb_retirement.age_of_term_cost}|{pvfb_retirement.x})={pvfb_retirement.pvfb_x()}")
+
+pvfb_all_retirement = pvfb_retirement.pvfb_all_ages()
+fig, ax = fig, axs = plt.subplots()
+plt.plot(pvfb_all_retirement[1], pvfb_all_retirement[2], 'o-', label='pvfb retirement')
+plt.legend()
