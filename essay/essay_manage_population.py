@@ -5,9 +5,7 @@ from disability_tables import disability_tables as dt
 from turnover_tables import turnover_tables as tt
 import mortality_table as mt
 from multidecrement_table import MultiDecrementTable as mdt
-import age
-from amortization_schemes.projected_unit_credit import puc
-from matplotlib import pyplot as plt
+import numpy as np
 
 soa_TV7377 = rst.SoaTable('../soa_tables/TV7377.xml')
 soa_GRF95 = rst.SoaTable('../soa_tables/GRF95.xml')
@@ -25,3 +23,40 @@ tables_unidecrement = {'mortality': mt_TV7377, 'disability': dt_ekv80, 'turnover
 
 tables_multidecrement = mdt(dict_tables=tables_unidecrement)
 tables_multidecrement.create_udd_multidecrement_table()
+
+# create a transition matrix
+transition_info = [[(tables_multidecrement.net_table, 'p'),
+                    (tables_multidecrement.multidecrement_tables['disability'], 'q'),
+                    (tables_multidecrement.multidecrement_tables['turnover'], 'q'),
+                    (tables_multidecrement.multidecrement_tables['mortality'], 'q')]]
+transition_info.append([0,
+                        (tables_multidecrement.unidecrement_tables['mortality'], 'p'),
+                        0,
+                        (tables_multidecrement.unidecrement_tables['mortality'], 'q')])
+transition_info.append([0,
+                        0,
+                        (tables_multidecrement.unidecrement_tables['mortality'], 'p'),
+                        (tables_multidecrement.unidecrement_tables['mortality'], 'q')])
+transition_info.append([0,
+                        0,
+                        0,
+                        1])
+
+
+def transition_matrix_1(transition_info, x):
+    c = len(transition_info)
+    r = len(transition_info[0])
+    mat = np.zeros((c, r))
+    for r_i, r in enumerate(transition_info):
+        for c_i, c in enumerate(r):
+            if type(transition_info[r_i][c_i]) == tuple:
+                if transition_info[r_i][c_i][1] == 'p':
+                    mat[r_i][c_i] = transition_info[r_i][c_i][0].tpx(x=1, t=1, method='udd')
+                else:
+                    mat[r_i][c_i] = transition_info[r_i][c_i][0].tqx(x=x, t=1, method='udd')
+            else:
+                mat[r_i][c_i] = transition_info[r_i][c_i]
+    return mat
+
+
+mat = transition_matrix_1(transition_info, x=45)
