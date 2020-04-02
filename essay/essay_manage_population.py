@@ -46,16 +46,18 @@ transition_info.append([0,
 def transition_matrix_1(transition_info, x):
     c = len(transition_info)
     r = len(transition_info[0])
-    mat = np.zeros((c, r))
+    mat = np.zeros((r, c))
+    control = np.zeros((r, 1))
     for r_i, r in enumerate(transition_info):
         for c_i, c in enumerate(r):
             if type(transition_info[r_i][c_i]) == tuple:
                 if transition_info[r_i][c_i][1] == 'p':
-                    mat[r_i][c_i] = transition_info[r_i][c_i][0].tpx(x=1, t=1, method='udd')
+                    mat[r_i][c_i] = transition_info[r_i][c_i][0].tpx(x=x, t=1, method='udd')
                 else:
                     mat[r_i][c_i] = transition_info[r_i][c_i][0].tqx(x=x, t=1, method='udd')
             else:
                 mat[r_i][c_i] = transition_info[r_i][c_i]
+        control[r_i][0] = sum(mat[r_i])
     return mat
 
 
