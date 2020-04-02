@@ -69,11 +69,10 @@ def transition_matrix_n(transition_info, x1, x2, init_state=None):
     mat = np.identity(c)
     if init_state is None:
         init_state = np.zeros((r, 1))
-        final_state = init_state.copy()
         init_state[0][0] = 1
 
     control = []
-    state_path = []
+    state_path = [init_state]
     for x in range(x1, x2):
         mat_1 = transition_matrix_1(transition_info, x)
         mat = np.dot(mat, mat_1)
@@ -84,7 +83,7 @@ def transition_matrix_n(transition_info, x1, x2, init_state=None):
 
 
 mat = transition_matrix_1(transition_info, x=45)
-mat_n = transition_matrix_n(transition_info, 45, 106, np.array([100000, 0, 0, 0]))
+mat_n = transition_matrix_n(transition_info, 0, 106, np.array([1, 0, 0, 0]))
 init_pop = np.array((1000, 0, 0, 0))
 final_pop = np.dot(mat_n[0].transpose(), init_pop)
 

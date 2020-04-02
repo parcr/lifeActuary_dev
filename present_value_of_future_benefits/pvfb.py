@@ -129,9 +129,7 @@ class PVFB:
         '''
         computes future time service at age x for the normal contributions, that is the instalments
         '''
-        if self.age_first_instalment <= x <= self.age_last_instalment:
-            return self.age_last_instalment - x
-        return 0
+        return (self.age_last_instalment - self.age_first_instalment) - self.pts_nc(x)
 
     def tts_nc(self):
         '''
