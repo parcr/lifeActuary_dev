@@ -64,11 +64,25 @@ class PVFB:
             for j in range(1, self.future_time_service_years + waiting + 1)]
         self.dates_ages = dates_ages_past[::-1] + dates_ages_future
 
+    def __create_dates_ages_w(self):
+        # careful when counting years because of the actuarial ages
+        self.__create_dates_ages()
+        waiting = self.age_first_payment - self.age_of_term_cost
+        max_w = [t[1].w for t in self.multi_table.unidecrement_tables.items()]
+        max_w = max(max_w)
+        dates_ages_future = [
+            (age.Age(date1=self.date_of_valuation,
+                     date2=self.date_of_valuation).date_inc_years(j).date2.year,
+             self.x + j)
+            for j in range(self.future_time_service_years + waiting + 1, max_w - self.x + 1)]
+        self.dates_ages_w = self.dates_ages + dates_ages_future
+
     def set_default_waiting_periods(self):
         self.age_first_instalment = self.y
         self.age_last_instalment = self.age_of_term_cost - 1
         self.age_first_payment = self.age_of_term_cost
         self.__create_dates_ages()
+        self.__create_dates_ages_w()
 
     def prob_survival(self, x):
         '''
