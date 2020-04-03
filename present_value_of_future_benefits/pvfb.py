@@ -70,7 +70,33 @@ class PVFB:
         self.age_first_payment = self.age_of_term_cost
         self.__create_dates_ages()
 
+    def prob_survival(self, x):
+        '''
+        We compute the probability of survival, used to project liabilities, considering that the decrement occurred,
+        that is, considering that (x) will enter the state defined by the decrement defined.
+        :param x: age of (x)
+        :return: The probability of survival considering all the decrements
+        '''
+        if x <= self.x: return 1
+        p = 1
+        if x <= self.age_of_term_cost:
+            tpx_T = self.multi_table.net_table.tpx(x, t=self.x - x, method='udd')
+        else:
+            tpx_T = self.multi_table.net_table.tpx(x, t=self.x - self.age_of_term_cost, method='udd')
+            p = self.multi_table.unidecrement_tables['mortality'].tpx(self.age_of_term_cost,
+                                                                      t=x - self.age_of_term_cost, method='udd')
+        return tpx_T * p
+
     def pvfb(self, x):
+        '''
+        Computes the Present Value of Future Benefits, that will allow us to use for all amortization schemes
+        :param x: the age fo life (x). We consider that (x) is alive and if the decrement happens, it will be moved to
+        to the other state. Hence, if there is a wanting period between the decrement occurrence and the first payment
+        (x) should already be placed in the state corresponding to the decrement.
+        For instance, if the decrement is disability, immediately after the decrement, (x) is moved to the state of
+        disable and there is where the waiting period happens, if any.
+        :return: The Present Value of Future Benefits
+        '''
         if x < self.y: return 0  # no liability before entry age
         if x >= self.age_first_payment: return 1  # full amortization
         waiting = self.age_first_payment - self.age_of_term_cost
@@ -136,3 +162,19 @@ class PVFB:
         computes total time service for the normal contributions, that is the instalments
         '''
         return self.age_last_instalment - self.age_first_instalment
+
+    '''
+    Projecting liabilities
+    '''
+
+    def pvfb_proj(self, x):
+        if x <= self.x: return self.pvfb(x)
+        return self.pvfb(x) * self.prob_survival(x) * np.power(self.v, x - self.x)
+
+    def pvfb_x_proj(self):
+        return self.pvfb_proj(self.x)
+
+    def pvfb_all_ages_proj(self):
+        return [x[0] for x in self.dates_ages], \
+               [x[1] for x in self.dates_ages], \
+               [self.pvfb_proj(x=x[1]) for x in self.dates_ages]
