@@ -47,6 +47,7 @@ class PVFB:
         self.past_time_service_years = self.x - self.y
         self.future_time_service_years = self.age_of_term_cost - self.x
         self.total_time_service_years = self.age_of_term_cost - self.y
+        self.waiting = self.age_first_payment - self.age_of_term_cost
 
     def __create_dates_ages(self):
         # careful when counting years because of the actuarial ages
@@ -56,25 +57,23 @@ class PVFB:
              self.x - j)
             for j in range(self.past_time_service_years + 1)]
 
-        waiting = self.age_first_payment - self.age_of_term_cost
         dates_ages_future = [
             (age.Age(date1=self.date_of_valuation,
                      date2=self.date_of_valuation).date_inc_years(j).date2.year,
              self.x + j)
-            for j in range(1, self.future_time_service_years + waiting + 1)]
+            for j in range(1, self.future_time_service_years + self.waiting + 1)]
         self.dates_ages = dates_ages_past[::-1] + dates_ages_future
 
     def __create_dates_ages_w(self):
         # careful when counting years because of the actuarial ages
         self.__create_dates_ages()
-        waiting = self.age_first_payment - self.age_of_term_cost
         max_w = [t[1].w for t in self.multi_table.unidecrement_tables.items()]
         max_w = max(max_w)
         dates_ages_future = [
             (age.Age(date1=self.date_of_valuation,
                      date2=self.date_of_valuation).date_inc_years(j).date2.year,
              self.x + j)
-            for j in range(self.future_time_service_years + waiting + 1, max_w - self.x + 1)]
+            for j in range(self.future_time_service_years + self.waiting + 1, max_w - self.x + 1)]
         self.dates_ages_w = self.dates_ages + dates_ages_future
 
     def set_default_waiting_periods(self):
@@ -94,7 +93,7 @@ class PVFB:
         if x <= self.x: return 1
         p = 1
         if x < self.age_of_term_cost:
-            tpx_T = self.multi_table.net_table.tpx(self.x, t=x-self.x, method='udd')
+            tpx_T = self.multi_table.net_table.tpx(self.x, t=x - self.x, method='udd')
         else:
             tpx_T = self.multi_table.net_table.tpx(self.x, t=self.x - self.age_of_term_cost, method='udd')
             p = self.multi_table.unidecrement_tables['mortality'].tpx(self.age_of_term_cost,
