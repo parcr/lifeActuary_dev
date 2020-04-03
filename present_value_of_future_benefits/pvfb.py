@@ -86,7 +86,7 @@ class PVFB:
     def prob_survival(self, x):
         '''
         We compute the probability of survival from today until age x, used to project liabilities, considering that
-        the decrement occurred, that is, considering that (x) will enter the state defined by the decrement defined.
+        the decrement occurred, that is, considering that (x) will enter the state defined by the decrement.
         :param x: age of (x)
         :return: The probability of survival considering all the decrements
         '''
@@ -118,23 +118,22 @@ class PVFB:
         else:
             q_d_x = 1
         if x >= self.age_first_payment: return q_d_x  # full amortization
-        waiting = self.age_first_payment - self.age_of_term_cost
         if self.y <= x < self.age_of_term_cost:
             if self.decrement:
                 tpx_T = self.multi_table.net_table.tpx(x, t=self.age_of_term_cost - x - 1, method='udd')
             else:
                 tpx_T = self.multi_table.net_table.tpx(x, t=self.age_of_term_cost - x, method='udd')
             pvft = tpx_T * q_d_x * np.power(self.v, self.age_of_term_cost - x)
-            if waiting > 0:
-                tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x=self.age_of_term_cost, t=waiting,
+            if self.waiting > 0:
+                tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x=self.age_of_term_cost, t=self.waiting,
                                                                             method='udd')
-                deferment = tpx * np.power(self.v, waiting)
+                deferment = tpx * np.power(self.v, self.waiting)
                 pvft *= deferment
         else:  # no more instalments but still compounding until the first payment
             waiting = self.age_first_payment - x
             tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x, t=waiting, method='udd')
             deferment = np.power(self.v, waiting)
-            pvft = tpx * deferment
+            pvft = q_d_x * tpx * deferment
         return pvft
 
     def pvfb_x(self):
