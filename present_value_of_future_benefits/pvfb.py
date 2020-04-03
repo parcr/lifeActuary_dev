@@ -85,19 +85,26 @@ class PVFB:
 
     def prob_survival(self, x):
         '''
-        We compute the probability of survival from today until age x, used to project liabilities, considering that
+        We compute the probability of survival from today (x) until age x, used to project liabilities, considering that
         the decrement occurred, that is, considering that (x) will enter the state defined by the decrement.
         :param x: age of (x)
         :return: The probability of survival considering all the decrements
         '''
         if x <= self.x: return 1
-        p = 1
+        if self.decrement:
+            q_d_x = self.multi_table.multidecrement_tables[self.decrement].tqx(self.age_of_term_cost - 1, t=1,
+                                                                               method='udd')
+        else:
+            q_d_x = self.multi_table.multidecrement_tables[self.decrement].tpx(self.age_of_term_cost - 1, t=1,
+                                                                               method='udd')
+
         if x < self.age_of_term_cost:
             tpx_T = self.multi_table.net_table.tpx(self.x, t=x - self.x, method='udd')
         else:
-            tpx_T = self.multi_table.net_table.tpx(self.x, t=self.x - self.age_of_term_cost, method='udd')
-            p = self.multi_table.unidecrement_tables['mortality'].tpx(self.age_of_term_cost,
-                                                                      t=x - self.age_of_term_cost, method='udd')
+            p=
+            tpx_T = self.multi_table.net_table.tpx(self.x, t=self.x - self.age_of_term_cost - 1, method='udd') *
+            q_d_x *
+
         return tpx_T * p
 
     def pvfb(self, x):
