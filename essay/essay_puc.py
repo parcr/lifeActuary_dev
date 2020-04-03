@@ -53,6 +53,23 @@ plt.plot(nc_all_d[1][:-1], nc_all_d[2][:-1], 'o-', label='nc disability')
 plt.title('Disability')
 plt.legend()
 
+
+pvfb_all_d = puc_d.pvfb_all_ages_proj()
+al_all_d = puc_d.al_all_ages()
+nc_all_d = puc_d.nc_all_ages()
+fig, ax = fig, axs = plt.subplots()
+plt.plot(pvfb_all_d[1][:-1], pvfb_all_d[2][:-1], 'o-', label='pvfb disability')
+plt.plot(al_all_d[1][:-1], al_all_d[2][:-1], 'o-', label='al disability')
+plt.plot(nc_all_d[1][:-1], nc_all_d[2][:-1], 'o-', label='nc disability')
+plt.title('Disability')
+plt.legend()
+
+
+
+
+
+
+
 print('\n')
 print('Testing for Retirement at 65')
 age_retirement_65 = age.Age(date1=dict_dates['date_of_birth'], date2=dict_dates['date_of_birth']).date_inc_years(65)

@@ -86,17 +86,17 @@ class PVFB:
 
     def prob_survival(self, x):
         '''
-        We compute the probability of survival, used to project liabilities, considering that the decrement occurred,
-        that is, considering that (x) will enter the state defined by the decrement defined.
+        We compute the probability of survival from today until age x, used to project liabilities, considering that
+        the decrement occurred, that is, considering that (x) will enter the state defined by the decrement defined.
         :param x: age of (x)
         :return: The probability of survival considering all the decrements
         '''
         if x <= self.x: return 1
         p = 1
-        if x <= self.age_of_term_cost:
-            tpx_T = self.multi_table.net_table.tpx(x, t=self.x - x, method='udd')
+        if x < self.age_of_term_cost:
+            tpx_T = self.multi_table.net_table.tpx(self.x, t=x-self.x, method='udd')
         else:
-            tpx_T = self.multi_table.net_table.tpx(x, t=self.x - self.age_of_term_cost, method='udd')
+            tpx_T = self.multi_table.net_table.tpx(self.x, t=self.x - self.age_of_term_cost, method='udd')
             p = self.multi_table.unidecrement_tables['mortality'].tpx(self.age_of_term_cost,
                                                                       t=x - self.age_of_term_cost, method='udd')
         return tpx_T * p
@@ -109,19 +109,22 @@ class PVFB:
         (x) should already be placed in the state corresponding to the decrement.
         For instance, if the decrement is disability, immediately after the decrement, (x) is moved to the state of
         disable and there is where the waiting period happens, if any.
+        There are states where the decrement happens just due to survival up to that age, for instance, retirement.
         :return: The Present Value of Future Benefits
         '''
         if x < self.y: return 0  # no liability before entry age
-        if x >= self.age_first_payment: return 1  # full amortization
+        if self.decrement:
+            q_d_x = self.multi_table.multidecrement_tables[self.decrement].tqx(self.age_of_term_cost - 1, t=1,
+                                                                               method='udd')
+        else:
+            q_d_x = 1
+        if x >= self.age_first_payment: return q_d_x  # full amortization
         waiting = self.age_first_payment - self.age_of_term_cost
         if self.y <= x < self.age_of_term_cost:
             if self.decrement:
                 tpx_T = self.multi_table.net_table.tpx(x, t=self.age_of_term_cost - x - 1, method='udd')
-                q_d_x = self.multi_table.multidecrement_tables[self.decrement].tqx(self.age_of_term_cost - 1, t=1,
-                                                                                   method='udd')
             else:
                 tpx_T = self.multi_table.net_table.tpx(x, t=self.age_of_term_cost - x, method='udd')
-                q_d_x = 1
             pvft = tpx_T * q_d_x * np.power(self.v, self.age_of_term_cost - x)
             if waiting > 0:
                 tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x=self.age_of_term_cost, t=waiting,
@@ -189,6 +192,6 @@ class PVFB:
         return self.pvfb_proj(self.x)
 
     def pvfb_all_ages_proj(self):
-        return [x[0] for x in self.dates_ages], \
-               [x[1] for x in self.dates_ages], \
-               [self.pvfb_proj(x=x[1]) for x in self.dates_ages]
+        return [x[0] for x in self.dates_ages_w], \
+               [x[1] for x in self.dates_ages_w], \
+               [self.pvfb_proj(x=x[1]) for x in self.dates_ages_w]
