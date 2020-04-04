@@ -53,9 +53,9 @@ plt.plot(nc_all_d[1][:], nc_all_d[2][:], 'o--', mfc='none', label='nc disability
 plt.title('Disability')
 plt.legend()
 
-# print(pvfb_all_d)
-# print(al_all_d)
-# print(nc_all_d)
+print(pvfb_all_d)
+print(al_all_d)
+print(nc_all_d)
 
 
 # projection

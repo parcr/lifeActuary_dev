@@ -12,7 +12,9 @@ class PUC(PVFB):
                       age_first_instalment, age_last_instalment, age_first_payment)
 
     def al(self, x):
-        return self.pvfb(x=x) * self.pts_nc(x) / self.tts_nc()
+        if x > self.age_first_instalment:
+            return self.pvfb(x=x) * self.pts_nc(x) / self.tts_nc()
+        return 0
 
     def al_x(self):
         return self.al(x=self.x)
@@ -23,7 +25,7 @@ class PUC(PVFB):
                [self.al(x=x[1]) for x in self.dates_ages]
 
     def nc(self, x):
-        if x <= self.age_last_instalment:
+        if self.age_first_instalment <= x <= self.age_last_instalment:
             return self.pvfb(x=x) / self.tts_nc()
         return 0
 
