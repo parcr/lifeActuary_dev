@@ -94,7 +94,7 @@ class PVFB:
         if x <= self.x: return 1
         if x < self.age_of_term_cost:
             tpx_T = self.multi_table.net_table.tpx(self.x, t=x - self.x, method='udd')
-        else:  # todo confirm this formula
+        else:
             bool_decrement = bool(self.decrement)
             tpx_T = self.multi_table.net_table.tpx(self.x, t=self.age_of_term_cost - self.x - bool_decrement,
                                                    method='udd') * \
@@ -162,23 +162,23 @@ class PVFB:
         '''
         computes past time service at age x for the normal contributions, that is the instalments
         '''
-        if self.age_first_instalment <= x <= self.age_last_instalment:
+        if self.age_first_instalment < x <= self.age_last_instalment:
             return x - self.age_first_instalment
         if x > self.age_last_instalment:
-            return self.age_last_instalment - self.age_first_instalment
+            return self.age_last_instalment + 1 - self.age_first_instalment
         return 0
 
     def fts_nc(self, x):
         '''
         computes future time service at age x for the normal contributions, that is the instalments
         '''
-        return (self.age_last_instalment - self.age_first_instalment) - self.pts_nc(x)
+        return (self.age_last_instalment + 1 - self.age_first_instalment) - self.pts_nc(x)
 
     def tts_nc(self):
         '''
         computes total time service for the normal contributions, that is the instalments
         '''
-        return self.age_last_instalment - self.age_first_instalment
+        return self.age_last_instalment + 1 - self.age_first_instalment
 
     '''
     Projecting liabilities
