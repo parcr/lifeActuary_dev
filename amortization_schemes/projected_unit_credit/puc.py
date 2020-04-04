@@ -34,3 +34,21 @@ class PUC(PVFB):
         return [x[0] for x in self.dates_ages], \
                [x[1] for x in self.dates_ages], \
                [self.nc(x=x[1]) for x in self.dates_ages]
+
+    '''projections'''
+
+    def al_proj(self, x):
+        return self.al(x) * self.prob_survival(x)
+
+    def al_proj_all_ages_proj(self):
+        return [x[0] for x in self.dates_ages_w], \
+               [x[1] for x in self.dates_ages_w], \
+               [self.al_proj(x=x[1]) for x in self.dates_ages_w]
+
+    def nc_proj(self, x):
+        return self.nc(x) * self.prob_survival(x)
+
+    def nc_proj_all_ages_proj(self):
+        return [x[0] for x in self.dates_ages_w], \
+               [x[1] for x in self.dates_ages_w], \
+               [self.nc_proj(x=x[1]) for x in self.dates_ages_w]
