@@ -45,7 +45,7 @@ print(f"PVBT({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{pvfb_d.x})={pvfb
 
 pvfb_all_d = pvfb_d.pvfb_all_ages()
 fig, ax = fig, axs = plt.subplots()
-plt.plot(pvfb_all_d[1][:-1], pvfb_all_d[2][:-1], 'o-', label='pvfb disability')
+plt.plot(pvfb_all_d[1][:], pvfb_all_d[2][:], 'o-', label='pvfb disability')
 plt.legend()
 
 print('\n')

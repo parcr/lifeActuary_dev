@@ -47,7 +47,7 @@ class PVFB:
         self.past_time_service_years = self.x - self.y
         self.future_time_service_years = self.age_of_term_cost - self.x
         self.total_time_service_years = self.age_of_term_cost - self.y
-        self.waiting = self.age_first_payment - self.age_of_term_cost
+        self.waiting = None
 
     def __create_dates_ages(self):
         # careful when counting years because of the actuarial ages
@@ -80,6 +80,7 @@ class PVFB:
         self.age_first_instalment = self.y
         self.age_last_instalment = self.age_of_term_cost - 1
         self.age_first_payment = self.age_of_term_cost
+        self.waiting = self.age_first_payment - self.age_of_term_cost
         self.__create_dates_ages()
         self.__create_dates_ages_w()
 
@@ -101,11 +102,12 @@ class PVFB:
         if x < self.age_of_term_cost:
             tpx_T = self.multi_table.net_table.tpx(self.x, t=x - self.x, method='udd')
         else:
-            p=
-            tpx_T = self.multi_table.net_table.tpx(self.x, t=self.x - self.age_of_term_cost - 1, method='udd') *
-            q_d_x *
+            tpx_T = self.multi_table.net_table.tpx(self.x, t=self.x - self.age_of_term_cost - 1, method='udd') * \
+                    q_d_x * \
+                    self.multi_table.unidecrement_tables['mortality'].tpx(self.age_of_term_cost,
+                                                                          t=x - self.age_of_term_cost, method='udd')
 
-        return tpx_T * p
+        return tpx_T
 
     def pvfb(self, x):
         '''
@@ -191,7 +193,7 @@ class PVFB:
 
     def pvfb_proj(self, x):
         if x <= self.x: return self.pvfb(x)
-        return self.pvfb(x) * self.prob_survival(x) * np.power(self.v, x - self.x)
+        return self.pvfb(x) * self.prob_survival(x)
 
     def pvfb_x_proj(self):
         return self.pvfb_proj(self.x)
