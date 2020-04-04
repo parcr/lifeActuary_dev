@@ -92,18 +92,11 @@ class PVFB:
         :return: The probability of survival considering all the decrements
         '''
         if x <= self.x: return 1
-        if self.decrement:
-            q_d_x = self.multi_table.multidecrement_tables[self.decrement].tqx(self.age_of_term_cost - 1, t=1,
-                                                                               method='udd')
-        else:
-            q_d_x = self.multi_table.multidecrement_tables[self.decrement].tpx(self.age_of_term_cost - 1, t=1,
-                                                                               method='udd')
 
         if x < self.age_of_term_cost:
             tpx_T = self.multi_table.net_table.tpx(self.x, t=x - self.x, method='udd')
-        else:
+        else: # todo confirm this formula
             tpx_T = self.multi_table.net_table.tpx(self.x, t=self.x - self.age_of_term_cost - 1, method='udd') * \
-                    q_d_x * \
                     self.multi_table.unidecrement_tables['mortality'].tpx(self.age_of_term_cost,
                                                                           t=x - self.age_of_term_cost, method='udd')
 
