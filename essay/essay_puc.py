@@ -43,6 +43,9 @@ x = 45
 print(f"PVBT({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x})={puc_d.pvfb(x=x)}")
 print(f"PVBT({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{puc_d.x})={puc_d.pvfb_x()}")
 
+# test
+test = puc_d.test()
+
 pvfb_all_d = puc_d.pvfb_all_ages()
 al_all_d = puc_d.al_all_ages()
 nc_all_d = puc_d.nc_all_ages()
@@ -53,9 +56,9 @@ plt.plot(nc_all_d[1][:], nc_all_d[2][:], 'o--', mfc='none', label='nc disability
 plt.title('Disability')
 plt.legend()
 
-print(pvfb_all_d)
-print(al_all_d)
-print(nc_all_d)
+# print(pvfb_all_d)
+# print(al_all_d)
+# print(nc_all_d)
 
 
 # projection
@@ -91,6 +94,9 @@ print(
     f"PVBT({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{x})={puc_retirement.pvfb(x=x)}")
 print(
     f"PVBT({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{puc_retirement.x})={puc_retirement.pvfb_x()}")
+
+# test
+test = puc_retirement.test()
 
 pvfb_all_retirement = puc_retirement.pvfb_all_ages()
 al_all_retirement = puc_retirement.al_all_ages()

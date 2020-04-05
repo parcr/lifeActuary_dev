@@ -1,6 +1,7 @@
 __author__ = "PedroCR"
 
 from present_value_of_future_benefits.pvfb import PVFB
+import numpy as np
 
 
 class PUC(PVFB):
@@ -60,4 +61,11 @@ class PUC(PVFB):
         Confirms that this is a valid amortization scheme
         :return: boolean and a value, making the boolean false if it is not zero
         '''
-        all_nc=self.nc_proj_all_ages_proj() # todo complete the test
+        all_nc = self.nc_all_ages()
+        discount_nc_y = [
+            nc * self.multi_table.net_table.tpx(self.y, t=nc_i, method='udd') * np.power(self.v, nc_i)
+            for nc_i, nc in enumerate(all_nc[2])]
+        sum_discount_nc_y = sum(discount_nc_y)
+        pvfb_y = self.pvfb(self.y)
+        abs_dif = pvfb_y - sum_discount_nc_y
+        return sum_discount_nc_y, abs_dif, abs(abs_dif) < 1e-16
