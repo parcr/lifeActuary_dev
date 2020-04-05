@@ -54,3 +54,10 @@ class PUC(PVFB):
         return [x[0] for x in self.dates_ages_w], \
                [x[1] for x in self.dates_ages_w], \
                [self.nc_proj(x=x[1]) for x in self.dates_ages_w]
+
+    def test(self):
+        '''
+        Confirms that this is a valid amortization scheme
+        :return: boolean and a value, making the boolean false if it is not zero
+        '''
+        all_nc=self.nc_proj_all_ages_proj() # todo complete the test
