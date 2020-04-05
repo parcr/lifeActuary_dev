@@ -49,6 +49,12 @@ class PVFB:
         self.total_time_service_years = self.age_of_term_cost - self.y
         self.waiting = None
 
+    # def __str__(self):
+    #    return '{0}({1})'.format(self.__class__.__name__, 'pcr')
+
+    def __repr__(self) -> str:
+        return '{0}({1})'.format(self.__class__.__name__, self.__dict__)
+
     def __create_dates_ages(self):
         # careful when counting years because of the actuarial ages
         dates_ages_past = [
