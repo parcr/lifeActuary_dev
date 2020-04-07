@@ -59,7 +59,8 @@ class PUC(PVTermCost):
     def test(self):
         '''
         Confirms that this is a valid amortization scheme
-        :return: boolean and a value, making the boolean false if it is not zero
+        :return: sum of the present values of the instalments, difference between the liability and the sum
+        of the present values of the instalments and a boolean to check if the difference is smaller than 1e-16
         '''
         all_nc = self.nc_all_ages()
         discount_nc_y = [
