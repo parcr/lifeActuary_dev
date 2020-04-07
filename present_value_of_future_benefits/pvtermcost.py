@@ -9,7 +9,7 @@ class PVTermCost:
                  date_of_entry, age_of_term_cost, multi_table=None, decrement=None, i=None,
                  age_first_instalment=None, age_last_instalment=None, age_first_payment=None):
         '''
-        Creates an instance of a Present Value Future Benefits object. This object will allow us to get an hold
+        Creates an instance of a Present Value of a Term Cost object. This object will allow us to get an hold
         in all the information necessary to compute everything we need to valuate actuarial liabilities.
         :param date_of_valuation: date of valuation
         :param date_of_birth: date of birth
@@ -56,6 +56,9 @@ class PVTermCost:
         return '{0}({1})'.format(self.__class__.__name__, self.__dict__)
 
     def __create_dates_ages(self):
+        '''
+        Creates all dates and ages from y to the age of the first payment
+        '''
         # careful when counting years because of the actuarial ages
         dates_ages_past = [
             (age.Age(date1=self.date_of_valuation,
@@ -71,6 +74,9 @@ class PVTermCost:
         self.dates_ages = dates_ages_past[::-1] + dates_ages_future
 
     def __create_dates_ages_w(self):
+        '''
+        Creates all dates and ages from y to the largest w, expectedly the mortality table's w.
+        '''
         # careful when counting years because of the actuarial ages
         self.__create_dates_ages()
         max_w = [t[1].w for t in self.multi_table.unidecrement_tables.items()]
@@ -110,7 +116,7 @@ class PVTermCost:
 
     def pvtc(self, x):
         '''
-        Computes the Present Value of Future Benefits, that will allow us to use for all amortization schemes
+        Computes the Present Value of the Term Cost, that will allow us to use for all amortization schemes
         :param x: the age fo life (x). We consider that (x) is alive and if the decrement happens, it will be moved to
         to the other state. Hence, if there is a wanting period between the decrement occurrence and the first payment
         (x) should already be placed in the state corresponding to the decrement.
@@ -187,7 +193,7 @@ class PVTermCost:
         return self.age_last_instalment + 1 - self.age_first_instalment
 
     '''
-    Projecting liabilities
+    Projecting the term cost
     '''
 
     def pvtc_proj(self, x):
@@ -198,5 +204,25 @@ class PVTermCost:
                [x[1] for x in self.dates_ages_w], \
                [self.pvtc_proj(x=x[1]) for x in self.dates_ages_w]
 
+    '''
+    With age x fixed summing up all the liabilities for this decrement 
+    '''
 
+    def vec_pvfb(self, x, age_term_cost_init, age_term_cost_final):
+        ages_term_cost = list(range(age_term_cost_init + 1, age_term_cost_final + 1))
+        dif_y = age_term_cost_init - self.y
+        dates = []
+        ages = []
+        lst_pvtc = []
+        for atc_i, atc in enumerate(ages_term_cost):
+            dates.append(self.dates_ages_w[dif_y + atc_i][0])
+            ages.append(self.dates_ages_w[dif_y + atc_i][1])
+            self.age_of_term_cost = atc
+            self.age_last_instalment = atc - 1
+            self.age_first_payment = self.age_first_payment = atc
+            lst_pvtc.append(self.pvtc(x))
 
+        return dates, ages, lst_pvtc
+
+    def vec_pvfb_x(self, age_term_cost_init, age_term_cost_final):
+        return self.vec_pvfb(self.x, age_term_cost_init, age_term_cost_final)

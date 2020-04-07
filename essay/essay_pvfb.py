@@ -48,6 +48,21 @@ fig, ax = fig, axs = plt.subplots()
 plt.plot(pvfb_all_d[1][:], pvfb_all_d[2][:], 'o-', label='pvfb disability')
 plt.legend()
 
+'''
+test pvfb
+'''
+
+print(f"vec_PVBT={pvfb_d.vec_pvfb(x=x, age_term_cost_init=pvfb_d.y, age_term_cost_final=65)}")
+print(f"vec_PVBT={pvfb_d.vec_pvfb_x(age_term_cost_init=pvfb_d.y, age_term_cost_final=65)}")
+
+
+
+
+
+
+'''
+test retirement
+'''
 print('\n')
 print('Testing for Retirement at 65')
 age_retirement_65 = age.Age(date1=dict_dates['date_of_birth'], date2=dict_dates['date_of_birth']).date_inc_years(65)
@@ -69,3 +84,6 @@ pvfb_all_retirement = pvfb_retirement.pvtc_all_ages()
 fig, ax = fig, axs = plt.subplots()
 plt.plot(pvfb_all_retirement[1], pvfb_all_retirement[2], 'o-', label='pvfb retirement')
 plt.legend()
+
+
+
