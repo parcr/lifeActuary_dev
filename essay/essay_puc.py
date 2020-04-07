@@ -40,13 +40,13 @@ puc_d.set_default_waiting_periods()
 
 # compute pvfb
 x = 45
-print(f"PVBT({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x})={puc_d.pvfb(x=x)}")
-print(f"PVBT({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{puc_d.x})={puc_d.pvfb_x()}")
+print(f"PVBT({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x})={puc_d.pvtc(x=x)}")
+print(f"PVBT({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{puc_d.x})={puc_d.pvtc_x()}")
 
 # test
 test = puc_d.test()
 
-pvfb_all_d = puc_d.pvfb_all_ages()
+pvfb_all_d = puc_d.pvtc_all_ages()
 al_all_d = puc_d.al_all_ages()
 nc_all_d = puc_d.nc_all_ages()
 fig, ax = fig, axs = plt.subplots()
@@ -62,7 +62,7 @@ plt.legend()
 
 
 # projection
-pvfb_all_d = puc_d.pvfb_all_ages_proj()
+pvfb_all_d = puc_d.pvtc_all_ages_proj()
 al_all_d = puc_d.al_proj_all_ages_proj()
 nc_all_d = puc_d.nc_proj_all_ages_proj()
 fig, ax = fig, axs = plt.subplots()
@@ -91,14 +91,14 @@ puc_retirement.set_default_waiting_periods()
 # compute pvfb
 x = 65
 print(
-    f"PVBT({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{x})={puc_retirement.pvfb(x=x)}")
+    f"PVBT({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{x})={puc_retirement.pvtc(x=x)}")
 print(
-    f"PVBT({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{puc_retirement.x})={puc_retirement.pvfb_x()}")
+    f"PVBT({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{puc_retirement.x})={puc_retirement.pvtc_x()}")
 
 # test
 test = puc_retirement.test()
 
-pvfb_all_retirement = puc_retirement.pvfb_all_ages()
+pvfb_all_retirement = puc_retirement.pvtc_all_ages()
 al_all_retirement = puc_retirement.al_all_ages()
 nc_all_retirement = puc_retirement.nc_all_ages()
 fig, ax = fig, axs = plt.subplots()
@@ -109,7 +109,7 @@ plt.title('Retirement')
 plt.legend()
 
 # projection
-pvfb_all_retirement = puc_retirement.pvfb_all_ages_proj()
+pvfb_all_retirement = puc_retirement.pvtc_all_ages_proj()
 al_all_retirement = puc_retirement.al_proj_all_ages_proj()
 nc_all_retirement = puc_retirement.nc_proj_all_ages_proj()
 fig, ax = fig, axs = plt.subplots()

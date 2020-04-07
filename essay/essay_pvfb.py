@@ -6,7 +6,7 @@ from turnover_tables import turnover_tables as tt
 import mortality_table as mt
 from multidecrement_table import MultiDecrementTable as mdt
 import age
-from present_value_of_future_benefits import pvfb
+from present_value_of_future_benefits import pvtermcost
 from matplotlib import pyplot as plt
 
 soa_TV7377 = rst.SoaTable('../soa_tables/TV7377.xml')
@@ -31,19 +31,19 @@ date_of_valuation = '2019-12-31'
 
 dates_for_term_cost = age.Age(date1=dict_dates['date_of_birth'], date2=dict_dates['date_of_birth']).date_inc_years(55)
 age_term_cost_years = dates_for_term_cost.age_act()
-pvfb_d = pvfb.PVFB(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
-                   date_of_entry=dict_dates['date_of_entry'], age_of_term_cost=age_term_cost_years,
-                   multi_table=tables_multidecrement, decrement='disability', i=2,
-                   age_first_instalment=None, age_last_instalment=None, age_first_payment=None)
+pvfb_d = pvtermcost.PVTermCost(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
+                               date_of_entry=dict_dates['date_of_entry'], age_of_term_cost=age_term_cost_years,
+                               multi_table=tables_multidecrement, decrement='disability', i=2,
+                               age_first_instalment=None, age_last_instalment=None, age_first_payment=None)
 
 pvfb_d.set_default_waiting_periods()
 
 # compute pvfb
 x = 45
-print(f"PVBT({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{x})={pvfb_d.pvfb(x=x)}")
-print(f"PVBT({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{pvfb_d.x})={pvfb_d.pvfb_x()}")
+print(f"PVBT({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{x})={pvfb_d.pvtc(x=x)}")
+print(f"PVBT({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{pvfb_d.x})={pvfb_d.pvtc_x()}")
 
-pvfb_all_d = pvfb_d.pvfb_all_ages()
+pvfb_all_d = pvfb_d.pvtc_all_ages()
 fig, ax = fig, axs = plt.subplots()
 plt.plot(pvfb_all_d[1][:], pvfb_all_d[2][:], 'o-', label='pvfb disability')
 plt.legend()
@@ -51,21 +51,21 @@ plt.legend()
 print('\n')
 print('Testing for Retirement at 65')
 age_retirement_65 = age.Age(date1=dict_dates['date_of_birth'], date2=dict_dates['date_of_birth']).date_inc_years(65)
-pvfb_retirement = pvfb.PVFB(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
-                            date_of_entry=dict_dates['date_of_entry'], age_of_term_cost=65,
-                            multi_table=tables_multidecrement, decrement=None, i=2,
-                            age_first_instalment=None, age_last_instalment=None, age_first_payment=None)
+pvfb_retirement = pvtermcost.PVTermCost(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
+                                        date_of_entry=dict_dates['date_of_entry'], age_of_term_cost=65,
+                                        multi_table=tables_multidecrement, decrement=None, i=2,
+                                        age_first_instalment=None, age_last_instalment=None, age_first_payment=None)
 
 pvfb_retirement.set_default_waiting_periods()
 
 # compute pvfb
 x = 65
 print(
-    f"PVBT({pvfb_retirement.y}, {pvfb_retirement.x}, {pvfb_retirement.age_of_term_cost}|{x})={pvfb_retirement.pvfb(x=x)}")
+    f"PVBT({pvfb_retirement.y}, {pvfb_retirement.x}, {pvfb_retirement.age_of_term_cost}|{x})={pvfb_retirement.pvtc(x=x)}")
 print(
-    f"PVBT({pvfb_retirement.y}, {pvfb_retirement.x}, {pvfb_retirement.age_of_term_cost}|{pvfb_retirement.x})={pvfb_retirement.pvfb_x()}")
+    f"PVBT({pvfb_retirement.y}, {pvfb_retirement.x}, {pvfb_retirement.age_of_term_cost}|{pvfb_retirement.x})={pvfb_retirement.pvtc_x()}")
 
-pvfb_all_retirement = pvfb_retirement.pvfb_all_ages()
+pvfb_all_retirement = pvfb_retirement.pvtc_all_ages()
 fig, ax = fig, axs = plt.subplots()
 plt.plot(pvfb_all_retirement[1], pvfb_all_retirement[2], 'o-', label='pvfb retirement')
 plt.legend()

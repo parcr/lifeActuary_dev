@@ -1,20 +1,20 @@
 __author__ = "PedroCR"
 
-from present_value_of_future_benefits.pvfb import PVFB
+from present_value_of_future_benefits.pvtermcost import PVTermCost
 import numpy as np
 
 
-class PUC(PVFB):
+class PUC(PVTermCost):
     def __init__(self, date_of_valuation, date_of_birth,
                  date_of_entry, age_of_term_cost, multi_table=None, decrement=None, i=None,
                  age_first_instalment=None, age_last_instalment=None, age_first_payment=None):
-        PVFB.__init__(self, date_of_valuation, date_of_birth,
-                      date_of_entry, age_of_term_cost, multi_table, decrement, i,
-                      age_first_instalment, age_last_instalment, age_first_payment)
+        PVTermCost.__init__(self, date_of_valuation, date_of_birth,
+                            date_of_entry, age_of_term_cost, multi_table, decrement, i,
+                            age_first_instalment, age_last_instalment, age_first_payment)
 
     def al(self, x):
         if x > self.age_first_instalment:
-            return self.pvfb(x=x) * self.pts_nc(x) / self.tts_nc()
+            return self.pvtc(x=x) * self.pts_nc(x) / self.tts_nc()
         return 0
 
     def al_x(self):
@@ -27,7 +27,7 @@ class PUC(PVFB):
 
     def nc(self, x):
         if self.age_first_instalment <= x <= self.age_last_instalment:
-            return self.pvfb(x=x) / self.tts_nc()
+            return self.pvtc(x=x) / self.tts_nc()
         return 0
 
     def nc_x(self):
@@ -66,6 +66,6 @@ class PUC(PVFB):
             nc * self.multi_table.net_table.tpx(self.y, t=nc_i, method='udd') * np.power(self.v, nc_i)
             for nc_i, nc in enumerate(all_nc[2])]
         sum_discount_nc_y = sum(discount_nc_y)
-        pvfb_y = self.pvfb(self.y)
+        pvfb_y = self.pvtc(self.y)
         abs_dif = pvfb_y - sum_discount_nc_y
         return sum_discount_nc_y, abs_dif, abs(abs_dif) < 1e-16

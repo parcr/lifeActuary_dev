@@ -4,7 +4,7 @@ import numpy as np
 import age
 
 
-class PVFB:
+class PVTermCost:
     def __init__(self, date_of_valuation, date_of_birth,
                  date_of_entry, age_of_term_cost, multi_table=None, decrement=None, i=None,
                  age_first_instalment=None, age_last_instalment=None, age_first_payment=None):
@@ -108,7 +108,7 @@ class PVFB:
                                                                           t=x - self.age_of_term_cost, method='udd')
         return tpx_T
 
-    def pvfb(self, x):
+    def pvtc(self, x):
         '''
         Computes the Present Value of Future Benefits, that will allow us to use for all amortization schemes
         :param x: the age fo life (x). We consider that (x) is alive and if the decrement happens, it will be moved to
@@ -144,13 +144,13 @@ class PVFB:
             pvft = q_d_x * tpx * deferment
         return pvft
 
-    def pvfb_x(self):
-        return self.pvfb(self.x)
+    def pvtc_x(self):
+        return self.pvtc(self.x)
 
-    def pvfb_all_ages(self):
+    def pvtc_all_ages(self):
         return [x[0] for x in self.dates_ages], \
                [x[1] for x in self.dates_ages], \
-               [self.pvfb(x=x[1]) for x in self.dates_ages]
+               [self.pvtc(x=x[1]) for x in self.dates_ages]
 
     def pts(self, x):
         '''
@@ -190,10 +190,13 @@ class PVFB:
     Projecting liabilities
     '''
 
-    def pvfb_proj(self, x):
-        return self.pvfb(x) * self.prob_survival(x)
+    def pvtc_proj(self, x):
+        return self.pvtc(x) * self.prob_survival(x)
 
-    def pvfb_all_ages_proj(self):
+    def pvtc_all_ages_proj(self):
         return [x[0] for x in self.dates_ages_w], \
                [x[1] for x in self.dates_ages_w], \
-               [self.pvfb_proj(x=x[1]) for x in self.dates_ages_w]
+               [self.pvtc_proj(x=x[1]) for x in self.dates_ages_w]
+
+
+
