@@ -208,7 +208,8 @@ class PVTermCost:
     With age x fixed summing up all the liabilities for this decrement 
     '''
 
-    def vec_pvfb(self, x, age_term_cost_init, age_term_cost_final):
+    def vec_pvfb(self, x, age_term_cost_init, age_term_cost_final,
+                 dif_age_last_instalment=1, dif_age_first_payment=0):
         ages_term_cost = list(range(age_term_cost_init + 1, age_term_cost_final + 1))
         dif_y = age_term_cost_init - self.y
         dates = []
@@ -218,11 +219,13 @@ class PVTermCost:
             dates.append(self.dates_ages_w[dif_y + atc_i][0])
             ages.append(self.dates_ages_w[dif_y + atc_i][1])
             self.age_of_term_cost = atc
-            self.age_last_instalment = atc - 1
-            self.age_first_payment = self.age_first_payment = atc
+            self.age_last_instalment = atc - dif_age_last_instalment
+            self.age_first_payment = atc + dif_age_first_payment
             lst_pvtc.append(self.pvtc(x))
 
         return dates, ages, lst_pvtc
 
-    def vec_pvfb_x(self, age_term_cost_init, age_term_cost_final):
-        return self.vec_pvfb(self.x, age_term_cost_init, age_term_cost_final)
+    def vec_pvfb_x(self, age_term_cost_init, age_term_cost_final,
+                   dif_age_last_instalment=1, dif_age_first_payment=0):
+        return self.vec_pvfb(self.x, age_term_cost_init, age_term_cost_final,
+                             dif_age_last_instalment, dif_age_first_payment)

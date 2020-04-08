@@ -52,13 +52,8 @@ plt.legend()
 test pvfb
 '''
 
-print(f"vec_PVBT={pvfb_d.vec_pvfb(x=x, age_term_cost_init=pvfb_d.y, age_term_cost_final=65)}")
-print(f"vec_PVBT={pvfb_d.vec_pvfb_x(age_term_cost_init=pvfb_d.y, age_term_cost_final=65)}")
-
-
-
-
-
+print(f"vec_PVBT={pvfb_d.vec_pvfb(x=x, age_term_cost_init=pvfb_d.y, age_term_cost_final=65, dif_age_last_instalment=1, dif_age_first_payment=0)}")
+print(f"vec_PVBT={pvfb_d.vec_pvfb_x(age_term_cost_init=pvfb_d.y, age_term_cost_final=65, dif_age_last_instalment=1, dif_age_first_payment=0)}")
 
 '''
 test retirement
@@ -84,6 +79,3 @@ pvfb_all_retirement = pvfb_retirement.pvtc_all_ages()
 fig, ax = fig, axs = plt.subplots()
 plt.plot(pvfb_all_retirement[1], pvfb_all_retirement[2], 'o-', label='pvfb retirement')
 plt.legend()
-
-
-
