@@ -43,7 +43,7 @@ x = 45
 print(f"PVBT({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{x})={pvfb_d.pvtc(x=x)}")
 print(f"PVBT({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{pvfb_d.x})={pvfb_d.pvtc_x()}")
 
-pvfb_all_d = pvfb_d.pvtc_all_ages()
+pvfb_all_d = pvfb_d.vec_pvtc_y_first_payment()
 fig, ax = fig, axs = plt.subplots()
 plt.plot(pvfb_all_d[1][:], pvfb_all_d[2][:], 'o-', label='pvfb disability')
 plt.legend()
@@ -51,9 +51,12 @@ plt.legend()
 '''
 test pvfb
 '''
-
-print(f"vec_PVBT={pvfb_d.vec_pvfb(x=x, age_term_cost_init=pvfb_d.y, age_term_cost_final=65, dif_age_last_instalment=1, dif_age_first_payment=0)}")
-print(f"vec_PVBT={pvfb_d.vec_pvfb_x(age_term_cost_init=pvfb_d.y, age_term_cost_final=65, dif_age_last_instalment=1, dif_age_first_payment=0)}")
+vec_pvfb_d = pvfb_d.vec_pvfb(x=x, age_term_cost_init=pvfb_d.y, age_term_cost_final=65, dif_age_last_instalment=1,
+                             dif_age_first_payment=0)
+print(f"vec_PVBT={vec_pvfb_d}")
+vec_pvfb_d_x = pvfb_d.vec_pvfb_x(age_term_cost_init=pvfb_d.y, age_term_cost_final=65, dif_age_last_instalment=1,
+                                 dif_age_first_payment=0)
+print(f"vec_PVBT={vec_pvfb_d_x}")
 
 '''
 test retirement
@@ -75,7 +78,7 @@ print(
 print(
     f"PVBT({pvfb_retirement.y}, {pvfb_retirement.x}, {pvfb_retirement.age_of_term_cost}|{pvfb_retirement.x})={pvfb_retirement.pvtc_x()}")
 
-pvfb_all_retirement = pvfb_retirement.pvtc_all_ages()
+pvfb_all_retirement = pvfb_retirement.vec_pvtc_y_first_payment()
 fig, ax = fig, axs = plt.subplots()
 plt.plot(pvfb_all_retirement[1], pvfb_all_retirement[2], 'o-', label='pvfb retirement')
 plt.legend()

@@ -46,7 +46,7 @@ print(f"PVBT({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{puc_d.x})={puc_d.pv
 # test
 test = puc_d.test()
 
-pvfb_all_d = puc_d.pvtc_all_ages()
+pvfb_all_d = puc_d.vec_pvtc_y_first_payment()
 al_all_d = puc_d.al_all_ages()
 nc_all_d = puc_d.nc_all_ages()
 fig, ax = fig, axs = plt.subplots()
@@ -62,7 +62,7 @@ plt.legend()
 
 
 # projection
-pvfb_all_d = puc_d.pvtc_all_ages_proj()
+pvfb_all_d = puc_d.vec_pvtc_y_w_proj()
 al_all_d = puc_d.al_proj_all_ages_proj()
 nc_all_d = puc_d.nc_proj_all_ages_proj()
 fig, ax = fig, axs = plt.subplots()
@@ -98,7 +98,7 @@ print(
 # test
 test = puc_retirement.test()
 
-pvfb_all_retirement = puc_retirement.pvtc_all_ages()
+pvfb_all_retirement = puc_retirement.vec_pvtc_y_first_payment()
 al_all_retirement = puc_retirement.al_all_ages()
 nc_all_retirement = puc_retirement.nc_all_ages()
 fig, ax = fig, axs = plt.subplots()
@@ -109,7 +109,7 @@ plt.title('Retirement')
 plt.legend()
 
 # projection
-pvfb_all_retirement = puc_retirement.pvtc_all_ages_proj()
+pvfb_all_retirement = puc_retirement.vec_pvtc_y_w_proj()
 al_all_retirement = puc_retirement.al_proj_all_ages_proj()
 nc_all_retirement = puc_retirement.nc_proj_all_ages_proj()
 fig, ax = fig, axs = plt.subplots()
