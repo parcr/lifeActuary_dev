@@ -40,19 +40,44 @@ puc_d.set_default_waiting_periods()
 
 # compute pvfb
 x = 45
-print(f"PVBT({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x})={puc_d.pvfb(x=x)}")
-print(f"PVBT({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{puc_d.x})={puc_d.pvfb_x()}")
+print(f"PVBT({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x})={puc_d.pvtc(x=x)}")
+print(f"PVBT({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{puc_d.x})={puc_d.pvtc_x()}")
 
-pvfb_all_d = puc_d.pvfb_all_ages()
+# test
+test = puc_d.test()
+
+pvfb_all_d = puc_d.pvtc_all_ages()
 al_all_d = puc_d.al_all_ages()
 nc_all_d = puc_d.nc_all_ages()
 fig, ax = fig, axs = plt.subplots()
-plt.plot(pvfb_all_d[1][:-1], pvfb_all_d[2][:-1], 'o-', label='pvfb disability')
-plt.plot(al_all_d[1][:-1], al_all_d[2][:-1], 'o-', label='al disability')
-plt.plot(nc_all_d[1][:-1], nc_all_d[2][:-1], 'o-', label='nc disability')
+plt.plot(pvfb_all_d[1][:], pvfb_all_d[2][:], 'o-', label='pvfb disability')
+plt.plot(al_all_d[1][:], al_all_d[2][:], 'o-', mfc='none', label='al disability')
+plt.plot(nc_all_d[1][:], nc_all_d[2][:], 'o--', mfc='none', label='nc disability')
 plt.title('Disability')
 plt.legend()
 
+# print(pvfb_all_d)
+# print(al_all_d)
+# print(nc_all_d)
+
+
+# projection
+pvfb_all_d = puc_d.pvtc_all_ages_proj()
+al_all_d = puc_d.al_proj_all_ages_proj()
+nc_all_d = puc_d.nc_proj_all_ages_proj()
+fig, ax = fig, axs = plt.subplots()
+plt.plot(pvfb_all_d[1][:], pvfb_all_d[2][:], 'o-', label='pvfb disability projected')
+plt.plot(al_all_d[1][:], al_all_d[2][:], 'o-', mfc='none', label='al disability projected')
+plt.plot(nc_all_d[1][:], nc_all_d[2][:], 'o--', mfc='none', label='nc disability projected')
+plt.title('Disability Projected')
+plt.legend()
+
+'''
+
+
+
+Retirement
+'''
 print('\n')
 print('Testing for Retirement at 65')
 age_retirement_65 = age.Age(date1=dict_dates['date_of_birth'], date2=dict_dates['date_of_birth']).date_inc_years(65)
@@ -66,18 +91,31 @@ puc_retirement.set_default_waiting_periods()
 # compute pvfb
 x = 65
 print(
-    f"PVBT({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{x})={puc_retirement.pvfb(x=x)}")
+    f"PVBT({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{x})={puc_retirement.pvtc(x=x)}")
 print(
-    f"PVBT({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{puc_retirement.x})={puc_retirement.pvfb_x()}")
+    f"PVBT({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{puc_retirement.x})={puc_retirement.pvtc_x()}")
 
-pvfb_all_retirement = puc_retirement.pvfb_all_ages()
+# test
+test = puc_retirement.test()
+
+pvfb_all_retirement = puc_retirement.pvtc_all_ages()
 al_all_retirement = puc_retirement.al_all_ages()
 nc_all_retirement = puc_retirement.nc_all_ages()
 fig, ax = fig, axs = plt.subplots()
 plt.plot(pvfb_all_retirement[1], pvfb_all_retirement[2], 'o-', label='pvfb retirement')
-plt.plot(al_all_retirement[1], al_all_retirement[2], 'o-', label='al retirement')
-plt.plot(nc_all_retirement[1], nc_all_retirement[2], 'o-', label='nc retirement')
+plt.plot(al_all_retirement[1], al_all_retirement[2], 'o-', mfc='none', label='al retirement')
+plt.plot(nc_all_retirement[1], nc_all_retirement[2], 'o-', mfc='none', label='nc retirement')
 plt.title('Retirement')
 plt.legend()
 
+# projection
+pvfb_all_retirement = puc_retirement.pvtc_all_ages_proj()
+al_all_retirement = puc_retirement.al_proj_all_ages_proj()
+nc_all_retirement = puc_retirement.nc_proj_all_ages_proj()
+fig, ax = fig, axs = plt.subplots()
+plt.plot(pvfb_all_retirement[1][:], pvfb_all_retirement[2][:], 'o-', label='pvfb retirement projected')
+plt.plot(al_all_retirement[1][:], al_all_retirement[2][:], 'o-', mfc='none', label='al retirement projected')
+plt.plot(nc_all_retirement[1][:], nc_all_retirement[2][:], 'o--', mfc='none', label='nc retirement projected')
+plt.title('Retirement Projected')
+plt.legend()
 plt.show()
