@@ -14,7 +14,7 @@ class PUC(PVTermCost):
 
     def al(self, x):
         if x > self.age_first_instalment:
-            return self.pvtc(x=x) * self.pts_nc(x) / self.tts_nc()
+            return self.pvftc(x=x) * self.pts_nc(x) / self.tts_nc()
         return 0
 
     def al_x(self):
@@ -27,7 +27,7 @@ class PUC(PVTermCost):
 
     def nc(self, x):
         if self.age_first_instalment <= x <= self.age_last_instalment:
-            return self.pvtc(x=x) / self.tts_nc()
+            return self.pvftc(x=x) / self.tts_nc()
         return 0
 
     def nc_x(self):
@@ -67,6 +67,6 @@ class PUC(PVTermCost):
             nc * self.multi_table.net_table.tpx(self.y, t=nc_i, method='udd') * np.power(self.v, nc_i)
             for nc_i, nc in enumerate(all_nc[2])]
         sum_discount_nc_y = sum(discount_nc_y)
-        pvfb_y = self.pvtc(self.y)
+        pvfb_y = self.pvftc(self.y)
         abs_dif = pvfb_y - sum_discount_nc_y
         return sum_discount_nc_y, abs_dif, abs(abs_dif) < 1e-16

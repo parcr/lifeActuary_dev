@@ -40,17 +40,17 @@ puc_d.set_default_waiting_periods()
 
 # compute pvfb
 x = 45
-print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{puc_d.y})={puc_d.pvtc(x=puc_d.y)}")
-print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x})={puc_d.pvtc(x=x)}")
+print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{puc_d.y})={puc_d.pvftc(x=puc_d.y)}")
+print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x})={puc_d.pvftc(x=x)}")
 print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{puc_d.x})={puc_d.pvtc_x()}")
 x_1=54
-print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x_1})={puc_d.pvtc(x=x_1)}")
+print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x_1})={puc_d.pvftc(x=x_1)}")
 x_1=55
-print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x_1})={puc_d.pvtc(x=x_1)}")
+print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x_1})={puc_d.pvftc(x=x_1)}")
 x_1=56
-print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x_1})={puc_d.pvtc(x=x_1)}")
+print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x_1})={puc_d.pvftc(x=x_1)}")
 x_1=60
-print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x_1})={puc_d.pvtc(x=x_1)}")
+print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x_1})={puc_d.pvftc(x=x_1)}")
 
 # test
 test = puc_d.test()
@@ -101,7 +101,7 @@ puc_retirement.set_default_waiting_periods()
 # compute pvfb
 x = 65
 print(
-    f"PVTC({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{x})={puc_retirement.pvtc(x=x)}")
+    f"PVTC({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{x})={puc_retirement.pvftc(x=x)}")
 print(
     f"PVTC({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{puc_retirement.x})={puc_retirement.pvtc_x()}")
 
