@@ -108,3 +108,9 @@ print()
 vec_pvfb_retirement_x = pvfb_retirement.vec_pvfb_x(age_term_cost_init=65, age_term_cost_final=65,
                                                    dif_age_last_instalment=1, dif_age_first_payment=0)
 print(f"vec_PVBT={vec_pvfb_retirement_x}")
+print()
+x = 65
+vec_pvfb_retirement = pvfb_retirement.vec_pvfb(x=x, age_term_cost_init=65, age_term_cost_final=65,
+                                               dif_age_last_instalment=1, dif_age_first_payment=0)
+print(f"vec_PVBT={vec_pvfb_retirement}")
+
