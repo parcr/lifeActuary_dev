@@ -43,7 +43,7 @@ class PUC(PVTermCost):
     def al_proj(self, x):
         return self.al(x) * self.prob_survival(x)
 
-    def al_proj_all_ages_proj(self):
+    def al_y_w_proj(self):
         return [x[0] for x in self.dates_ages_w], \
                [x[1] for x in self.dates_ages_w], \
                [self.al_proj(x=x[1]) for x in self.dates_ages_w]
@@ -51,12 +51,12 @@ class PUC(PVTermCost):
     def nc_proj(self, x):
         return self.nc(x) * self.prob_survival(x)
 
-    def nc_proj_all_ages_proj(self):
+    def nc_y_w_proj(self):
         return [x[0] for x in self.dates_ages_w], \
                [x[1] for x in self.dates_ages_w], \
                [self.nc_proj(x=x[1]) for x in self.dates_ages_w]
 
-    def test(self):
+    def test(self):  # todo: pass control to log when there is an error
         '''
         Confirms that this is a valid amortization scheme
         :return: sum of the present values of the instalments, difference between the liability and the sum
