@@ -55,9 +55,13 @@ vec_pvfb_d = pvfb_d.vec_pvfb(x=x, age_term_cost_init=pvfb_d.y + 1, age_term_cost
                              dif_age_last_instalment=1, dif_age_first_payment=0)
 print(f"vec_PVBT={vec_pvfb_d}")
 print()
-vec_pvfb_d_x = pvfb_d.vec_pvfb_x(age_term_cost_init=pvfb_d.y, age_term_cost_final=65,
+vec_pvfb_d_x = pvfb_d.vec_pvfb_x(age_term_cost_init=pvfb_d.y + 1, age_term_cost_final=65,
                                  dif_age_last_instalment=1, dif_age_first_payment=0)
 print(f"vec_PVBT={vec_pvfb_d_x}")
+
+vec_pvfb_y_w_proj = pvfb_d.vec_pvfb_y_w_proj(age_term_cost_init=pvfb_d.y + 1, age_term_cost_final=65,
+                                             dif_age_last_instalment=1, dif_age_first_payment=0)
+print(f"vec_pvfb_y_w_proj_disability {vec_pvfb_y_w_proj}")
 
 '''
 
@@ -90,8 +94,6 @@ print(f"PVTC({pvfb_retirement.y}, {pvfb_retirement.x}, "
       f"{pvfb_retirement.age_of_term_cost}|{x})={pvfb_retirement.pvftc(x=x)}")
 print()
 
-
-
 pvfb_all_retirement = pvfb_retirement.vec_pvtc_y_first_payment()
 fig, ax = fig, axs = plt.subplots()
 plt.plot(pvfb_all_retirement[1], pvfb_all_retirement[2], 'o-', label='pvfb retirement')
@@ -113,4 +115,3 @@ x = 65
 vec_pvfb_retirement = pvfb_retirement.vec_pvfb(x=x, age_term_cost_init=65, age_term_cost_final=65,
                                                dif_age_last_instalment=1, dif_age_first_payment=0)
 print(f"vec_PVBT={vec_pvfb_retirement}")
-

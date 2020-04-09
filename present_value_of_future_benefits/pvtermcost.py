@@ -254,3 +254,23 @@ class PVTermCost:
         '''
         return self.vec_pvfb(self.x, age_term_cost_init, age_term_cost_final,
                              dif_age_last_instalment, dif_age_first_payment)
+
+    '''
+    With age x fixed summing up all the projected liabilities for this decrement 
+    '''
+
+    def vec_pvfb_y_w_proj(self, age_term_cost_init, age_term_cost_final,
+                          dif_age_last_instalment=1, dif_age_first_payment=0):
+        ages_term_cost = list(range(age_term_cost_init, age_term_cost_final + 1))
+        vec_pvtc_y_w_proj = np.zeros(len(self.dates_ages_w))
+        for year_i, year in enumerate(self.dates_ages_w):
+            if self.dates_ages_w[year_i][1] in ages_term_cost:
+                atc = self.dates_ages_w[year_i][1]
+                self.age_of_term_cost = atc
+                self.age_last_instalment = atc - dif_age_last_instalment
+                self.age_first_payment = atc + dif_age_first_payment
+                vec_pvtc_y_w_proj += np.array(self.vec_pvtc_y_w_proj()[2])
+        vec = [x[0] for x in self.dates_ages_w], \
+              [x[1] for x in self.dates_ages_w], \
+              list(vec_pvtc_y_w_proj)
+        return vec
