@@ -40,13 +40,23 @@ puc_d.set_default_waiting_periods()
 
 # compute pvfb
 x = 45
-print(f"PVBT({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x})={puc_d.pvtc(x=x)}")
-print(f"PVBT({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{puc_d.x})={puc_d.pvtc_x()}")
+print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{puc_d.y})={puc_d.pvftc(x=puc_d.y)}")
+print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x})={puc_d.pvftc(x=x)}")
+print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{puc_d.x})={puc_d.pvtc_x()}")
+x_1=54
+print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x_1})={puc_d.pvftc(x=x_1)}")
+x_1=55
+print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x_1})={puc_d.pvftc(x=x_1)}")
+x_1=56
+print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x_1})={puc_d.pvftc(x=x_1)}")
+x_1=60
+print(f"PVTC({puc_d.y}, {puc_d.x}, {puc_d.age_of_term_cost}|{x_1})={puc_d.pvftc(x=x_1)}")
 
 # test
 test = puc_d.test()
+print(f"Test NC in disability {test}")
 
-pvfb_all_d = puc_d.pvtc_all_ages()
+pvfb_all_d = puc_d.vec_pvtc_y_first_payment()
 al_all_d = puc_d.al_all_ages()
 nc_all_d = puc_d.nc_all_ages()
 fig, ax = fig, axs = plt.subplots()
@@ -62,7 +72,7 @@ plt.legend()
 
 
 # projection
-pvfb_all_d = puc_d.pvtc_all_ages_proj()
+pvfb_all_d = puc_d.vec_pvtc_y_w_proj()
 al_all_d = puc_d.al_proj_all_ages_proj()
 nc_all_d = puc_d.nc_proj_all_ages_proj()
 fig, ax = fig, axs = plt.subplots()
@@ -91,14 +101,15 @@ puc_retirement.set_default_waiting_periods()
 # compute pvfb
 x = 65
 print(
-    f"PVBT({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{x})={puc_retirement.pvtc(x=x)}")
+    f"PVTC({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{x})={puc_retirement.pvftc(x=x)}")
 print(
-    f"PVBT({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{puc_retirement.x})={puc_retirement.pvtc_x()}")
+    f"PVTC({puc_retirement.y}, {puc_retirement.x}, {puc_retirement.age_of_term_cost}|{puc_retirement.x})={puc_retirement.pvtc_x()}")
 
 # test
 test = puc_retirement.test()
+print(f"Test NC in retirement {test}")
 
-pvfb_all_retirement = puc_retirement.pvtc_all_ages()
+pvfb_all_retirement = puc_retirement.vec_pvtc_y_first_payment()
 al_all_retirement = puc_retirement.al_all_ages()
 nc_all_retirement = puc_retirement.nc_all_ages()
 fig, ax = fig, axs = plt.subplots()
@@ -109,7 +120,7 @@ plt.title('Retirement')
 plt.legend()
 
 # projection
-pvfb_all_retirement = puc_retirement.pvtc_all_ages_proj()
+pvfb_all_retirement = puc_retirement.vec_pvtc_y_w_proj()
 al_all_retirement = puc_retirement.al_proj_all_ages_proj()
 nc_all_retirement = puc_retirement.nc_proj_all_ages_proj()
 fig, ax = fig, axs = plt.subplots()

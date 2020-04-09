@@ -83,7 +83,7 @@ def transition_matrix_n(transition_info, x1, x2, init_state=None):
 
 
 mat = transition_matrix_1(transition_info, x=45)
-mat_n = transition_matrix_n(transition_info, 0, 106, np.array([1, 0, 0, 0]))
+mat_n = transition_matrix_n(transition_info, 45, 106, np.array([1000, 100, 200, 50]))
 init_pop = np.array((1000, 0, 0, 0))
 final_pop = np.dot(mat_n[0].transpose(), init_pop)
 

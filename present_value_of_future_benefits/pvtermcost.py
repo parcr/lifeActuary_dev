@@ -114,9 +114,9 @@ class PVTermCost:
                                                                           t=x - self.age_of_term_cost, method='udd')
         return tpx_T
 
-    def pvtc(self, x):
+    def pvftc(self, x):
         '''
-        Computes the Present Value of the Term Cost, that will allow us to use for all amortization schemes
+        Computes the Present Value of a Future Term Cost, that will allow us to use for all amortization schemes
         :param x: the age fo life (x). We consider that (x) is alive and if the decrement happens, it will be moved to
         to the other state. Hence, if there is a wanting period between the decrement occurrence and the first payment
         (x) should already be placed in the state corresponding to the decrement.
@@ -151,12 +151,12 @@ class PVTermCost:
         return pvft
 
     def pvtc_x(self):
-        return self.pvtc(self.x)
+        return self.pvftc(self.x)
 
-    def pvtc_all_ages(self):
+    def vec_pvtc_y_first_payment(self):
         return [x[0] for x in self.dates_ages], \
                [x[1] for x in self.dates_ages], \
-               [self.pvtc(x=x[1]) for x in self.dates_ages]
+               [self.pvftc(x=x[1]) for x in self.dates_ages]
 
     def pts(self, x):
         '''
@@ -197,9 +197,13 @@ class PVTermCost:
     '''
 
     def pvtc_proj(self, x):
-        return self.pvtc(x) * self.prob_survival(x)
+        return self.pvftc(x) * self.prob_survival(x)
 
-    def pvtc_all_ages_proj(self):
+    def vec_pvtc_y_w_proj(self):
+        '''
+        Computes the projected Present Value for a specific term cost
+        :return:
+        '''
         return [x[0] for x in self.dates_ages_w], \
                [x[1] for x in self.dates_ages_w], \
                [self.pvtc_proj(x=x[1]) for x in self.dates_ages_w]
@@ -208,21 +212,65 @@ class PVTermCost:
     With age x fixed summing up all the liabilities for this decrement 
     '''
 
-    def vec_pvfb(self, x, age_term_cost_init, age_term_cost_final):
-        ages_term_cost = list(range(age_term_cost_init + 1, age_term_cost_final + 1))
-        dif_y = age_term_cost_init - self.y
-        dates = []
-        ages = []
+    def vec_pvfb(self, x, age_term_cost_init, age_term_cost_final,
+                 dif_age_last_instalment=1, dif_age_first_payment=0):
+        '''
+        Computes at age x, the Present value of each of the past and future terms costs relative to the decrement
+        :param x:
+        :param age_term_cost_init:
+        :param age_term_cost_final:
+        :param dif_age_last_instalment:
+        :param dif_age_first_payment:
+        :return:
+        '''
+        ages_term_cost = list(range(age_term_cost_init, age_term_cost_final + 1))
         lst_pvtc = []
-        for atc_i, atc in enumerate(ages_term_cost):
-            dates.append(self.dates_ages_w[dif_y + atc_i][0])
-            ages.append(self.dates_ages_w[dif_y + atc_i][1])
-            self.age_of_term_cost = atc
-            self.age_last_instalment = atc - 1
-            self.age_first_payment = self.age_first_payment = atc
-            lst_pvtc.append(self.pvtc(x))
+        sum_pvftc = 0
+        for year_i, year in enumerate(self.dates_ages_w):
+            if self.dates_ages_w[year_i][1] in ages_term_cost:
+                atc = self.dates_ages_w[year_i][1]
+                self.age_of_term_cost = atc
+                self.age_last_instalment = atc - dif_age_last_instalment
+                self.age_first_payment = atc + dif_age_first_payment
+                pvtc = self.pvftc(x)
+                if x < self.dates_ages_w[year_i][1]:
+                    sum_pvftc += pvtc
+                lst_pvtc.append(self.dates_ages_w[year_i] + (pvtc,))
+            else:
+                lst_pvtc.append(self.dates_ages_w[year_i] + (0,))
+        info_pvftc = (self.age_date_of_valuation.date2.year + (x - self.x), x, sum_pvftc)
+        dic_pvtc = {'pvtc_per_year': lst_pvtc, 'sum_pvftc': info_pvftc}
+        return dic_pvtc
 
-        return dates, ages, lst_pvtc
+    def vec_pvfb_x(self, age_term_cost_init, age_term_cost_final,
+                   dif_age_last_instalment=1, dif_age_first_payment=0):
+        '''
+        Computes valuation date, the Present value of each of the future terms costs relative to the decrement
+        :param age_term_cost_init:
+        :param age_term_cost_final:
+        :param dif_age_last_instalment:
+        :param dif_age_first_payment:
+        :return:
+        '''
+        return self.vec_pvfb(self.x, age_term_cost_init, age_term_cost_final,
+                             dif_age_last_instalment, dif_age_first_payment)
 
-    def vec_pvfb_x(self, age_term_cost_init, age_term_cost_final):
-        return self.vec_pvfb(self.x, age_term_cost_init, age_term_cost_final)
+    '''
+    With age x fixed summing up all the projected liabilities for this decrement 
+    '''
+
+    def vec_pvfb_y_w_proj(self, age_term_cost_init, age_term_cost_final,
+                          dif_age_last_instalment=1, dif_age_first_payment=0):
+        ages_term_cost = list(range(age_term_cost_init, age_term_cost_final + 1))
+        vec_pvtc_y_w_proj = np.zeros(len(self.dates_ages_w))
+        for year_i, year in enumerate(self.dates_ages_w):
+            if self.dates_ages_w[year_i][1] in ages_term_cost:
+                atc = self.dates_ages_w[year_i][1]
+                self.age_of_term_cost = atc
+                self.age_last_instalment = atc - dif_age_last_instalment
+                self.age_first_payment = atc + dif_age_first_payment
+                vec_pvtc_y_w_proj += np.array(self.vec_pvtc_y_w_proj()[2])
+        vec = [x[0] for x in self.dates_ages_w], \
+              [x[1] for x in self.dates_ages_w], \
+              list(vec_pvtc_y_w_proj)
+        return vec
