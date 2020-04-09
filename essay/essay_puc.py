@@ -73,8 +73,8 @@ plt.legend()
 
 # projection
 pvfb_all_d = puc_d.vec_pvtc_y_w_proj()
-al_all_d = puc_d.al_proj_all_ages_proj()
-nc_all_d = puc_d.nc_proj_all_ages_proj()
+al_all_d = puc_d.al_y_w_proj()
+nc_all_d = puc_d.nc_y_w_proj()
 fig, ax = fig, axs = plt.subplots()
 plt.plot(pvfb_all_d[1][:], pvfb_all_d[2][:], 'o-', label='pvfb disability projected')
 plt.plot(al_all_d[1][:], al_all_d[2][:], 'o-', mfc='none', label='al disability projected')
@@ -121,8 +121,8 @@ plt.legend()
 
 # projection
 pvfb_all_retirement = puc_retirement.vec_pvtc_y_w_proj()
-al_all_retirement = puc_retirement.al_proj_all_ages_proj()
-nc_all_retirement = puc_retirement.nc_proj_all_ages_proj()
+al_all_retirement = puc_retirement.al_y_w_proj()
+nc_all_retirement = puc_retirement.nc_y_w_proj()
 fig, ax = fig, axs = plt.subplots()
 plt.plot(pvfb_all_retirement[1][:], pvfb_all_retirement[2][:], 'o-', label='pvfb retirement projected')
 plt.plot(al_all_retirement[1][:], al_all_retirement[2][:], 'o-', mfc='none', label='al retirement projected')
