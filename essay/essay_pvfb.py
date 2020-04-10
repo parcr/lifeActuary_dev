@@ -40,8 +40,9 @@ pvfb_d.set_default_waiting_periods()
 
 # compute pvfb
 x = 45
-print(f"PVTC({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{x})={pvfb_d.pvftc(x=x)}")
+print(f"PVTC({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{pvfb_d.y})={pvfb_d.pvftc(x=pvfb_d.y)}")
 print(f"PVTC({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{pvfb_d.x})={pvfb_d.pvtc_x()}")
+print(f"PVTC({pvfb_d.y}, {pvfb_d.x}, {pvfb_d.age_of_term_cost}|{x})={pvfb_d.pvftc(x=x)}")
 
 pvfb_all_d = pvfb_d.vec_pvtc_y_first_payment()
 fig, ax = fig, axs = plt.subplots()
@@ -53,12 +54,12 @@ test pvfb
 '''
 vec_pvfb_d = pvfb_d.vec_pvfb(x=x, age_term_cost_init=pvfb_d.y + 1, age_term_cost_final=65,
                              dif_age_last_instalment=1, dif_age_first_payment=0)
-print(f"vec_PVBT={vec_pvfb_d}")
+print(f"vec_PVFB={vec_pvfb_d}")
 print()
 vec_pvfb_d_x = pvfb_d.vec_pvfb_x(age_term_cost_init=pvfb_d.y + 1, age_term_cost_final=65,
                                  dif_age_last_instalment=1, dif_age_first_payment=0)
-print(f"vec_PVBT={vec_pvfb_d_x}")
-
+print(f"vec_PVFB={vec_pvfb_d_x}")
+print()
 vec_pvfb_y_w_proj = pvfb_d.vec_pvfb_y_w_proj(age_term_cost_init=pvfb_d.y + 1, age_term_cost_final=65,
                                              dif_age_last_instalment=1, dif_age_first_payment=0)
 print(f"vec_pvfb_y_w_proj_disability {vec_pvfb_y_w_proj}")
@@ -105,13 +106,20 @@ test pvfb
 x = 45
 vec_pvfb_retirement = pvfb_retirement.vec_pvfb(x=x, age_term_cost_init=65, age_term_cost_final=65,
                                                dif_age_last_instalment=1, dif_age_first_payment=0)
-print(f"vec_PVBT={vec_pvfb_retirement}")
+print(f"vec_PVTC={vec_pvfb_retirement}")
 print()
 vec_pvfb_retirement_x = pvfb_retirement.vec_pvfb_x(age_term_cost_init=65, age_term_cost_final=65,
                                                    dif_age_last_instalment=1, dif_age_first_payment=0)
-print(f"vec_PVBT={vec_pvfb_retirement_x}")
+print(f"vec_PVTC={vec_pvfb_retirement_x}")
 print()
 x = 65
 vec_pvfb_retirement = pvfb_retirement.vec_pvfb(x=x, age_term_cost_init=65, age_term_cost_final=65,
                                                dif_age_last_instalment=1, dif_age_first_payment=0)
-print(f"vec_PVBT={vec_pvfb_retirement}")
+print(f"vec_PVTC={vec_pvfb_retirement}")
+
+print()
+vec_pvfb_y_w_proj = pvfb_retirement.vec_pvfb_y_w_proj(age_term_cost_init=pvfb_d.y + 1, age_term_cost_final=65,
+                                             dif_age_last_instalment=1, dif_age_first_payment=0)
+print(f"vec_pvfb_y_w_proj_disability {vec_pvfb_y_w_proj}")
+
+

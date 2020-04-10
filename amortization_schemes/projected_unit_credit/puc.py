@@ -38,7 +38,28 @@ class PUC(PVTermCost):
                [x[1] for x in self.dates_ages], \
                [self.nc(x=x[1]) for x in self.dates_ages]
 
-    '''projections'''
+    '''
+    Testing if the method allows for a correct and full amortization
+    '''
+
+    def test(self):  # todo: pass control to log when there is an error
+        '''
+        Confirms that this is a valid amortization scheme
+        :return: sum of the present values of the instalments, difference between the liability and the sum
+        of the present values of the instalments and a boolean to check if the difference is smaller than 1e-16
+        '''
+        all_nc = self.nc_all_ages()
+        discount_nc_y = [
+            nc * self.multi_table.net_table.tpx(self.y, t=nc_i, method='udd') * np.power(self.v, nc_i)
+            for nc_i, nc in enumerate(all_nc[2])]
+        sum_discount_nc_y = sum(discount_nc_y)
+        pvfb_y = self.pvftc(self.y)
+        abs_dif = pvfb_y - sum_discount_nc_y
+        return sum_discount_nc_y, abs_dif, abs(abs_dif) < 1e-16
+
+    '''
+    Projections
+    '''
 
     def al_proj(self, x):
         return self.al(x) * self.prob_survival(x)
@@ -55,18 +76,3 @@ class PUC(PVTermCost):
         return [x[0] for x in self.dates_ages_w], \
                [x[1] for x in self.dates_ages_w], \
                [self.nc_proj(x=x[1]) for x in self.dates_ages_w]
-
-    def test(self):  # todo: pass control to log when there is an error
-        '''
-        Confirms that this is a valid amortization scheme
-        :return: sum of the present values of the instalments, difference between the liability and the sum
-        of the present values of the instalments and a boolean to check if the difference is smaller than 1e-16
-        '''
-        all_nc = self.nc_all_ages()
-        discount_nc_y = [
-            nc * self.multi_table.net_table.tpx(self.y, t=nc_i, method='udd') * np.power(self.v, nc_i)
-            for nc_i, nc in enumerate(all_nc[2])]
-        sum_discount_nc_y = sum(discount_nc_y)
-        pvfb_y = self.pvftc(self.y)
-        abs_dif = pvfb_y - sum_discount_nc_y
-        return sum_discount_nc_y, abs_dif, abs(abs_dif) < 1e-16
