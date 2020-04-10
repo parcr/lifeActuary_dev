@@ -43,3 +43,29 @@ ages_w = pvfb_d.create_dates_ages_w()
 x = pvfb_d.y
 pvtc = pvfb_d.pvftc_proj(x=x, px=x)
 print(pvtc)
+x = pvfb_d.x
+pvtc = pvfb_d.pvftc_proj(x=x, px=x)
+print(pvtc)
+x = pvfb_d.x + 3
+pvtc = pvfb_d.pvftc_proj(x=x, px=x)
+print(pvtc)
+x = pvfb_d.age_of_term_cost - 1
+pvtc = pvfb_d.pvftc_proj(x=x, px=x)
+print(pvtc)
+x = pvfb_d.age_of_term_cost
+pvtc = pvfb_d.pvftc_proj(x=x, px=x)
+print(pvtc)
+x = pvfb_d.age_of_term_cost + 1
+pvtc = pvfb_d.pvftc_proj(x=x, px=x)
+print(pvtc)
+x = pvfb_d.age_of_term_cost + 5
+pvtc = pvfb_d.pvftc_proj(x=x, px=x)
+print(pvtc)
+
+'''
+
+'''
+print('\nSums\n')
+x = pvfb_d.y
+pvtc=pvfb_d.sum_pvftc_proj(x=x, px=x, age_term_cost_init=pvfb_d.y+1, age_term_cost_final=65, waiting=0)
+print(pvtc)

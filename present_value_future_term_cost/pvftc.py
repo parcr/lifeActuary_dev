@@ -49,6 +49,14 @@ class PVTermCost:
         self.waiting = None
         self.dates_ages_w = None
 
+    @property
+    def age_term_cost(self):
+        return self.__age_term_cost
+
+    @age_term_cost.setter
+    def age_term_cost(self):
+        AQUI
+
     def create_dates_ages_w(self):
         '''
         Creates all dates and ages from y to the largest w, expectedly the mortality table's w.
@@ -64,7 +72,8 @@ class PVTermCost:
     def set_waiting_period(self, w=0):
         self.age_first_payment = self.age_of_term_cost + w
         self.waiting = w
-        self.create_dates_ages_w()
+        if self.dates_ages_w is None:
+            self.create_dates_ages_w()
 
     def prob_survival(self, x1, x2):
         '''
@@ -140,10 +149,18 @@ class PVTermCost:
 
         d = {'entry_year': self.dates_ages_w[0][0], 'entry_age': self.y,
              'year': self.dates_ages_w[dif_ages][0], 'age': self.dates_ages_w[dif_ages][1],
-             'year_p': self.dates_ages_w[dif_ages + dif_ages][0], 'age_p': self.dates_ages_w[dif_ages + dif_ages][1],
+             'year_p': self.dates_ages_w[dif_ages][0], 'age_p': self.dates_ages_w[dif_ages][1],
              'age_term_cost': self.age_of_term_cost, 'age_first_payment': self.age_first_payment,
              'past_time_service_years': self.past_time_service_years + x - self.x,
              'futute_time_service_years': self.future_time_service_years - (x - self.x),
              'pvftc': pvftc, 'prob_surv_px': p, 'pvftc_p': pvftc * p}
-
         return d
+
+    def sum_pvftc_proj(self, x, px, age_term_cost_init, age_term_cost_final, waiting=0):
+        lst_tc_pj = []
+        ages_term_costs = list(range(age_term_cost_init, age_term_cost_final + 1))
+        for atc in ages_term_costs:
+            self.age_of_term_cost = atc
+            self.set_waiting_period(w=waiting)
+            lst_tc_pj.append(self.pvftc_proj(x, px))
+        return lst_tc_pj
