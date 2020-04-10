@@ -227,17 +227,17 @@ class PVTermCost:
         lst_pvtc = []
         sum_pvftc = 0
         for year_i, year in enumerate(self.dates_ages_w):
-            if self.dates_ages_w[year_i][1] in ages_term_cost:
+            is_zero = self.dates_ages_w[year_i][1] not in ages_term_cost
+            pvtc = 0
+            if not is_zero:
                 atc = self.dates_ages_w[year_i][1]
                 self.age_of_term_cost = atc
                 self.age_last_instalment = atc - dif_age_last_instalment
                 self.age_first_payment = atc + dif_age_first_payment
                 pvtc = self.pvftc(x)
-                if x < self.dates_ages_w[year_i][1]:
-                    sum_pvftc += pvtc
-                lst_pvtc.append(self.dates_ages_w[year_i] + (pvtc,))
-            else:
-                lst_pvtc.append(self.dates_ages_w[year_i] + (0,))
+            if x < self.dates_ages_w[year_i][1]:
+                sum_pvftc += pvtc
+            lst_pvtc.append(self.dates_ages_w[year_i] + (pvtc,))
         info_pvftc = (self.age_date_of_valuation.date2.year + (x - self.x), x, sum_pvftc)
         dic_pvtc = {'pvtc_per_year': lst_pvtc, 'sum_pvftc': info_pvftc}
         return dic_pvtc
@@ -264,13 +264,15 @@ class PVTermCost:
         ages_term_cost = list(range(age_term_cost_init, age_term_cost_final + 1))
         vec_pvtc_y_w_proj = np.zeros(len(self.dates_ages_w))
         for year_i, year in enumerate(self.dates_ages_w):
-            if self.dates_ages_w[year_i][1] in ages_term_cost:
+            is_zero = self.dates_ages_w[year_i][1] not in ages_term_cost
+            if not is_zero:
                 atc = self.dates_ages_w[year_i][1]
                 self.age_of_term_cost = atc
                 self.age_last_instalment = atc - dif_age_last_instalment
                 self.age_first_payment = atc + dif_age_first_payment
                 vec_pvtc_y_w_proj += np.array(self.vec_pvtc_y_w_proj()[2])
-        vec = [x[0] for x in self.dates_ages_w], \
-              [x[1] for x in self.dates_ages_w], \
-              list(vec_pvtc_y_w_proj)
-        return vec
+        lst_pvfb = [(y[0], y[1], vec_pvtc_y_w_proj[y[1] - self.y]) for y
+                    in self.dates_ages_w]
+        info_pvfb = ((self.age_date_of_valuation.date2.year, self.x, vec_pvtc_y_w_proj[self.x - self.y]))
+        dic_pvtc = {'pvfb_per_year': lst_pvfb, 'sum_pvfb': info_pvfb}
+        return dic_pvtc
