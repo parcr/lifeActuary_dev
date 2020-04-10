@@ -6,7 +6,7 @@ import age
 
 class PVTermCost:
     def __init__(self, date_of_valuation, date_of_birth, date_of_entry,
-                 age_of_term_cost,
+                 age_of_term_cost, age_first_payment=None,
                  multi_table=None, decrement=None,
                  i=None,
                  age_of_projection=None):
@@ -17,6 +17,8 @@ class PVTermCost:
         :param date_of_birth: date of birth
         :param date_of_entry: date of entry
         :param age_of_term_cost: date of the first payment of the term cost
+        :param age_first_payment: how many periods, after the age of the term cost, until the first payment
+        of the term cost
         :param multi_table: the net table, that is, the multidecrement table used
         :param decrement: the decrement that originates the payment
         :param i: the technical rate of interest
@@ -28,14 +30,12 @@ class PVTermCost:
         self.date_of_birth = date_of_birth
         self.date_of_entry = date_of_entry
         self.age_of_term_cost = age_of_term_cost
-        self.age_of_projection = age_of_projection
+        self.age_first_payment = age_first_payment
         self.multi_table = multi_table
         self.decrement = decrement
         self.i = i / 100,
+        self.age_of_projection = age_of_projection
         self.v = 1 / (1 + i / 100)
-        self.age_first_instalment = None
-        self.age_last_instalment = None
-        self.age_first_payment = None
 
         self.age_date_of_entry = age.Age(date1=date_of_birth, date2=date_of_entry)
         self.age_date_of_valuation = age.Age(date1=self.date_of_birth, date2=self.date_of_valuation)
@@ -47,6 +47,7 @@ class PVTermCost:
         self.future_time_service_years = self.age_of_term_cost - self.x
         self.total_time_service_years = self.age_of_term_cost - self.y
         self.waiting = None
+        self.dates_ages_w = None
 
     def create_dates_ages_w(self):
         '''
@@ -58,7 +59,12 @@ class PVTermCost:
         dates_ages_w = [(age.Age(date1=self.date_of_valuation,
                                  date2=self.date_of_valuation).date_inc_years(j).date2.year, self.x + j)
                         for j in range(-self.past_time_service_years, max_w - self.x + 1)]
-        return dates_ages_w
+        self.dates_ages_w = dates_ages_w
+
+    def set_waiting_period(self, w=0):
+        self.age_first_payment = self.age_of_term_cost + w
+        self.waiting = w
+        self.create_dates_ages_w()
 
     def prob_survival(self, x1, x2):
         '''
@@ -97,12 +103,23 @@ class PVTermCost:
                                                                                method='udd')
         else:
             q_d_x = 1
-        if x >= self.age_of_term_cost: return q_d_x  # full amortization
-        if self.decrement:
-            tpx_T = self.multi_table.net_table.tpx(x, t=self.age_of_term_cost - x - 1, method='udd')
-        else:
-            tpx_T = self.multi_table.net_table.tpx(x, t=self.age_of_term_cost - x, method='udd')
-        pvft = tpx_T * q_d_x * np.power(self.v, self.age_of_term_cost - x)
+        if x >= self.age_first_payment: return q_d_x  # full amortization
+        if self.y <= x < self.age_of_term_cost:
+            if self.decrement:
+                tpx_T = self.multi_table.net_table.tpx(x, t=self.age_of_term_cost - x - 1, method='udd')
+            else:
+                tpx_T = self.multi_table.net_table.tpx(x, t=self.age_of_term_cost - x, method='udd')
+            pvft = tpx_T * q_d_x * np.power(self.v, self.age_of_term_cost - x)
+            if self.waiting > 0:
+                tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x=self.age_of_term_cost, t=self.waiting,
+                                                                            method='udd')
+                deferment = tpx * np.power(self.v, self.waiting)
+                pvft *= deferment
+        else:  # no more instalments but still compounding until the first payment
+            waiting = self.age_first_payment - x
+            tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x, t=waiting, method='udd')
+            deferment = np.power(self.v, waiting)
+            pvft = q_d_x * tpx * deferment
         return pvft
 
     def pvftc_proj(self, x, px):
@@ -117,11 +134,16 @@ class PVTermCost:
         :param px: the age where we project
         :return: The Present Value of Future Benefits
         '''
-        ages_y_w = self.create_dates_ages_w()
-        dif_ages = px - self.y
+        dif_ages = x - self.y
         pvftc = self.pvftc(x)
         p = self.prob_survival(x, px)
 
-        d = {'year': ages_y_w[dif_ages], 'pvftc': pvftc, 'prob_surv_px': p}
+        d = {'entry_year': self.dates_ages_w[0][0], 'entry_age': self.y,
+             'year': self.dates_ages_w[dif_ages][0], 'age': self.dates_ages_w[dif_ages][1],
+             'year_p': self.dates_ages_w[dif_ages + dif_ages][0], 'age_p': self.dates_ages_w[dif_ages + dif_ages][1],
+             'age_term_cost': self.age_of_term_cost, 'age_first_payment': self.age_first_payment,
+             'past_time_service_years': self.past_time_service_years + x - self.x,
+             'futute_time_service_years': self.future_time_service_years - (x - self.x),
+             'pvftc': pvftc, 'prob_surv_px': p, 'pvftc_p': pvftc * p}
 
         return d

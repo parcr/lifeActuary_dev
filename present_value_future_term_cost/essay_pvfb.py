@@ -33,9 +33,13 @@ dates_for_term_cost = age.Age(date1=dict_dates['date_of_birth'], date2=dict_date
 age_term_cost_years = dates_for_term_cost.age_act()
 pvfb_d = pvftc.PVTermCost(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
                           date_of_entry=dict_dates['date_of_entry'], age_of_term_cost=age_term_cost_years,
+                          age_first_payment=None,
                           multi_table=tables_multidecrement, decrement='disability', i=2, age_of_projection=None)
 
 pvfb_d.age_of_projection = pvfb_d.x
+pvfb_d.set_waiting_period()
 ages_w = pvfb_d.create_dates_ages_w()
 '''We get all the pv for all term costs for disability'''
-
+x = pvfb_d.y
+pvtc = pvfb_d.pvftc_proj(x=x, px=x)
+print(pvtc)
