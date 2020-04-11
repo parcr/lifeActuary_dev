@@ -6,7 +6,7 @@ import age
 
 class PVTermCost:
     def __init__(self, date_of_valuation, date_of_birth, date_of_entry,
-                 age_of_term_cost, age_first_payment=None,
+                 age_of_term_cost, waiting=0,
                  multi_table=None, decrement=None,
                  i=None,
                  age_of_projection=None):
@@ -16,9 +16,10 @@ class PVTermCost:
         :param date_of_valuation: date of valuation
         :param date_of_birth: date of birth
         :param date_of_entry: date of entry
-        :param age_of_term_cost: date of the first payment of the term cost
-        :param age_first_payment: how many periods, after the age of the term cost, until the first payment
-        of the term cost
+        :param age_of_term_cost: the age at which x accesses the state of the term cost, that is, the age where the
+        decrement occurs
+        :param waiting: age_of_term_cost+waiting=age_first_payment : how many periods, after the age of the term cost,
+        until the first payment of the term cost
         :param multi_table: the net table, that is, the multidecrement table used
         :param decrement: the decrement that originates the payment
         :param i: the technical rate of interest
@@ -26,66 +27,98 @@ class PVTermCost:
         age_of_projection
         '''
 
-        self.date_of_valuation = date_of_valuation
-        self.date_of_birth = date_of_birth
-        self.date_of_entry = date_of_entry
+        self.set_date_of_valuation(date_of_valuation)
+        self.set_date_of_birth(date_of_birth)
+        self.set_date_of_entry(date_of_entry)
+        self.__dates_ages_w = None
 
-        self.multi_table = multi_table
+        self.set_multi_table(multi_table)
+        self.set_decrement(decrement)
 
-        self.age_date_of_entry = age.Age(date1=self.date_of_birth, date2=self.date_of_entry)
-        self.age_date_of_valuation = age.Age(date1=self.date_of_birth, date2=self.date_of_valuation)
+        self.set_age_date_of_entry()
+        self.set_age_date_of_valuation()
 
-        self.x = self.age_date_of_valuation.age_act()
-        self.y_ = self.age_date_of_entry.age_f()[3]
-        self.y = int(np.ceil(self.y_))
-        self.past_time_service_years = self.x - self.y
-        self.future_time_service_years = self.age_of_term_cost - self.x
-        self.total_time_service_years = self.age_of_term_cost - self.y
+        self.set_y_()
+        self.set_y()
+        self.set_x()
 
         # this needs to be recomputed whenever changed
         self.age_of_term_cost = age_of_term_cost
+        self.waiting = waiting
 
-        self.dates_ages_w = None
+        self.i = i / 100,
+        self.age_of_projection = age_of_projection
+        self.v = 1 / (1 + i / 100)
 
     @property
     def date_of_valuation(self):
-        return self.date_of_valuation
+        return self.__date_of_valuation
+
+    def set_date_of_valuation(self, d):
+        self.__date_of_valuation = d
 
     @property
     def date_of_birth(self):
-        return self.date_of_birth
+        return self.__date_of_birth
+
+    def set_date_of_birth(self, d):
+        self.__date_of_birth = d
 
     @property
     def date_of_entry(self):
-        return self.date_of_entry
+        return self.__date_of_entry
+
+    def set_date_of_entry(self, d):
+        self.__date_of_entry = d
 
     @property
     def multi_table(self):
-        return self.multi_table
+        return self.__multi_table
+
+    def set_multi_table(self, m):
+        self.__multi_table = m
+
+    @property
+    def decrement(self):
+        return self.__decrement
+
+    def set_decrement(self, d):
+        self.__decrement = d
 
     @property
     def age_date_of_entry(self):
-        return self.age_date_of_entry
+        return self.__age_date_of_entry
+
+    def set_age_date_of_entry(self):
+        self.__age_date_of_entry = age.Age(self.__date_of_birth, self.__date_of_entry)
 
     @property
     def age_date_of_valuation(self):
-        return self.age_date_of_valuation
+        return self.__age_date_of_valuation
+
+    def set_age_date_of_valuation(self):
+        self.__age_date_of_valuation = age.Age(self.__date_of_birth, self.__date_of_valuation)
 
     @property
     def y_(self):
-        return self.y_
+        return self.__y_
+
+    def set_y_(self):
+        self.__y_ = self.age_date_of_entry.age_f()[3]
 
     @property
     def y(self):
-        return self.y
+        return self.__y
 
-    @property
-    def y_(self):
-        return self.y_
+    def set_y(self):
+        self.__y = int(np.ceil(self.y_))
 
     @property
     def x(self):
-        return self.x
+        return self.__x
+
+    def set_x(self):
+        self.__x = self.age_date_of_valuation.age_act()
 
     @property
     def age_of_term_cost(self):
@@ -94,17 +127,47 @@ class PVTermCost:
     @age_of_term_cost.setter
     def age_of_term_cost(self, atc):
         self.__age_of_term_cost = atc
-        self.__future_time_service_years = self.__age_of_term_cost - self.x
-        self.__total_time_service_years = self.__age_of_term_cost - self.y
-        self.__waiting = None
-        self.__dates_ages_w = None
+        self.__past_time_service_years = self.x - self.y
+        self.__future_time_service_years = self.age_of_term_cost - self.x
+        self.__total_time_service_years = self.age_of_term_cost - self.y
+        try:
+            self.__age_first_payment = self.age_of_term_cost + self.waiting
+        except AttributeError as ae:
+            pass
+
+        if self.dates_ages_w is None:
+            self.set_dates_ages_w()
+
+    @property
+    def waiting(self):
+        return self.__waiting
+
+    @waiting.setter
+    def waiting(self, w):
+        self.__waiting = w
+        self.__age_first_payment = self.age_of_term_cost + self.waiting
+
+    @property
+    def age_first_payment(self):
+        return self.__age_first_payment
+
+    @property
+    def past_time_service_years(self):
+        return self.__past_time_service_years
+
+    @property
+    def future_time_service_years(self):
+        return self.__future_time_service_years
+
+    @property
+    def total_time_service_years(self):
+        return self.__total_time_service_years
 
     @property
     def dates_ages_w(self):
         return self.__dates_ages_w
 
-    @dates_ages_w.setter
-    def dates_ages_w(self):
+    def set_dates_ages_w(self):
         '''
         Creates all dates and ages from y to the largest w, expectedly the mortality table's w.
         '''
@@ -116,11 +179,16 @@ class PVTermCost:
                         for j in range(-self.past_time_service_years, max_w - self.x + 1)]
         self.__dates_ages_w = dates_ages_w
 
-    def set_waiting_period(self, w=0):
-        self.age_first_payment = self.age_of_term_cost + w
-        self.waiting = w
-        if self.dates_ages_w is None:
-            self.create_dates_ages_w()
+    @property
+    def profile(self):
+        print({'DoB': self.date_of_birth, 'DoE': self.date_of_entry, 'DoV': self.date_of_valuation,
+               'Age@Entry': round(self.y_, 5), 'AAge@1Valuation': self.y,
+               'Age@Valuation': round(self.age_date_of_valuation.age_f()[3], 5), 'AAge@Valuation': self.x,
+               'AAge@TermCost': self.age_of_term_cost, 'waiting': self.waiting,
+               'AAge@1Payment': self.age_first_payment,
+               'Past Time Service': self.past_time_service_years,
+               'Future Time Service': self.future_time_service_years,
+               'Total Time Service': self.total_time_service_years})
 
     def prob_survival(self, x1, x2):
         '''
