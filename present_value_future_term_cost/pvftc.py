@@ -29,35 +29,82 @@ class PVTermCost:
         self.date_of_valuation = date_of_valuation
         self.date_of_birth = date_of_birth
         self.date_of_entry = date_of_entry
-        self.age_of_term_cost = age_of_term_cost
-        self.age_first_payment = age_first_payment
-        self.multi_table = multi_table
-        self.decrement = decrement
-        self.i = i / 100,
-        self.age_of_projection = age_of_projection
-        self.v = 1 / (1 + i / 100)
 
-        self.age_date_of_entry = age.Age(date1=date_of_birth, date2=date_of_entry)
+        self.multi_table = multi_table
+
+        self.age_date_of_entry = age.Age(date1=self.date_of_birth, date2=self.date_of_entry)
         self.age_date_of_valuation = age.Age(date1=self.date_of_birth, date2=self.date_of_valuation)
+
         self.x = self.age_date_of_valuation.age_act()
         self.y_ = self.age_date_of_entry.age_f()[3]
         self.y = int(np.ceil(self.y_))
-
         self.past_time_service_years = self.x - self.y
         self.future_time_service_years = self.age_of_term_cost - self.x
         self.total_time_service_years = self.age_of_term_cost - self.y
-        self.waiting = None
+
+        # this needs to be recomputed whenever changed
+        self.age_of_term_cost = age_of_term_cost
+
         self.dates_ages_w = None
 
     @property
-    def age_term_cost(self):
-        return self.__age_term_cost
+    def date_of_valuation(self):
+        return self.date_of_valuation
 
-    @age_term_cost.setter
-    def age_term_cost(self):
-        AQUI
+    @property
+    def date_of_birth(self):
+        return self.date_of_birth
 
-    def create_dates_ages_w(self):
+    @property
+    def date_of_entry(self):
+        return self.date_of_entry
+
+    @property
+    def multi_table(self):
+        return self.multi_table
+
+    @property
+    def age_date_of_entry(self):
+        return self.age_date_of_entry
+
+    @property
+    def age_date_of_valuation(self):
+        return self.age_date_of_valuation
+
+    @property
+    def y_(self):
+        return self.y_
+
+    @property
+    def y(self):
+        return self.y
+
+    @property
+    def y_(self):
+        return self.y_
+
+    @property
+    def x(self):
+        return self.x
+
+    @property
+    def age_of_term_cost(self):
+        return self.__age_of_term_cost
+
+    @age_of_term_cost.setter
+    def age_of_term_cost(self, atc):
+        self.__age_of_term_cost = atc
+        self.__future_time_service_years = self.__age_of_term_cost - self.x
+        self.__total_time_service_years = self.__age_of_term_cost - self.y
+        self.__waiting = None
+        self.__dates_ages_w = None
+
+    @property
+    def dates_ages_w(self):
+        return self.__dates_ages_w
+
+    @dates_ages_w.setter
+    def dates_ages_w(self):
         '''
         Creates all dates and ages from y to the largest w, expectedly the mortality table's w.
         '''
@@ -67,7 +114,7 @@ class PVTermCost:
         dates_ages_w = [(age.Age(date1=self.date_of_valuation,
                                  date2=self.date_of_valuation).date_inc_years(j).date2.year, self.x + j)
                         for j in range(-self.past_time_service_years, max_w - self.x + 1)]
-        self.dates_ages_w = dates_ages_w
+        self.__dates_ages_w = dates_ages_w
 
     def set_waiting_period(self, w=0):
         self.age_first_payment = self.age_of_term_cost + w
@@ -150,15 +197,15 @@ class PVTermCost:
         d = {'entry_year': self.dates_ages_w[0][0], 'entry_age': self.y,
              'year': self.dates_ages_w[dif_ages][0], 'age': self.dates_ages_w[dif_ages][1],
              'year_p': self.dates_ages_w[dif_ages][0], 'age_p': self.dates_ages_w[dif_ages][1],
-             'age_term_cost': self.age_of_term_cost, 'age_first_payment': self.age_first_payment,
+             'age_of_term_cost': self.age_of_term_cost, 'age_first_payment': self.age_first_payment,
              'past_time_service_years': self.past_time_service_years + x - self.x,
              'futute_time_service_years': self.future_time_service_years - (x - self.x),
              'pvftc': pvftc, 'prob_surv_px': p, 'pvftc_p': pvftc * p}
         return d
 
-    def sum_pvftc_proj(self, x, px, age_term_cost_init, age_term_cost_final, waiting=0):
+    def sum_pvftc_proj(self, x, px, age_of_term_cost_init, age_of_term_cost_final, waiting=0):
         lst_tc_pj = []
-        ages_term_costs = list(range(age_term_cost_init, age_term_cost_final + 1))
+        ages_term_costs = list(range(age_of_term_cost_init, age_of_term_cost_final + 1))
         for atc in ages_term_costs:
             self.age_of_term_cost = atc
             self.set_waiting_period(w=waiting)
