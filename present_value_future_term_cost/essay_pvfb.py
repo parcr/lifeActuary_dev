@@ -40,7 +40,7 @@ pvfb_d.age_of_projection = pvfb_d.x
 pvfb_d.profile
 pvfb_d.waiting = 1
 pvfb_d.profile
-pvfb_d.age_of_term_cost=60
+pvfb_d.age_of_term_cost = 60
 pvfb_d.profile
 
 '''
@@ -73,5 +73,5 @@ print(pvtc)
 '''
 print('\nSums\n')
 x = pvfb_d.y
-pvtc=pvfb_d.sum_pvftc_proj(x=x, px=x, age_term_cost_init=pvfb_d.y+1, age_term_cost_final=65, waiting=0)
+pvtc = pvfb_d.sum_pvftc_proj(x=x, px=x, age_term_cost_init=pvfb_d.y + 1, age_term_cost_final=65, waiting=0)
 print(pvtc)

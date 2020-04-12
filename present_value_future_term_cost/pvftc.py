@@ -265,7 +265,8 @@ class PVTermCost:
         d = {'entry_year': self.dates_ages_w[0][0], 'entry_age': self.y,
              'year': self.dates_ages_w[dif_ages][0], 'age': self.dates_ages_w[dif_ages][1],
              'year_p': self.dates_ages_w[dif_ages][0], 'age_p': self.dates_ages_w[dif_ages][1],
-             'age_of_term_cost': self.age_of_term_cost, 'age_first_payment': self.age_first_payment,
+             'age_of_term_cost': self.age_of_term_cost, 'waiting': self.waiting,
+             'age_first_payment': self.age_first_payment,
              'past_time_service_years': self.past_time_service_years + x - self.x,
              'futute_time_service_years': self.future_time_service_years - (x - self.x),
              'pvftc': pvftc, 'prob_surv_px': p, 'pvftc_p': pvftc * p}
