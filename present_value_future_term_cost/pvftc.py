@@ -181,14 +181,16 @@ class PVTermCost:
 
     @property
     def profile(self):
-        print({'DoB': self.date_of_birth, 'DoE': self.date_of_entry, 'DoV': self.date_of_valuation,
-               'Age@Entry': round(self.y_, 5), 'AAge@1Valuation': self.y,
-               'Age@Valuation': round(self.age_date_of_valuation.age_f()[3], 5), 'AAge@Valuation': self.x,
-               'AAge@TermCost': self.age_of_term_cost, 'waiting': self.waiting,
-               'AAge@1Payment': self.age_first_payment,
-               'Past Time Service': self.past_time_service_years,
-               'Future Time Service': self.future_time_service_years,
-               'Total Time Service': self.total_time_service_years})
+        d = {'DoB': self.date_of_birth, 'DoE': self.date_of_entry, 'DoV': self.date_of_valuation,
+             'Age@Entry': round(self.y_, 5), 'AAge@1Valuation': self.y,
+             'Age@Valuation': round(self.age_date_of_valuation.age_f()[3], 5), 'AAge@Valuation': self.x,
+             'Year@TermCost': self.dates_ages_w[self.age_of_term_cost - self.y][0],
+             'AAge@TermCost': self.age_of_term_cost, 'Waiting': self.waiting,
+             'AAge@1Payment': self.age_first_payment,
+             'Past Time Service': self.past_time_service_years,
+             'Future Time Service': self.future_time_service_years,
+             'Total Time Service': self.total_time_service_years}
+        return d
 
     def prob_survival(self, x1, x2):
         '''
@@ -262,21 +264,17 @@ class PVTermCost:
         pvftc = self.pvftc(x)
         p = self.prob_survival(x, px)
 
-        d = {'entry_year': self.dates_ages_w[0][0], 'entry_age': self.y,
-             'year': self.dates_ages_w[dif_ages][0], 'age': self.dates_ages_w[dif_ages][1],
-             'year_p': self.dates_ages_w[dif_ages][0], 'age_p': self.dates_ages_w[dif_ages][1],
-             'age_of_term_cost': self.age_of_term_cost, 'waiting': self.waiting,
-             'age_first_payment': self.age_first_payment,
-             'past_time_service_years': self.past_time_service_years + x - self.x,
-             'futute_time_service_years': self.future_time_service_years - (x - self.x),
-             'pvftc': pvftc, 'prob_surv_px': p, 'pvftc_p': pvftc * p}
-        return d
+        PVFTC_x = {'AAge_x': x, 'past_time_service_years': self.past_time_service_years + x - self.x,
+                   'futute_time_service_years': self.future_time_service_years - (x - self.x),
+                   'pvftc': pvftc, 'prob_surv_px': p, 'pvftc_p': pvftc * p}
+        prof = {**self.profile}
+        prof['PVFTX_x'] = PVFTC_x
+        return prof
 
-    def sum_pvftc_proj(self, x, px, age_of_term_cost_init, age_of_term_cost_final, waiting=0):
-        lst_tc_pj = []
-        ages_term_costs = list(range(age_of_term_cost_init, age_of_term_cost_final + 1))
-        for atc in ages_term_costs:
+    def lst_pvftc(self, age_first_term_cost, age_last_term_cost):
+        ages_term_cost = list(range(age_first_term_cost, age_last_term_cost + 1))
+        lst_pvft = []
+        for atc in ages_term_cost:
             self.age_of_term_cost = atc
-            self.set_waiting_period(w=waiting)
-            lst_tc_pj.append(self.pvftc_proj(x, px))
-        return lst_tc_pj
+            lst_pvft.append(self.pvftc_proj(x=self.x, px=self.x))
+        return lst_pvft

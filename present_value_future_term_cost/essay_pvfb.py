@@ -37,17 +37,20 @@ pvfb_d = pvftc.PVTermCost(date_of_valuation=date_of_valuation, date_of_birth=dic
                           multi_table=tables_multidecrement, decrement='disability', i=2, age_of_projection=None)
 
 pvfb_d.age_of_projection = pvfb_d.x
-pvfb_d.profile
+print(pvfb_d.profile)
 pvfb_d.waiting = 1
-pvfb_d.profile
+print(pvfb_d.profile)
 pvfb_d.age_of_term_cost = 60
-pvfb_d.profile
+print(pvfb_d.profile)
 
 '''
 
 '''
 
 '''We get all the pv for all term costs for disability'''
+print('\nPVFTC\n')
+pvfb_d.waiting = 0
+pvfb_d.age_of_term_cost = 55
 x = pvfb_d.y
 pvtc = pvfb_d.pvftc_proj(x=x, px=x)
 print(pvtc)
@@ -73,5 +76,5 @@ print(pvtc)
 '''
 print('\nSums\n')
 x = pvfb_d.y
-pvtc = pvfb_d.sum_pvftc_proj(x=x, px=x, age_term_cost_init=pvfb_d.y + 1, age_term_cost_final=65, waiting=0)
-print(pvtc)
+lst_pvftc = pvfb_d.lst_pvftc(age_first_term_cost=pvfb_d.y + 1, age_last_term_cost=65)
+print(lst_pvftc)
