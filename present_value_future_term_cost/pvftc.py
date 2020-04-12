@@ -260,24 +260,28 @@ class PVTermCost:
         :param px: the age where we project
         :return: The Present Value of Future Benefits
         '''
-        dif_ages = x - self.y
         pvftc = self.pvftc(x)
         p = self.prob_survival(x, px)
 
         PVFTC_x = {'AAge_x': x, 'pvftc': pvftc, 'prob_surv_px': p, 'pvftc_p': pvftc * p}
-        prof = {**self.profile}
-        prof['PVFTC_x'] = PVFTC_x
-        return prof
+        proj = {**self.profile}
+        proj['PVFTC_x'] = PVFTC_x
+        return proj
 
     def lst_pvftc(self, age_first_term_cost, age_last_term_cost):
         ages_term_cost = list(range(age_first_term_cost, age_last_term_cost + 1))
-        lst_pvft = []
+        lst_pvftc = []
+        lst_pvftc_proj = []
         sum_pvftc = 0
         for atc in ages_term_cost:
             self.age_of_term_cost = atc
             pvftc_proj = self.pvftc_proj(x=self.x, px=self.x)
-            if pvftc_proj['Future Time Service'] > 0:
+            if pvftc_proj['Future Time Service'] > 0:  # It's a future term cost
                 sum_pvftc += pvftc_proj['PVFTC_x']['pvftc']
+                for x_proj in range(self.x, atc + self.waiting + 1):  # project the term cost
+                    pvftc_proj2 = self.pvftc_proj(x=self.x, px=x_proj)
+                    lst_pvftc_proj.append(pvftc_proj2)
             pvftc_proj['PVFTC_x']['sum_pvftc'] = sum_pvftc
-            lst_pvft.append(pvftc_proj)
-        return lst_pvft
+            pvftc_proj['PVFTC_x_proj'] = lst_pvftc_proj
+            lst_pvftc.append(pvftc_proj)
+        return lst_pvftc
