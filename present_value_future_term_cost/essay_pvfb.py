@@ -73,6 +73,9 @@ x = pvfb_d.age_of_term_cost + 5
 pvtc = pvfb_d.pvftc_proj(x=x, px=x)
 print(pvtc)
 '''
+
+
+
 '''
 print('\nSums\n')
 x = pvfb_d.y

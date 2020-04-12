@@ -264,17 +264,20 @@ class PVTermCost:
         pvftc = self.pvftc(x)
         p = self.prob_survival(x, px)
 
-        PVFTC_x = {'AAge_x': x, 'past_time_service_years': self.past_time_service_years + x - self.x,
-                   'futute_time_service_years': self.future_time_service_years - (x - self.x),
-                   'pvftc': pvftc, 'prob_surv_px': p, 'pvftc_p': pvftc * p}
+        PVFTC_x = {'AAge_x': x, 'pvftc': pvftc, 'prob_surv_px': p, 'pvftc_p': pvftc * p}
         prof = {**self.profile}
-        prof['PVFTX_x'] = PVFTC_x
+        prof['PVFTC_x'] = PVFTC_x
         return prof
 
     def lst_pvftc(self, age_first_term_cost, age_last_term_cost):
         ages_term_cost = list(range(age_first_term_cost, age_last_term_cost + 1))
         lst_pvft = []
+        sum_pvftc = 0
         for atc in ages_term_cost:
             self.age_of_term_cost = atc
-            lst_pvft.append(self.pvftc_proj(x=self.x, px=self.x))
+            pvftc_proj = self.pvftc_proj(x=self.x, px=self.x)
+            if pvftc_proj['Future Time Service'] > 0:
+                sum_pvftc += pvftc_proj['PVFTC_x']['pvftc']
+            pvftc_proj['PVFTC_x']['sum_pvftc'] = sum_pvftc
+            lst_pvft.append(pvftc_proj)
         return lst_pvft
