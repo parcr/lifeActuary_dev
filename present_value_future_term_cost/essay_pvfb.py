@@ -82,9 +82,46 @@ x = 45
 lst_pvftc = pvfb_d.lst_pvftc(x=x)
 print(lst_pvftc)
 pvfb_d.graph_pvftc(x)
-
+plt.show()
 
 x = pvfb_d.y
 lst_pvftc = pvfb_d.lst_pvftc(x=x)
 print(lst_pvftc)
-pvfb_d.graph_pvftc(x)
+ax = pvfb_d.graph_pvftc(x)
+plt.show()
+
+x = pvfb_d.x
+lst_pvftc = pvfb_d.lst_pvftc(x=x)
+print(lst_pvftc)
+ax = pvfb_d.graph_pvftc(x)
+plt.show()
+
+x = pvfb_d.age_of_term_cost - 1
+lst_pvftc = pvfb_d.lst_pvftc(x=x)
+print(lst_pvftc)
+ax = pvfb_d.graph_pvftc(x)
+plt.show()
+
+x = pvfb_d.age_of_term_cost
+lst_pvftc = pvfb_d.lst_pvftc(x=x)
+print(lst_pvftc)
+ax = pvfb_d.graph_pvftc(x)
+plt.show()
+
+x = pvfb_d.age_of_term_cost + 5
+lst_pvftc = pvfb_d.lst_pvftc(x=x)
+print(lst_pvftc)
+ax = pvfb_d.graph_pvftc(x)
+plt.show()
+
+x = pvfb_d.age_of_term_cost + 10
+lst_pvftc = pvfb_d.lst_pvftc(x=x)
+print(lst_pvftc)
+ax = pvfb_d.graph_pvftc(x)
+plt.show()
+
+x = pvfb_d.age_of_term_cost + 35
+lst_pvftc = pvfb_d.lst_pvftc(x=x)
+print(lst_pvftc)
+ax = pvfb_d.graph_pvftc(x)
+plt.show()

@@ -205,10 +205,11 @@ class PVTermCost:
             tpx_T = self.multi_table.net_table.tpx(x1, t=x2 - x1, method='udd')
         else:
             bool_decrement = bool(self.decrement)
+            max_age = max(x1, self.age_of_term_cost)
             tpx_T = self.multi_table.net_table.tpx(x1, t=self.age_of_term_cost - x1 - bool_decrement,
                                                    method='udd') * \
-                    self.multi_table.unidecrement_tables['mortality'].tpx(self.age_of_term_cost,
-                                                                          t=x2 - self.age_of_term_cost, method='udd')
+                    self.multi_table.unidecrement_tables['mortality'].tpx(max_age,
+                                                                          t=x2 - max_age, method='udd')
         return tpx_T
 
     def pvftc(self, x):
@@ -280,7 +281,7 @@ class PVTermCost:
                  'Future Time Service': self.total_time_service_years - pts,
                  'Future': self.age_of_term_cost - y[1],
                  'pvftc_AAge': pvftc,
-                 'p_survival': self.prob_survival(x, y[1]),
+                 'p_survival': p,
                  'pvftc_px': pvftc * p}
             lst_pvftc.append(d)
         return lst_pvftc
@@ -309,3 +310,4 @@ class PVTermCost:
         axes1.set_xticks(ticks_years)
         axes1.set_xticklabels(ticks_labels)
         plt.title(f"Present Value of Future Term Cost for {self.decrement} @{self.age_of_term_cost}|x={x}")
+        return ax
