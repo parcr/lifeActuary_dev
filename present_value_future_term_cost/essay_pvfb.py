@@ -78,6 +78,13 @@ print(pvtc)
 
 '''
 print('\nSums\n')
-x = pvfb_d.y
-lst_pvftc = pvfb_d.lst_pvftc(age_first_term_cost=pvfb_d.y + 1, age_last_term_cost=65)
+x = 45
+lst_pvftc = pvfb_d.lst_pvftc(x=x)
 print(lst_pvftc)
+pvfb_d.graph_pvftc(x)
+
+
+x = pvfb_d.y
+lst_pvftc = pvfb_d.lst_pvftc(x=x)
+print(lst_pvftc)
+pvfb_d.graph_pvftc(x)

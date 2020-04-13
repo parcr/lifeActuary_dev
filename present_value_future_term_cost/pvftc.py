@@ -134,7 +134,6 @@ class PVTermCost:
             self.__age_first_payment = self.age_of_term_cost + self.waiting
         except AttributeError as ae:
             pass
-
         if self.dates_ages_w is None:
             self.set_dates_ages_w()
 
@@ -201,7 +200,7 @@ class PVTermCost:
         :param x2: final age
         :return: The probability of survival considering all the decrements
         '''
-        if x2 <= x2: return 1
+        if x2 <= x1: return 1
         if x2 < self.age_of_term_cost:
             tpx_T = self.multi_table.net_table.tpx(x1, t=x2 - x1, method='udd')
         else:
@@ -260,28 +259,53 @@ class PVTermCost:
         :param px: the age where we project
         :return: The Present Value of Future Benefits
         '''
-        pvftc = self.pvftc(x)
+        pvftc_x = self.pvftc(x)
+        pvftc_px = self.pvftc(px)
         p = self.prob_survival(x, px)
 
-        PVFTC_x = {'AAge_x': x, 'pvftc': pvftc, 'prob_surv_px': p, 'pvftc_p': pvftc * p}
+        PVFTC_x = {'AAge_x': x, 'pvftc_x': pvftc_x, 'pvftc_px': pvftc_px, 'prob_surv_px': p, 'pvftc_p': pvftc_px * p}
         proj = {**self.profile}
         proj['PVFTC_x'] = PVFTC_x
-        return proj
+        return pvftc_x, pvftc_px, p, pvftc_px * p
 
-    def lst_pvftc(self, age_first_term_cost, age_last_term_cost):
-        ages_term_cost = list(range(age_first_term_cost, age_last_term_cost + 1))
+    def lst_pvftc(self, x):
         lst_pvftc = []
-        lst_pvftc_proj = []
-        sum_pvftc = 0
-        for atc in ages_term_cost:
-            self.age_of_term_cost = atc
-            pvftc_proj = self.pvftc_proj(x=self.x, px=self.x)
-            if pvftc_proj['Future Time Service'] > 0:  # It's a future term cost
-                sum_pvftc += pvftc_proj['PVFTC_x']['pvftc']
-                for x_proj in range(self.x, atc + self.waiting + 1):  # project the term cost
-                    pvftc_proj2 = self.pvftc_proj(x=self.x, px=x_proj)
-                    lst_pvftc_proj.append(pvftc_proj2)
-            pvftc_proj['PVFTC_x']['sum_pvftc'] = sum_pvftc
-            pvftc_proj['PVFTC_x_proj'] = lst_pvftc_proj
-            lst_pvftc.append(pvftc_proj)
+        for y_i, y in enumerate(self.dates_ages_w):
+            pts = min(y[1] - self.y, self.total_time_service_years)
+            pvftc = self.pvftc(y[1])
+            p = self.prob_survival(x, y[1])
+            d = {'Index': y_i, 'Year': y[0], 'AAge': y[1], 'AAge_x': x,
+                 'Age Term Cost': self.age_of_term_cost,
+                 'Past Time Service': pts,
+                 'Future Time Service': self.total_time_service_years - pts,
+                 'Future': self.age_of_term_cost - y[1],
+                 'pvftc_AAge': pvftc,
+                 'p_survival': self.prob_survival(x, y[1]),
+                 'pvftc_px': pvftc * p}
+            lst_pvftc.append(d)
         return lst_pvftc
+
+    def graph_pvftc(self, x):
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots(constrained_layout=True)
+        lst_pvftc = self.lst_pvftc(x)
+        years = [l['Year'] for l in lst_pvftc]
+        ages = [l['AAge'] for l in lst_pvftc]
+        pvftc = [l['pvftc_AAge'] for l in lst_pvftc]
+        pvftc_px = [l['pvftc_px'] for l in lst_pvftc]
+        future = [l['Future'] for l in lst_pvftc]
+        year_of_age = years[ages.index(x)]
+
+        ax.plot(years, pvftc, 'o-', label=f'pvfb {self.decrement}')
+        ax.plot(years, pvftc_px, 'o-', mfc='none', label=f'pvfb {self.decrement}|{x}')
+        ax.axvline(x=years[future[0]], linewidth=.5, color='r')
+        ax.axvline(x=year_of_age, linewidth=.5, color='green')
+        ax.legend()
+        ticks_ages = [self.y, x, self.age_of_term_cost]
+        ticks_ages.sort()
+        ticks_years = [years[ages.index(l)] for l in ticks_ages]
+        ticks_labels = [f"{y}\n{ticks_ages[y_i]}" for y_i, y in enumerate(ticks_years)]
+        axes1 = plt.gca()
+        axes1.set_xticks(ticks_years)
+        axes1.set_xticklabels(ticks_labels)
+        plt.title(f"Present Value of Future Term Cost for {self.decrement} @{self.age_of_term_cost}|x={x}")
