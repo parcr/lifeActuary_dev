@@ -248,26 +248,24 @@ class PVTermCost:
             pvft = q_d_x * tpx * deferment
         return pvft
 
-    def pvftc_proj(self, x, px):
-        '''
-        Computes the Present Value of a Future Term Cost, that will allow us to use for all amortization schemes
-        :param x: the age for life x. We consider that x is alive and if the decrement happens, it will be moved to
-        to the other state. Hence, if there is a waiting period between the decrement occurrence and the first payment
-        x should already be placed in the state corresponding to the decrement.
-        For instance, if the decrement is disability, immediately after the decrement, x is moved to the state of
-        disable and do the waiting, if any, until the first payment.
-        There are states where the decrement happens just due to survival up to that age, for instance, retirement.
-        :param px: the age where we project
-        :return: The Present Value of Future Benefits
-        '''
-        pvftc_x = self.pvftc(x)
-        pvftc_px = self.pvftc(px)
-        p = self.prob_survival(x, px)
-
-        PVFTC_x = {'AAge_x': x, 'pvftc_x': pvftc_x, 'pvftc_px': pvftc_px, 'prob_surv_px': p, 'pvftc_p': pvftc_px * p}
-        proj = {**self.profile}
-        proj['PVFTC_x'] = PVFTC_x
-        return pvftc_x, pvftc_px, p, pvftc_px * p
+    def pvftc_path(self, atc=None):
+        if atc is None:
+            atc = self.age_of_term_cost
+        else:
+            self.age_of_term_cost = atc
+        d = {'Age Term Cost': self.age_of_term_cost}
+        lst_pvftc = []
+        for y_i, y in enumerate(self.dates_ages_w):
+            pts = min(y[1] - self.y, self.total_time_service_years)
+            pvftc = self.pvftc(y[1])
+            d1 = {'Index': y_i, 'Year': y[0], 'AAge': y[1],
+                  'Past Time Service': pts,
+                  'Future Time Service': self.total_time_service_years - pts,
+                  'Future': self.age_of_term_cost - y[1],
+                  'pvftc_AAge': pvftc}
+            lst_pvftc.append(d1)
+        d['PVFTC'] = lst_pvftc
+        return d
 
     def lst_pvftc(self, x):
         lst_pvftc = []

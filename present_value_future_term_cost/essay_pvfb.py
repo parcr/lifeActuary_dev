@@ -46,37 +46,15 @@ print(pvfb_d.profile)
 '''
 
 '''
+print('\nPVFTC for the Survivors\n')
+x = pvfb_d.y
+print(pvfb_d.pvftc_path(atc=x))
 
 '''We get all the pv for all term costs for disability'''
 print('\nPVFTC\n')
-pvfb_d.waiting = 0
-pvfb_d.age_of_term_cost = 55
-x = pvfb_d.y
-pvtc = pvfb_d.pvftc_proj(x=x, px=x)
-print(pvtc)
-x = pvfb_d.x
-pvtc = pvfb_d.pvftc_proj(x=x, px=x)
-print(pvtc)
-x = pvfb_d.x + 3
-pvtc = pvfb_d.pvftc_proj(x=x, px=x)
-print(pvtc)
-x = pvfb_d.age_of_term_cost - 1
-pvtc = pvfb_d.pvftc_proj(x=x, px=x)
-print(pvtc)
-x = pvfb_d.age_of_term_cost
-pvtc = pvfb_d.pvftc_proj(x=x, px=x)
-print(pvtc)
-x = pvfb_d.age_of_term_cost + 1
-pvtc = pvfb_d.pvftc_proj(x=x, px=x)
-print(pvtc)
-x = pvfb_d.age_of_term_cost + 5
-pvtc = pvfb_d.pvftc_proj(x=x, px=x)
-print(pvtc)
+'''
 '''
 
-
-
-'''
 print('\nSums\n')
 x = 45
 lst_pvftc = pvfb_d.lst_pvftc(x=x)
