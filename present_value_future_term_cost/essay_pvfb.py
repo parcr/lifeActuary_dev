@@ -34,7 +34,7 @@ age_term_cost_years = dates_for_term_cost.age_act()
 pvfb_d = pvftc.PVTermCost(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
                           date_of_entry=dict_dates['date_of_entry'], age_of_term_cost=age_term_cost_years,
                           waiting=0,
-                          multi_table=tables_multidecrement, decrement='disability', i=2, age_of_projection=None)
+                          multi_table=tables_multidecrement, decrement='disability', i=2)
 
 pvfb_d.age_of_projection = pvfb_d.x
 print(pvfb_d.profile)
@@ -89,6 +89,15 @@ print()
 
 atc = 55
 x = 35
+pv = pvfb_d.pvftc_path_proj(atc=atc, x=x)
+print(pv)
+ax = pvfb_d.graph_pvftc(atc=atc, x=x)
+plt.show()
+print()
+
+
+atc = 55
+x = 70
 pv = pvfb_d.pvftc_path_proj(atc=atc, x=x)
 print(pv)
 ax = pvfb_d.graph_pvftc(atc=atc, x=x)

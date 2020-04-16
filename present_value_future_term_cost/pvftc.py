@@ -8,8 +8,7 @@ class PVTermCost:
     def __init__(self, date_of_valuation, date_of_birth, date_of_entry,
                  age_of_term_cost, waiting=0,
                  multi_table=None, decrement=None,
-                 i=None,
-                 age_of_projection=None):
+                 i=None):
         '''
         Creates an instance of a Present Value of a Term Cost object. This object will allow us to get an hold
         in all the information necessary to compute everything we need to valuate actuarial liabilities.
@@ -47,7 +46,6 @@ class PVTermCost:
         self.waiting = waiting
 
         self.i = i / 100,
-        self.age_of_projection = age_of_projection
         self.v = 1 / (1 + i / 100)
 
     @property
