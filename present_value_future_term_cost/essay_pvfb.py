@@ -44,62 +44,53 @@ pvfb_d.age_of_term_cost = 60
 print(pvfb_d.profile)
 
 '''
-
-'''
 print('\nPVFTC for the Survivors\n')
+pvfb_d.waiting = 0
 x = pvfb_d.y
 print(pvfb_d.pvftc_path(atc=x))
-
-'''We get all the pv for all term costs for disability'''
-print('\nPVFTC\n')
+print()
+x = pvfb_d.y + 1
+print(pvfb_d.pvftc_path(atc=x))
+print()
+x = 55
+print(pvfb_d.pvftc_path(atc=x))
+print()
+x = 80
+print(pvfb_d.pvftc_path(atc=x))
+print()
 '''
-'''
 
-print('\nSums\n')
-x = 45
-lst_pvftc = pvfb_d.lst_pvftc(x=x)
-print(lst_pvftc)
-pvfb_d.graph_pvftc(x)
-plt.show()
-
+print('\nPVFTC for the Survivors but Projected\n')
+pvfb_d.waiting = 0
 x = pvfb_d.y
-lst_pvftc = pvfb_d.lst_pvftc(x=x)
-print(lst_pvftc)
-ax = pvfb_d.graph_pvftc(x)
+pv = pvfb_d.pvftc_path_proj(atc=x, x=None)
+print(pv)
+ax = pvfb_d.graph_pvftc(atc=x, x=None)
 plt.show()
+print()
+x = pvfb_d.y + 1
+pv = pvfb_d.pvftc_path_proj(atc=x, x=None)
+print(pv)
+ax = pvfb_d.graph_pvftc(atc=x, x=None)
+plt.show()
+print()
+x = 55
+pv = pvfb_d.pvftc_path_proj(atc=x, x=None)
+print(pv)
+ax = pvfb_d.graph_pvftc(atc=x, x=None)
+plt.show()
+print()
+x = 80
+pv = pvfb_d.pvftc_path_proj(atc=x, x=None)
+print(pv)
+ax = pvfb_d.graph_pvftc(atc=x, x=None)
+plt.show()
+print()
 
-x = pvfb_d.x
-lst_pvftc = pvfb_d.lst_pvftc(x=x)
-print(lst_pvftc)
-ax = pvfb_d.graph_pvftc(x)
+atc = 55
+x = 35
+pv = pvfb_d.pvftc_path_proj(atc=atc, x=x)
+print(pv)
+ax = pvfb_d.graph_pvftc(atc=atc, x=x)
 plt.show()
-
-x = pvfb_d.age_of_term_cost - 1
-lst_pvftc = pvfb_d.lst_pvftc(x=x)
-print(lst_pvftc)
-ax = pvfb_d.graph_pvftc(x)
-plt.show()
-
-x = pvfb_d.age_of_term_cost
-lst_pvftc = pvfb_d.lst_pvftc(x=x)
-print(lst_pvftc)
-ax = pvfb_d.graph_pvftc(x)
-plt.show()
-
-x = pvfb_d.age_of_term_cost + 5
-lst_pvftc = pvfb_d.lst_pvftc(x=x)
-print(lst_pvftc)
-ax = pvfb_d.graph_pvftc(x)
-plt.show()
-
-x = pvfb_d.age_of_term_cost + 10
-lst_pvftc = pvfb_d.lst_pvftc(x=x)
-print(lst_pvftc)
-ax = pvfb_d.graph_pvftc(x)
-plt.show()
-
-x = pvfb_d.age_of_term_cost + 35
-lst_pvftc = pvfb_d.lst_pvftc(x=x)
-print(lst_pvftc)
-ax = pvfb_d.graph_pvftc(x)
-plt.show()
+print()

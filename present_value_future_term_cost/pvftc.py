@@ -267,40 +267,43 @@ class PVTermCost:
         d['PVFTC'] = lst_pvftc
         return d
 
-    def lst_pvftc(self, x):
+    def pvftc_path_proj(self, atc=None, x=None):
+        if atc is None:
+            atc = self.age_of_term_cost
+        else:
+            self.age_of_term_cost = atc
+        if x is None:
+            x = self.x
+        pvftc_path = self.pvftc_path(atc=atc)
         lst_pvftc = []
-        for y_i, y in enumerate(self.dates_ages_w):
-            pts = min(y[1] - self.y, self.total_time_service_years)
-            pvftc = self.pvftc(y[1])
-            p = self.prob_survival(x, y[1])
-            d = {'Index': y_i, 'Year': y[0], 'AAge': y[1], 'AAge_x': x,
-                 'Age Term Cost': self.age_of_term_cost,
-                 'Past Time Service': pts,
-                 'Future Time Service': self.total_time_service_years - pts,
-                 'Future': self.age_of_term_cost - y[1],
-                 'pvftc_AAge': pvftc,
-                 'p_survival': p,
-                 'pvftc_px': pvftc * p}
-            lst_pvftc.append(d)
-        return lst_pvftc
+        d = {'Age Term Cost': pvftc_path['Age Term Cost'], 'AAge_x': x, 'PVFTC': pvftc_path['PVFTC']}
+        for y_i, y in enumerate(pvftc_path['PVFTC']):
+            p = self.prob_survival(x, y['AAge'])
+            d1 = {'p_survival': p,
+                  'pvftc_px': y['pvftc_AAge'] * p}
+            lst_pvftc.append(d1)
+        d['PVFTC_px'] = lst_pvftc
+        return d
 
-    def graph_pvftc(self, x):
+    def graph_pvftc(self, atc=None, x=None):
         import matplotlib.pyplot as plt
         fig, ax = plt.subplots(constrained_layout=True)
-        lst_pvftc = self.lst_pvftc(x)
-        years = [l['Year'] for l in lst_pvftc]
-        ages = [l['AAge'] for l in lst_pvftc]
-        pvftc = [l['pvftc_AAge'] for l in lst_pvftc]
-        pvftc_px = [l['pvftc_px'] for l in lst_pvftc]
-        future = [l['Future'] for l in lst_pvftc]
+        lst_pvftc = self.pvftc_path_proj(atc=atc, x=x)
+        x = lst_pvftc['AAge_x']
+        years = [l['Year'] for l in lst_pvftc['PVFTC']]
+        ages = [l['AAge'] for l in lst_pvftc['PVFTC']]
+        pvftc = [l['pvftc_AAge'] for l in lst_pvftc['PVFTC']]
+        pvftc_px = [l['pvftc_px'] for l in lst_pvftc['PVFTC_px']]
+        future = [l['Future'] for l in lst_pvftc['PVFTC']]
         year_of_age = years[ages.index(x)]
 
         ax.plot(years, pvftc, 'o-', label=f'pvfb {self.decrement}')
         ax.plot(years, pvftc_px, 'o-', mfc='none', label=f'pvfb {self.decrement}|{x}')
         ax.axvline(x=years[future[0]], linewidth=.5, color='r')
         ax.axvline(x=year_of_age, linewidth=.5, color='green')
+        ax.axvline(x=years[-1], linewidth=.5, color='gray')
         ax.legend()
-        ticks_ages = [self.y, x, self.age_of_term_cost]
+        ticks_ages = [self.y, x, self.age_of_term_cost, ages[-1]]
         ticks_ages.sort()
         ticks_years = [years[ages.index(l)] for l in ticks_ages]
         ticks_labels = [f"{y}\n{ticks_ages[y_i]}" for y_i, y in enumerate(ticks_years)]
