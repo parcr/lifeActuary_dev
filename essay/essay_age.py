@@ -1,9 +1,7 @@
 __author__ = "PedroCR"
 
-import age
-import numpy as np
+from essential_life import age
 import datetime
-import calendar
 from dateutil.relativedelta import relativedelta
 import pandas as pd
 

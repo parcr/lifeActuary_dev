@@ -1,7 +1,7 @@
 __author__ = "PedroCR"
 
 import numpy as np
-import annuities
+from essential_life import annuities
 
 
 def A_x(mt, x, x_first, x_last, i=None, g=.0, method='udd'):

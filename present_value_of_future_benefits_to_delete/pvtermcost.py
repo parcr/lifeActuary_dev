@@ -1,7 +1,7 @@
 __author__ = "PedroCR"
 
 import numpy as np
-import age
+from essential_life import age
 
 
 class PVTermCost:
