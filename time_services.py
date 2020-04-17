@@ -88,7 +88,3 @@ class TimeServices:
 
     def __set_future(self):
         self.__future = self.last_age - self.age
-
-
-ts = TimeServices(30, 25, 65)
-ts.first_age = 20
