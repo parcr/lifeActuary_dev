@@ -326,3 +326,24 @@ class PVTermCost:
         plt.title(f"Present Value of Future Term Cost for {self.decrement} @{self.age_of_term_cost}|x={x}")
         plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
         return ax
+
+    def series_pvftc_path_proj(self, atc_initial=None, atc_final=None, x=None):
+        return [self.pvftc_path_proj(atc=atc, x=x) for atc in range(atc_initial, atc_final + 1)]
+
+    '''
+    Applies the various amortizations schemes
+    
+    '''
+
+    def series_Projected_Unit_Credit(self, atc_initial=None, atc_final=None, x=None,
+                                     waiting_after_y=0, waiting_before_atc=1):
+        from amortization_schemes.projected_unit_credit import puc
+        for atc in range(atc_initial, atc_final + 1):
+            # For each term cost, computes the pvftc for all ages, conditional on being alive at age x
+            pvftc_path_proj = self.pvftc_path_proj(atc=atc, x=x)
+            for y_i, y in enumerate(pvftc_path_proj['PVFTC']):
+                age = y['AAge']
+                age_first_instalment = self.y + waiting_after_y
+                age_last_instalment = atc - waiting_before_atc
+                puc_proj = puc.PUC(age=21, age_first_instalment=age_first_instalment,
+                                   age_last_instalment=age_last_instalment)
