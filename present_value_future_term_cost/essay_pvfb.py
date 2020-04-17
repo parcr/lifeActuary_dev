@@ -67,24 +67,31 @@ pv = pvfb_d.pvftc_path_proj(atc=x, x=None)
 print(pv)
 ax = pvfb_d.graph_pvftc(atc=x, x=None)
 plt.show()
+lst_errors = pvfb_d.test_pvftc_path_proj(atc=x, x=None)
 print()
+
 x = pvfb_d.y + 1
 pv = pvfb_d.pvftc_path_proj(atc=x, x=None)
 print(pv)
 ax = pvfb_d.graph_pvftc(atc=x, x=None)
 plt.show()
+lst_errors = pvfb_d.test_pvftc_path_proj(atc=x, x=None)
 print()
+
 x = 55
 pv = pvfb_d.pvftc_path_proj(atc=x, x=None)
 print(pv)
 ax = pvfb_d.graph_pvftc(atc=x, x=None)
 plt.show()
+lst_errors = pvfb_d.test_pvftc_path_proj(atc=x, x=None)
 print()
+
 x = 80
 pv = pvfb_d.pvftc_path_proj(atc=x, x=None)
 print(pv)
 ax = pvfb_d.graph_pvftc(atc=x, x=None)
 plt.show()
+lst_errors = pvfb_d.test_pvftc_path_proj(atc=x, x=None)
 print()
 
 atc = 55
@@ -93,8 +100,8 @@ pv = pvfb_d.pvftc_path_proj(atc=atc, x=x)
 print(pv)
 ax = pvfb_d.graph_pvftc(atc=atc, x=x)
 plt.show()
+lst_errors = pvfb_d.test_pvftc_path_proj(atc=x, x=None)
 print()
-
 
 atc = 55
 x = 70
@@ -102,4 +109,5 @@ pv = pvfb_d.pvftc_path_proj(atc=atc, x=x)
 print(pv)
 ax = pvfb_d.graph_pvftc(atc=atc, x=x)
 plt.show()
+lst_errors = pvfb_d.test_pvftc_path_proj(atc=x, x=None)
 print()

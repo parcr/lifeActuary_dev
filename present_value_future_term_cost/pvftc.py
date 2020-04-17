@@ -246,6 +246,11 @@ class PVTermCost:
             pvft = q_d_x * tpx * deferment
         return pvft
 
+    def pvftc_proj(self, x_0, x_1):
+        p = self.prob_survival(x_0, x_1)
+        pvftc = self.pvftc(x_1)
+        return pvftc * p
+
     def pvftc_path(self, atc=None):
         if atc is None:
             atc = self.age_of_term_cost
@@ -283,6 +288,16 @@ class PVTermCost:
         d['PVFTC_px'] = lst_pvftc
         return d
 
+    def test_pvftc_path_proj(self, atc=None, x=None):
+        lst_pvftc = self.pvftc_path_proj(atc=atc, x=x)
+        lst_errors = []
+        for y_i, y in enumerate(lst_pvftc['PVFTC']):
+            pvftc_proj = self.pvftc_proj(x_0=lst_pvftc['AAge_x'], x_1=y['AAge'])
+            error = pvftc_proj - lst_pvftc['PVFTC_px'][y_i]['pvftc_px']
+            lst_errors.append(error)
+        sum_errors = np.sum(np.abs(lst_errors))
+        return lst_errors, sum_errors, sum_errors < 1e-16
+
     def graph_pvftc(self, atc=None, x=None):
         import matplotlib.pyplot as plt
         fig, ax = plt.subplots(constrained_layout=True)
@@ -309,4 +324,5 @@ class PVTermCost:
         axes1.set_xticks(ticks_years)
         axes1.set_xticklabels(ticks_labels)
         plt.title(f"Present Value of Future Term Cost for {self.decrement} @{self.age_of_term_cost}|x={x}")
+        plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
         return ax
