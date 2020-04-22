@@ -1,7 +1,7 @@
 __author__ = "PedroCR"
 
 import numpy as np
-import age
+from essential_life import age
 
 
 def default_waiting_periods(date_of_entry, date_of_term_cost):

@@ -1,12 +1,9 @@
 __author__ = "PedroCR"
 
 import pytest
-import annuities
-import mortality_table as mt
+from essential_life import mortality_table as mt, mortality_table, commutation_table, annuities
 from soa_tables import read_soa_table_xml as rst
-from toDelete.mortality_tables_old import TV7377, GKM95_lx_15, GRF95
-import mortality_table
-import commutation_table
+from toDelete.mortality_tables_old import TV7377, GRF95
 
 lt_tv7377 = mortality_table.MortalityTable(mt=TV7377)
 lt_grf95 = mortality_table.MortalityTable(mt=GRF95)
@@ -64,8 +61,8 @@ def test_nEx_g_2():
     cf_grf95 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_GRF95.table_qx)
     cf_tv7377 = commutation_table.CommutationFunctions(i=i, g=g, mt=soa_TV7377.table_qx)
 
-    a_grf = annuities.nEx(mt=mt_GRF95, x=x, i=i, g=g*0, defer=defer, method=method)
-    a_tv = annuities.nEx(mt=mt_TV7377, x=x, i=i, g=g*0, defer=defer, method=method)
+    a_grf = annuities.nEx(mt=mt_GRF95, x=x, i=i, g=g * 0, defer=defer, method=method)
+    a_tv = annuities.nEx(mt=mt_TV7377, x=x, i=i, g=g * 0, defer=defer, method=method)
     a_grf_2 = cf_grf95.nEx(x=x, n=defer)
     cf_tv_2 = cf_tv7377.nEx(x=x, n=defer)
 

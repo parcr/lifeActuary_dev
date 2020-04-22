@@ -2,7 +2,7 @@ __author__ = "PedroCR"
 
 import numpy as np
 import pandas as pd
-from mortality_table import MortalityTable
+from essential_life.mortality_table import MortalityTable
 
 
 # todo: confirm all the messages

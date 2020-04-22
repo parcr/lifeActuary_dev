@@ -1,15 +1,14 @@
 __author__ = "PedroCR"
 
 import numpy as np
-import age
+from essential_life import age
 
 
 class PVTermCost:
     def __init__(self, date_of_valuation, date_of_birth, date_of_entry,
                  age_of_term_cost, waiting=0,
                  multi_table=None, decrement=None,
-                 i=None,
-                 age_of_projection=None):
+                 i=None):
         '''
         Creates an instance of a Present Value of a Term Cost object. This object will allow us to get an hold
         in all the information necessary to compute everything we need to valuate actuarial liabilities.
@@ -47,7 +46,6 @@ class PVTermCost:
         self.waiting = waiting
 
         self.i = i / 100,
-        self.age_of_projection = age_of_projection
         self.v = 1 / (1 + i / 100)
 
     @property
@@ -248,61 +246,77 @@ class PVTermCost:
             pvft = q_d_x * tpx * deferment
         return pvft
 
-    def pvftc_proj(self, x, px):
-        '''
-        Computes the Present Value of a Future Term Cost, that will allow us to use for all amortization schemes
-        :param x: the age for life x. We consider that x is alive and if the decrement happens, it will be moved to
-        to the other state. Hence, if there is a waiting period between the decrement occurrence and the first payment
-        x should already be placed in the state corresponding to the decrement.
-        For instance, if the decrement is disability, immediately after the decrement, x is moved to the state of
-        disable and do the waiting, if any, until the first payment.
-        There are states where the decrement happens just due to survival up to that age, for instance, retirement.
-        :param px: the age where we project
-        :return: The Present Value of Future Benefits
-        '''
-        pvftc_x = self.pvftc(x)
-        pvftc_px = self.pvftc(px)
-        p = self.prob_survival(x, px)
+    def pvftc_proj(self, x_0, x_1):
+        p = self.prob_survival(x_0, x_1)
+        pvftc = self.pvftc(x_1)
+        return pvftc * p
 
-        PVFTC_x = {'AAge_x': x, 'pvftc_x': pvftc_x, 'pvftc_px': pvftc_px, 'prob_surv_px': p, 'pvftc_p': pvftc_px * p}
-        proj = {**self.profile}
-        proj['PVFTC_x'] = PVFTC_x
-        return pvftc_x, pvftc_px, p, pvftc_px * p
-
-    def lst_pvftc(self, x):
+    def pvftc_path(self, atc=None):
+        if atc is None:
+            atc = self.age_of_term_cost
+        else:
+            self.age_of_term_cost = atc
+        d = {'Age Term Cost': self.age_of_term_cost}
         lst_pvftc = []
         for y_i, y in enumerate(self.dates_ages_w):
             pts = min(y[1] - self.y, self.total_time_service_years)
             pvftc = self.pvftc(y[1])
-            p = self.prob_survival(x, y[1])
-            d = {'Index': y_i, 'Year': y[0], 'AAge': y[1], 'AAge_x': x,
-                 'Age Term Cost': self.age_of_term_cost,
-                 'Past Time Service': pts,
-                 'Future Time Service': self.total_time_service_years - pts,
-                 'Future': self.age_of_term_cost - y[1],
-                 'pvftc_AAge': pvftc,
-                 'p_survival': p,
-                 'pvftc_px': pvftc * p}
-            lst_pvftc.append(d)
-        return lst_pvftc
+            d1 = {'Index': y_i, 'Year': y[0], 'AAge': y[1],
+                  'Past Time Service': pts,
+                  'Future Time Service': self.total_time_service_years - pts,
+                  'Future': self.age_of_term_cost - y[1],
+                  'pvftc_AAge': pvftc}
+            lst_pvftc.append(d1)
+        d['PVFTC'] = lst_pvftc
+        return d
 
-    def graph_pvftc(self, x):
+    def pvftc_path_proj(self, atc=None, x=None):
+        if atc is None:
+            atc = self.age_of_term_cost
+        else:
+            self.age_of_term_cost = atc
+        if x is None:
+            x = self.x
+        pvftc_path = self.pvftc_path(atc=atc)
+        lst_pvftc = []
+        d = {'Age Term Cost': pvftc_path['Age Term Cost'], 'AAge_x': x, 'PVFTC': pvftc_path['PVFTC']}
+        for y_i, y in enumerate(pvftc_path['PVFTC']):
+            p = self.prob_survival(x, y['AAge'])
+            d1 = {'p_survival': p,
+                  'pvftc_px': y['pvftc_AAge'] * p}
+            lst_pvftc.append(d1)
+        d['PVFTC_px'] = lst_pvftc
+        return d
+
+    def test_pvftc_path_proj(self, atc=None, x=None):
+        lst_pvftc = self.pvftc_path_proj(atc=atc, x=x)
+        lst_errors = []
+        for y_i, y in enumerate(lst_pvftc['PVFTC']):
+            pvftc_proj = self.pvftc_proj(x_0=lst_pvftc['AAge_x'], x_1=y['AAge'])
+            error = pvftc_proj - lst_pvftc['PVFTC_px'][y_i]['pvftc_px']
+            lst_errors.append(error)
+        sum_errors = np.sum(np.abs(lst_errors))
+        return lst_errors, sum_errors, sum_errors < 1e-16
+
+    def graph_pvftc(self, atc=None, x=None):
         import matplotlib.pyplot as plt
         fig, ax = plt.subplots(constrained_layout=True)
-        lst_pvftc = self.lst_pvftc(x)
-        years = [l['Year'] for l in lst_pvftc]
-        ages = [l['AAge'] for l in lst_pvftc]
-        pvftc = [l['pvftc_AAge'] for l in lst_pvftc]
-        pvftc_px = [l['pvftc_px'] for l in lst_pvftc]
-        future = [l['Future'] for l in lst_pvftc]
+        lst_pvftc = self.pvftc_path_proj(atc=atc, x=x)
+        x = lst_pvftc['AAge_x']
+        years = [l['Year'] for l in lst_pvftc['PVFTC']]
+        ages = [l['AAge'] for l in lst_pvftc['PVFTC']]
+        pvftc = [l['pvftc_AAge'] for l in lst_pvftc['PVFTC']]
+        pvftc_px = [l['pvftc_px'] for l in lst_pvftc['PVFTC_px']]
+        future = [l['Future'] for l in lst_pvftc['PVFTC']]
         year_of_age = years[ages.index(x)]
 
         ax.plot(years, pvftc, 'o-', label=f'pvfb {self.decrement}')
         ax.plot(years, pvftc_px, 'o-', mfc='none', label=f'pvfb {self.decrement}|{x}')
         ax.axvline(x=years[future[0]], linewidth=.5, color='r')
         ax.axvline(x=year_of_age, linewidth=.5, color='green')
+        ax.axvline(x=years[-1], linewidth=.5, color='gray')
         ax.legend()
-        ticks_ages = [self.y, x, self.age_of_term_cost]
+        ticks_ages = [self.y, x, self.age_of_term_cost, ages[-1]]
         ticks_ages.sort()
         ticks_years = [years[ages.index(l)] for l in ticks_ages]
         ticks_labels = [f"{y}\n{ticks_ages[y_i]}" for y_i, y in enumerate(ticks_years)]
@@ -310,4 +324,35 @@ class PVTermCost:
         axes1.set_xticks(ticks_years)
         axes1.set_xticklabels(ticks_labels)
         plt.title(f"Present Value of Future Term Cost for {self.decrement} @{self.age_of_term_cost}|x={x}")
+        plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
         return ax
+
+    def series_pvftc_path_proj(self, atc_initial=None, atc_final=None, x=None):
+        return [self.pvftc_path_proj(atc=atc, x=x) for atc in range(atc_initial, atc_final + 1)]
+
+    '''
+    Applies the various amortizations schemes
+    
+    '''
+
+    def series_Projected_Unit_Credit(self, atc_initial=None, atc_final=None, x=None,
+                                     waiting_after_y=0, waiting_before_atc=1):
+        from amortization_schemes.projected_unit_credit import puc
+        for atc in range(atc_initial, atc_final + 1):
+            # For each term cost, computes the pvftc for all ages, conditional on being alive at age x
+            pvftc_path_proj = self.pvftc_path_proj(atc=atc, x=x)
+            x = pvftc_path_proj['AAge_x']
+            lst_puc = []
+            for y_i, y in enumerate(pvftc_path_proj['PVFTC']):
+                age_first_instalment = self.y + waiting_after_y
+                age_last_instalment = atc - waiting_before_atc
+                puc_proj = puc.PUC(age=x, age_first_instalment=age_first_instalment,
+                                   age_last_instalment=age_last_instalment)
+                dic_puc = {'Past Time Service': puc_proj.ts.past_time_service,
+                           'Future Time Service': puc_proj.ts.future_time_service,
+                           'AL': y['pvftc_AAge'] * puc_proj.al(),
+                           'NC': y['pvftc_AAge'] * puc_proj.nc(),
+                           'AL_px': pvftc_path_proj['PVFTC_px'][y_i]['pvftc_px'] * puc_proj.al(),
+                           'NC_px': pvftc_path_proj['PVFTC_px'][y_i]['pvftc_px'] * puc_proj.nc()}
+                lst_puc.append(dic_puc)
+        return lst_puc

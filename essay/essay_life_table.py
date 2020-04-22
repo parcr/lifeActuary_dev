@@ -1,7 +1,6 @@
 # author: PedroCR #
 from toDelete.mortality_tables_old import TV7377, GKM95_lx_15
-import mortality_table
-import commutation_table
+from essential_life import mortality_table, commutation_table
 
 lt_tv7377 = mortality_table.MortalityTable(mt=TV7377)
 lt_gkm95 = mortality_table.MortalityTable(data_type='l', mt=GKM95_lx_15)

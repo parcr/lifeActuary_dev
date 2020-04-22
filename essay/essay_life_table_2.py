@@ -1,7 +1,6 @@
 # author: PedroCR #
 from soa_tables import read_soa_table_xml as rst
-import mortality_table
-import commutation_table
+from essential_life import mortality_table, commutation_table
 
 mt_TV7377 = rst.SoaTable('../soa_tables/TV7377.xml')
 mt_GRF95 = rst.SoaTable('../soa_tables/GRF95.xml')

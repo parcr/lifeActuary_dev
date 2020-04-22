@@ -2,12 +2,9 @@ __author__ = "PedroCR"
 
 import pytest
 
-import mortality_table as mt
 from soa_tables import read_soa_table_xml as rst
-from toDelete.mortality_tables_old import TV7377, GKM95_lx_15, GRF95
-import mortality_table
-import commutation_table
-import mortality_insurance
+from toDelete.mortality_tables_old import TV7377, GRF95
+from essential_life import mortality_insurance, mortality_table as mt, mortality_table, commutation_table
 
 lt_tv7377 = mortality_table.MortalityTable(mt=TV7377)
 lt_grf95 = mortality_table.MortalityTable(mt=GRF95)
