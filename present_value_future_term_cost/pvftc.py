@@ -338,21 +338,46 @@ class PVTermCost:
     def series_Projected_Unit_Credit(self, atc_initial=None, atc_final=None, x=None,
                                      waiting_after_y=0, waiting_before_atc=1):
         from amortization_schemes.projected_unit_credit import puc
+        series = []
         for atc in range(atc_initial, atc_final + 1):
             # For each term cost, computes the pvftc for all ages, conditional on being alive at age x
             pvftc_path_proj = self.pvftc_path_proj(atc=atc, x=x)
             x = pvftc_path_proj['AAge_x']
+            indx_today = x - self.y
             lst_puc = []
+            lst_puc_px = []
             for y_i, y in enumerate(pvftc_path_proj['PVFTC']):
                 age_first_instalment = self.y + waiting_after_y
                 age_last_instalment = atc - waiting_before_atc
-                puc_proj = puc.PUC(age=x, age_first_instalment=age_first_instalment,
+                age = y['AAge']
+                puc_proj = puc.PUC(age=age, age_first_instalment=age_first_instalment,
                                    age_last_instalment=age_last_instalment)
                 dic_puc = {'Past Time Service': puc_proj.ts.past_time_service,
                            'Future Time Service': puc_proj.ts.future_time_service,
                            'AL': y['pvftc_AAge'] * puc_proj.al(),
-                           'NC': y['pvftc_AAge'] * puc_proj.nc(),
-                           'AL_px': pvftc_path_proj['PVFTC_px'][y_i]['pvftc_px'] * puc_proj.al(),
-                           'NC_px': pvftc_path_proj['PVFTC_px'][y_i]['pvftc_px'] * puc_proj.nc()}
+                           'NC': y['pvftc_AAge'] * puc_proj.nc()}
+                dic_puc_px = {'AL_px': pvftc_path_proj['PVFTC_px'][y_i]['pvftc_px'] * puc_proj.al(),
+                              'NC_px': pvftc_path_proj['PVFTC_px'][y_i]['pvftc_px'] * puc_proj.nc()}
                 lst_puc.append(dic_puc)
-        return lst_puc
+                lst_puc_px.append(dic_puc_px)
+            # test the term cost
+            pvft_today = pvftc_path_proj['PVFTC_px'][indx_today]['pvftc_px']
+            al_today = lst_puc_px[indx_today]['AL_px']
+            discounted_pvfnc = [nc['NC_px'] * np.power(self.v, nc_i) for nc_i, nc in enumerate(lst_puc_px[indx_today:])]
+            sum_discounted_pvfnc = sum(discounted_pvfnc)
+            test_puc = pvft_today - (al_today + sum_discounted_pvfnc)
+
+            if atc <= x:  # sum all past
+                sum_past_AL = 0
+                sum_past_NC = 0
+            else:  # sum all future
+                sum_future_AL = 0
+                sum_future_NC = 0
+                sum_future_AL_px = 0
+                sum_future_NC_px = 0
+            # append everything
+            pvftc_path_proj['PUC'] = lst_puc
+            pvftc_path_proj['PUC_px'] = lst_puc_px
+            pvftc_path_proj['PUC_test'] = test_puc
+            series.append(pvftc_path_proj)
+        return series
