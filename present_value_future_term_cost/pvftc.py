@@ -367,17 +367,30 @@ class PVTermCost:
             sum_discounted_pvfnc = sum(discounted_pvfnc)
             test_puc = pvft_today - (al_today + sum_discounted_pvfnc)
 
-            if atc <= x:  # sum all past
-                sum_past_AL = 0
-                sum_past_NC = 0
-            else:  # sum all future
-                sum_future_AL = 0
-                sum_future_NC = 0
-                sum_future_AL_px = 0
-                sum_future_NC_px = 0
             # append everything
             pvftc_path_proj['PUC'] = lst_puc
             pvftc_path_proj['PUC_px'] = lst_puc_px
             pvftc_path_proj['PUC_test'] = test_puc
             series.append(pvftc_path_proj)
-        return series
+
+        # prepare the sums for all past and future liabilities
+        sum_past_AL = np.zeros((len(lst_puc),))
+        sum_past_NC = np.zeros((len(lst_puc),))
+        sum_future_AL = np.zeros((len(lst_puc),))
+        sum_future_NC = np.zeros((len(lst_puc),))
+        sum_future_AL_px = np.zeros((len(lst_puc),))
+        sum_future_NC_px = np.zeros((len(lst_puc),))
+        for atc in range(atc_initial, atc_final + 1):
+            idx = atc - atc_initial
+            if atc <= x:  # sum all past
+                sum_past_AL += np.array([l['AL'] for l in series[idx]['PUC']])
+                sum_past_NC += np.array([l['AL'] for l in series[idx]['PUC']])
+            else:  # sum all future
+                sum_future_AL += np.array([l['AL'] for l in series[idx]['PUC']])
+                sum_future_NC += np.array([l['AL'] for l in series[idx]['PUC']])
+                sum_future_AL_px += np.array([l['AL_px'] for l in series[idx]['PUC_px']])
+                sum_future_NC_px += np.array([l['NC_px'] for l in series[idx]['PUC_px']])
+        dic_sums = {'Sum_Past_AL': sum_past_AL, 'Sum_Past_NC': sum_past_NC,
+                    'Sum_Future_AL': sum_future_AL, 'Sum_Future_NC': sum_future_NC,
+                    'Sum_Future_AL_px': sum_future_AL_px, 'Sum_Future_NC_px': sum_future_NC_px}
+        return series, dic_sums
