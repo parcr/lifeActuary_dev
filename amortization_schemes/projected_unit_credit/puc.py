@@ -63,7 +63,9 @@ class PUC:
     def al(self):
         if self.age <= self.age_first_instalment:
             return 0
-        return (self.ts.past_time_service + 1) / self.ts.total_periods
+        if self.age > self.age_last_instalment:
+            return 1
+        return self.ts.past_time_service / self.ts.total_periods
 
     def nc(self):
         if self.age_first_instalment <= self.age <= self.age_last_instalment:

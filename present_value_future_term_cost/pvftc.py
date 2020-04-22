@@ -341,9 +341,18 @@ class PVTermCost:
         for atc in range(atc_initial, atc_final + 1):
             # For each term cost, computes the pvftc for all ages, conditional on being alive at age x
             pvftc_path_proj = self.pvftc_path_proj(atc=atc, x=x)
+            x = pvftc_path_proj['AAge_x']
+            lst_puc = []
             for y_i, y in enumerate(pvftc_path_proj['PVFTC']):
-                age = y['AAge']
                 age_first_instalment = self.y + waiting_after_y
                 age_last_instalment = atc - waiting_before_atc
-                puc_proj = puc.PUC(age=21, age_first_instalment=age_first_instalment,
+                puc_proj = puc.PUC(age=x, age_first_instalment=age_first_instalment,
                                    age_last_instalment=age_last_instalment)
+                dic_puc = {'Past Time Service': puc_proj.ts.past_time_service,
+                           'Future Time Service': puc_proj.ts.future_time_service,
+                           'AL': y['pvftc_AAge'] * puc_proj.al(),
+                           'NC': y['pvftc_AAge'] * puc_proj.nc(),
+                           'AL_px': pvftc_path_proj['PVFTC_px'][y_i]['pvftc_px'] * puc_proj.al(),
+                           'NC_px': pvftc_path_proj['PVFTC_px'][y_i]['pvftc_px'] * puc_proj.nc()}
+                lst_puc.append(dic_puc)
+        return lst_puc

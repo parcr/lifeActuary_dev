@@ -36,5 +36,6 @@ pvfb_d = pvftc.PVTermCost(date_of_valuation=date_of_valuation, date_of_birth=dic
                           multi_table=tables_multidecrement, decrement='disability', i=2)
 
 series_pvftc_d = pvfb_d.series_pvftc_path_proj(atc_initial=25, atc_final=65, x=None)
+
 ''' PUC '''
 puc_d = pvfb_d.series_Projected_Unit_Credit(atc_initial=15, atc_final=65, x=None)

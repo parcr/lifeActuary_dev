@@ -33,11 +33,6 @@ class TimeServices:
     def first_age(self, x):
         self.__first_age = x
         try:
-            if x > self.last_age:
-                self.__first_age = self.last_age
-        except AttributeError as ae:
-            pass
-        try:
             self.__set_past_time_service()
             self.__set_future_time_service()
             self.__set_total_time_service()
@@ -53,11 +48,6 @@ class TimeServices:
     @last_age.setter
     def last_age(self, x):
         self.__last_age = x
-        try:
-            if x < self.first_age:
-                self.__last_age = self.first_age
-        except AttributeError as ae:
-            pass
         try:
             self.__set_past_time_service()
             self.__set_future_time_service()
