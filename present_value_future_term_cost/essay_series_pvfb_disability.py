@@ -40,4 +40,6 @@ series_pvftc_d = pvfb_d.series_pvftc_path_proj(atc_initial=25, atc_final=65, x=N
 ''' PUC '''
 series_puc_d, sums_puc_d = pvfb_d.series_Projected_Unit_Credit(atc_initial=15, atc_final=65, x=None,
                                                                waiting_after_y=0, waiting_before_atc=1)
-print(sums_puc_d)
+
+ax = pvfb_d.graph_series_amortization_scheme(series_sums=sums_puc_d)
+plt.show()

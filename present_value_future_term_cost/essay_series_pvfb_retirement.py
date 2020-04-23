@@ -35,9 +35,12 @@ pvfb_r = pvftc.PVTermCost(date_of_valuation=date_of_valuation, date_of_birth=dic
                           waiting=0,
                           multi_table=tables_multidecrement, decrement=None, i=2)
 
-series_pvftc_r = pvfb_r.series_pvftc_path_proj(atc_initial=65, atc_final=65, x=None)
+series_pvftc_r = pvfb_r.series_pvftc_path_proj(atc_initial=55, atc_final=55, x=None)
 
 ''' PUC '''
-series_puc_r, sums_puc_r = pvfb_r.series_Projected_Unit_Credit(atc_initial=15, atc_final=65, x=None,
+series_puc_r, sums_puc_r = pvfb_r.series_Projected_Unit_Credit(atc_initial=65, atc_final=65, x=None,
                                                                waiting_after_y=0, waiting_before_atc=1)
-print(sums_puc_r)
+
+ax = pvfb_r.graph_series_amortization_scheme(series_sums=sums_puc_r)
+plt.show()
+
