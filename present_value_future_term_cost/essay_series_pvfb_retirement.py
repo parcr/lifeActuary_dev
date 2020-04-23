@@ -30,13 +30,14 @@ date_of_valuation = '2019-12-31'
 
 dates_for_term_cost = age.Age(date1=dict_dates['date_of_birth'], date2=dict_dates['date_of_birth']).date_inc_years(55)
 age_term_cost_years = dates_for_term_cost.age_act()
-pvfb_d = pvftc.PVTermCost(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
+pvfb_r = pvftc.PVTermCost(date_of_valuation=date_of_valuation, date_of_birth=dict_dates['date_of_birth'],
                           date_of_entry=dict_dates['date_of_entry'], age_of_term_cost=age_term_cost_years,
                           waiting=0,
-                          multi_table=tables_multidecrement, decrement='disability', i=2)
+                          multi_table=tables_multidecrement, decrement=None, i=2)
 
-series_pvftc_d = pvfb_d.series_pvftc_path_proj(atc_initial=25, atc_final=65, x=None)
+series_pvftc_r = pvfb_r.series_pvftc_path_proj(atc_initial=65, atc_final=65, x=None)
 
 ''' PUC '''
-series_puc_d, sums_puc_d = pvfb_d.series_Projected_Unit_Credit(atc_initial=15, atc_final=65, x=None,
+series_puc_r, sums_puc_r = pvfb_r.series_Projected_Unit_Credit(atc_initial=15, atc_final=65, x=None,
                                                                waiting_after_y=0, waiting_before_atc=1)
+print(sums_puc_r)
