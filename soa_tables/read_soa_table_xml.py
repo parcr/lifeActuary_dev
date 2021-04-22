@@ -10,7 +10,7 @@ class SoaTable:
         '''
         Reads a previously downloaded life table, from Society of Actuaries, in the xml format and prepares
         all the information to create a life (mortality table).
-        :param table_name:
+        :param table_name: The SOA table, in xml format, to be read.
         '''
         self.table_name = table_name
         self.xmldoc = minidom.parse(table_name)
@@ -24,3 +24,4 @@ class SoaTable:
         self.max_age = self.min_age + len(self.ages) - 1
         self.table_qx = [float(age.childNodes[0].data) for age in self.ages]
         self.table_qx.insert(0, self.min_age)
+        # todo: scrap the tables from SOA
