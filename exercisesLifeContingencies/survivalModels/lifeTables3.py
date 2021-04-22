@@ -24,6 +24,9 @@ for idx, lt in enumerate(lt_lst):
     ages = np.arange(0, lt.w + 1)
     plt.plot(ages, lt.ex, label=table_names[idx])
 
+plt.xlabel(r'$x$')
+plt.ylabel(r'${e}_{x}+1/2$')
+plt.title('Complete Expectation of Life')
 plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
 plt.legend()
 plt.show()
