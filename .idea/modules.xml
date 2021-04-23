@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../../FCT/Disciplinas/actuariadoVida1/exercisesSolutions/.idea/exercisesSolutions.iml" filepath="$PROJECT_DIR$/../../FCT/Disciplinas/actuariadoVida1/exercisesSolutions/.idea/exercisesSolutions.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/lifeActuary.iml" filepath="$PROJECT_DIR$/.idea/lifeActuary.iml" />
     </modules>
   </component>
