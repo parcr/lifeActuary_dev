@@ -22,3 +22,7 @@ def test_wlai_2():
 def test_wlai_3():
     a = ct_lst[2].ax(x=55, m=1)
     assert 15.531276786555 == pytest.approx(a, rel=1e-12)
+
+
+for idx, ct in enumerate(ct_lst):
+    print("\\textbf{" + table_names[idx] + ":} " + f'{round(1000 * ct.ax(x=55, m=1), 2):,}')
