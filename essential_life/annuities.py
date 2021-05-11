@@ -33,7 +33,7 @@ def annuity_x(mt, x, x_first, x_last, i=None, g=.0, m=1, method='udd'):
     return np.sum(instalments)
 
 
-# life annuities 1 head
+# life annuities_1 1 head
 # immediate
 def ax(mt, x, i=None, g=0, m=1, method='udd'):
     '''

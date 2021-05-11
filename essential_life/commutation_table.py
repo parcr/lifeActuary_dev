@@ -275,7 +275,7 @@ class CommutationFunctions(MortalityTable):
         self.msn.append(f"{defer}|{n}_AE_{x}={defer}_E_{x}*{n}_AE_{x + defer}_")
         return aux
 
-    # life annuities
+    # life annuities_1
     def ax(self, x, m=1):
         """
         axn : Returns the actuarial present value of an (immediate) annuity of 1 per time period
@@ -369,7 +369,7 @@ class CommutationFunctions(MortalityTable):
             return self.aax(x=x, m=m)
         return aux
 
-    # deferred annuities
+    # deferred annuities_1
     def t_ax(self, x, m=1, defer=0):
         """
         axn : Returns the actuarial present value of an (immediate) annuity of 1 per time period

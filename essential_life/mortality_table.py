@@ -18,7 +18,7 @@ class MortalityTable:
             return
         self.__methods = ('udd', 'cfm', 'bal')
         self.mt = mt
-        self.x0 = mt[0]
+        self.x0 = np.int(mt[0])
         self.last_q = last_q
         self.w = 0
         self.lx = []

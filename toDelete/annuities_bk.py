@@ -33,7 +33,7 @@ def annuity_x(mt, x, x_first, x_last, i=None, g=.0, m=1, method='udd'):
     return np.sum(instalments)
 
 
-# life annuities 1 head
+# life annuities_1 1 head
 def ax(mtx, x, i=None, g=0, m=1, defer=0, method='udd'):
     '''
     computes a whole life annuity immediate paying while both lives are alive
@@ -93,7 +93,7 @@ def aax(mtx, x, i=None, g=0, m=1, defer=0, method='udd'):
     return np.sum(instalments)
 
 
-# life annuities 2 heads
+# life annuities_1 2 heads
 def axy(mtx, mty, x, y, i=None, g=0, m=1, defer=0, method='udd'):
     '''
     computes a whole life annuity immediate paying while both lives are alive
