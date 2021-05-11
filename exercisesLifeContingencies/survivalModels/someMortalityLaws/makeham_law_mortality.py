@@ -28,7 +28,8 @@ def pdf(a, b, c, x, t):
     if t < 0:
         return 1
     else:
-        return (a + b * np.power(c, x)) * np.exp(-b / np.log(c) * np.power(c, x) * (np.power(c, t) - 1)) * np.exp(-a * t)
+        return (a + b * np.power(c, x + t)) * np.exp(-b / np.log(c) * np.power(c, x) * (np.power(c, t) - 1)) * np.exp(
+            -a * t)
 
 
 t = np.linspace(0, 100, 1000 + 1)
@@ -43,7 +44,7 @@ for x in x_s:
     y = S_vec(a=a, b=b, c=c, x=x, t=t)
     plt.plot(t, y, label=f'x={x}')
 
-plt.title(f'Makehams Law Survival Function (B={b}, c={c})')
+plt.title(f'Makeham Law Survival Function (A={a}, B={b}, c={c})')
 plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
 plt.legend()
 plt.xlabel('t')
@@ -58,7 +59,7 @@ for x in x_s:
     y = pdf_vec(a=a, b=b, c=c, x=x, t=t)
     plt.plot(t, y, label=f'x={x}')
 
-plt.title(f'Makehams Law Probability Density Function (B={b}, c={c})')
+plt.title(f'Makeham Law Probability Density Function (A={a}, B={b}, c={c})')
 plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
 plt.legend()
 plt.xlabel('t')
@@ -73,6 +74,8 @@ Compute Life Table
 px = np.array([S(a, b, c, x, t=1) for x in range(0, 130 + 1)])
 qx = 1 - px
 lt = mortality_table.MortalityTable(mt=list(np.append(0, qx)))
+lt.df_life_table().to_excel(excel_writer='makeham' + '.xlsx', sheet_name='makeham',
+                            index=False, freeze_panes=(1, 1))
 
 '''
 Plot ex
@@ -103,5 +106,5 @@ plt.ylabel(r'$P(K_{70}=k)$')
 plt.title(r'$_{t|}q_{70}$')
 plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
 plt.legend()
-plt.savefig(this_py + '.eps', format='eps', dpi=3600)
+plt.savefig(this_py + 'pk70' + '.eps', format='eps', dpi=3600)
 plt.show()

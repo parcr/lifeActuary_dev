@@ -64,7 +64,7 @@ class MortalityTable:
         data = {'x': np.arange(self.w + 1), 'lx': self.lx[:-1], 'dx': self.dx,
                 'qx': self.qx, 'px': self.px, 'exo': self.ex}
         df = pd.DataFrame(data)
-        df = df.astype({'x': 'int8'})
+        df = df.astype({'x': 'int16'})
         return df
 
     def lx_udd(self, t):

@@ -110,6 +110,7 @@ plt.legend()
 plt.xlabel('t')
 plt.ylabel(f'$f_x(t)$')
 plt.savefig(this_py + '_pdf' + '.eps', format='eps', dpi=3600)
+# plt.show()
 
 '''
 Compare q_x with \mu_x+.5
