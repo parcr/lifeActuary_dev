@@ -76,6 +76,9 @@ qx = 1 - px
 lt = mortality_table.MortalityTable(mt=list(np.append(0, qx)))
 lt.df_life_table().to_excel(excel_writer='makeham' + '.xlsx', sheet_name='makeham',
                             index=False, freeze_panes=(1, 1))
+ct = commutation_table.CommutationFunctions(i=5, g=0, mt=lt.qx)
+ct.df_commutation_table().to_excel(excel_writer='makeham' + '_comm' + '.xlsx', sheet_name='makeham',
+                                   index=False, freeze_panes=(1, 1))
 
 '''
 Plot ex
