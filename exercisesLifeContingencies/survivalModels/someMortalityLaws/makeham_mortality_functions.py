@@ -1,6 +1,5 @@
 import numpy as np
-from essential_life import mortality_table, commutation_table
-import matplotlib.pyplot as plt
+import scipy.integrate
 import os
 import sys
 
@@ -36,3 +35,16 @@ class Makeham:
             return (self.a + self.b * np.power(self.c, x + t)) * np.exp(
                 -self.b / np.log(self.c) * np.power(self.c, x) * (np.power(self.c, t) - 1)) * np.exp(
                 -self.a * t)
+
+    def moments_Tx(self, x=0, k=1):
+        if x < 0 or k < 0:
+            return np.nan
+        if k == 0:
+            return 1
+
+        def t_S_x(t):
+            return np.exp(-self.b / np.log(self.c) * np.power(self.c, x) * (np.power(self.c, t) - 1)) * \
+                   np.exp(-self.a * t) * (self.a + self.b * np.power(self.c, x)) aqui
+
+        ev = scipy.integrate.quad(t_S_x, 0, np.inf)
+        return ev

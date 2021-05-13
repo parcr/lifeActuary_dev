@@ -6,7 +6,7 @@ import os
 import sys
 
 this_py = os.path.split(sys.argv[0])[-1][:-3]
-mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.00035, c=1.075)
+mml = makeham_mortality_functions.Makeham(a=0.00022, b=2.7E-6, c=1.124)
 
 e0 = mml.moments_Tx()
 
@@ -99,7 +99,7 @@ for x in x_s:
         v = 1 / (1 + interest_rate / 100)
         epv_ai = [mml.S(x=x, t=u) * v ** u for u in ts[1:]]
         epv_aa = epv_ai.copy()
-        epv_aa.insert(0, 1 / m)
+        epv_aa.insert(0, 1)
         name = 'aa_' + str(x) + '_' + str(m)
         rendas_dict[name] = sum(epv_aa) / m
         name = 'ai_' + str(x) + '_' + str(m)
