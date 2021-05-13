@@ -58,7 +58,7 @@ class Makeham:
         ev_square = self.moments_Tx(x=x, k=2)[0]
         return ev_square - np.power(ev, 2)
 
-    def ax(self, x=0, interest_rate=0):
+    def ax(self, x=0, interest_rate=0, n=np.inf):
         if x < 0:
             return np.nan
 
@@ -68,5 +68,5 @@ class Makeham:
                    np.exp(-self.b / np.log(self.c) * np.power(self.c, x) * (np.power(self.c, t) - 1)) * \
                    np.exp(-self.a * t)
 
-        ev = scipy.integrate.quad(a_x, 0, np.inf)
+        ev = scipy.integrate.quad(a_x, 0, n)
         return ev

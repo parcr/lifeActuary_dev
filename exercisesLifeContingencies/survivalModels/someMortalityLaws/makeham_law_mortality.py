@@ -86,21 +86,3 @@ plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewid
 plt.legend()
 plt.savefig(this_py + 'pk70' + '.eps', format='eps', dpi=3600)
 plt.show()
-
-'''
-annuities
-'''
-
-x_s = range(20, 80 + 20, 20)
-rendas_dict = {}
-for x in x_s:
-    for m in [1, 4]:
-        ts = np.arange(0, lt.w - 40 + 1 / m, 1 / m)
-        v = 1 / (1 + interest_rate / 100)
-        epv_ai = [mml.S(x=x, t=u) * v ** u for u in ts[1:]]
-        epv_aa = epv_ai.copy()
-        epv_aa.insert(0, 1 / m)
-        name = 'aa_' + str(x) + '_' + str(m)
-        rendas_dict[name] = sum(epv_aa) / m
-        name = 'ai_' + str(x) + '_' + str(m)
-        rendas_dict[name] = sum(epv_ai) / m

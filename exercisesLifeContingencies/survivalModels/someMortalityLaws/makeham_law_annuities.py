@@ -95,7 +95,7 @@ x_s = range(20, 80 + 20, 20)
 rendas_dict = {}
 for x in x_s:
     for m in [1, 4]:
-        ts = np.arange(0, lt.w - 40 + 1 / m, 1 / m)
+        ts = np.arange(0, lt.w - x + 1 / m, 1 / m)
         v = 1 / (1 + interest_rate / 100)
         epv_ai = [mml.S(x=x, t=u) * v ** u for u in ts[1:]]
         epv_aa = epv_ai.copy()
@@ -106,3 +106,22 @@ for x in x_s:
         rendas_dict[name] = sum(epv_ai) / m
 
 a_x = mml.ax(x=20, interest_rate=interest_rate / 100)
+
+'''
+annuities temp
+'''
+rendas_temp_dict = {}
+for x in x_s:
+    for m in [1, 4]:
+        ts = np.arange(0, 10 + 1 / m, 1 / m)
+        v = 1 / (1 + interest_rate / 100)
+        epv_ai = [mml.S(x=x, t=u) * v ** u for u in ts[1:]]
+        epv_aa = epv_ai.copy()
+        epv_aa.insert(0, 1)
+        epv_aa.pop()
+        name = 'aa_' + str(x) + '_' + str(m)
+        rendas_temp_dict[name] = sum(epv_aa) / m
+        name = 'ai_' + str(x) + '_' + str(m)
+        rendas_temp_dict[name] = sum(epv_ai) / m
+
+a_x = mml.ax(x=20, interest_rate=interest_rate / 100, n=10)
