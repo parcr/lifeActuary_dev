@@ -51,7 +51,7 @@ qx = 1 - px
 lt = mortality_table.MortalityTable(mt=list(np.append(0, qx)))
 lt.df_life_table().to_excel(excel_writer='makeham' + '.xlsx', sheet_name='makeham',
                             index=False, freeze_panes=(1, 1))
-ct = commutation_table.CommutationFunctions(i=interest_rate, g=0, mt=list(lt.qx))
+ct = commutation_table.CommutationFunctions(i=interest_rate, g=0, mt=list(np.append(0, qx)))
 ct.df_commutation_table().to_excel(excel_writer='makeham' + '_comm' + '.xlsx', sheet_name='makeham',
                                    index=False, freeze_panes=(1, 1))
 
@@ -104,3 +104,5 @@ for x in x_s:
         rendas_dict[name] = sum(epv_aa) / m
         name = 'ai_' + str(x) + '_' + str(m)
         rendas_dict[name] = sum(epv_ai) / m
+
+a_x = mml.ax(x=20, interest_rate=interest_rate / 100)

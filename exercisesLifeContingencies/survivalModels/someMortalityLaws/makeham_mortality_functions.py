@@ -32,9 +32,9 @@ class Makeham:
         if t < 0:
             return 1
         else:
-            return (self.a + self.b * np.power(self.c, x + t)) * np.exp(
-                -self.b / np.log(self.c) * np.power(self.c, x) * (np.power(self.c, t) - 1)) * np.exp(
-                -self.a * t)
+            return (self.a + self.b * np.power(self.c, x + t)) * \
+                   np.exp(-self.b / np.log(self.c) * np.power(self.c, x) *
+                          (np.power(self.c, t) - 1)) * np.exp(-self.a * t)
 
     def moments_Tx(self, x=0, k=1):
         if x < 0 or k < 0:
@@ -43,8 +43,30 @@ class Makeham:
             return 1
 
         def t_S_x(t):
-            return np.exp(-self.b / np.log(self.c) * np.power(self.c, x) * (np.power(self.c, t) - 1)) * \
-                   np.exp(-self.a * t) * (self.a + self.b * np.power(self.c, x)) aqui
+            return k * np.power(t, k - 1) * \
+                   np.exp(-self.b / np.log(self.c) * np.power(self.c, x) * (np.power(self.c, t) - 1)) * np.exp(
+                -self.a * t)
 
         ev = scipy.integrate.quad(t_S_x, 0, np.inf)
+        return ev
+
+    def expected_value_Tx(self, x=0):
+        return self.moments_Tx(x=x, k=1)[0]
+
+    def variance_Tx(self, x=0):
+        ev = self.expected_value_Tx(x=x)
+        ev_square = self.moments_Tx(x=x, k=2)[0]
+        return ev_square - np.power(ev, 2)
+
+    def ax(self, x=0, interest_rate=0):
+        if x < 0:
+            return np.nan
+
+        def a_x(t, interest_rate=.05):
+            v = 1 / (1 + interest_rate)
+            return np.power(v, t) * \
+                   np.exp(-self.b / np.log(self.c) * np.power(self.c, x) * (np.power(self.c, t) - 1)) * \
+                   np.exp(-self.a * t)
+
+        ev = scipy.integrate.quad(a_x, 0, np.inf)
         return ev
