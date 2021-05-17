@@ -71,6 +71,10 @@ class Makeham:
         ev = scipy.integrate.quad(a_x, 0, n)
         return ev
 
+    def nEx(self, x=0, interest_rate=0, defer=0):
+        v = 1 / (1 + interest_rate / 100)
+        return np.power(v, defer) * self.S(x=x, t=defer)
+
     def annuity(self, x=0, interest_rate=0, age_first_instalment=0, terms=np.inf, fraction=1, w=130):
         # v_m = np.power(1 / (1 + interest_rate / 100), 1 / fraction)
         v = 1 / (1 + interest_rate / 100)
