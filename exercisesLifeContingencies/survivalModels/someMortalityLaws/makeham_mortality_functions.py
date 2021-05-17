@@ -79,7 +79,8 @@ class Makeham:
         # v_m = np.power(1 / (1 + interest_rate / 100), 1 / fraction)
         v = 1 / (1 + interest_rate / 100)
         defer = age_first_instalment - x
-        nEx = np.power(v, defer) * self.S(x=x, t=defer)
+        # nEx = np.power(v, defer) * self.S(x=x, t=defer)
+        nEx = self.nEx(x=x, interest_rate=interest_rate, defer=defer)
         if terms == np.inf:
             ts = np.arange(0, w - age_first_instalment + 1 / fraction, 1 / fraction)
         else:
