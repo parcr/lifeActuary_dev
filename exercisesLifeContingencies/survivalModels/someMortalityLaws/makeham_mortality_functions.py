@@ -70,3 +70,15 @@ class Makeham:
 
         ev = scipy.integrate.quad(a_x, 0, n)
         return ev
+
+    def annuity(self, x=0, interest_rate=0, age_first_instalment=0, terms=np.inf, fraction=1, w=130):
+        # v_m = np.power(1 / (1 + interest_rate / 100), 1 / fraction)
+        v = 1 / (1 + interest_rate / 100)
+        defer = age_first_instalment - x
+        nEx = np.power(v, defer) * self.S(x=x, t=defer)
+        if terms == np.inf:
+            ts = np.arange(0, w - age_first_instalment + 1 / fraction, 1 / fraction)
+        else:
+            ts = np.arange(0, min(w - age_first_instalment, terms), 1 / fraction)
+        epv_ai = [self.S(x=age_first_instalment, t=u) * v ** u for u in ts]
+        return sum(epv_ai) * nEx / fraction
