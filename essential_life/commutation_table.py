@@ -25,6 +25,7 @@ class CommutationFunctions(MortalityTable):
         # self.Dx = np.array([self.lx[x] * np.power(self.d, x) for x in range(len(self.lx))])
         self.Dx = self.lx[:-1] * np.power(self.d, range(len(self.lx[:-1])))
         self.Nx = np.array([np.sum(self.Dx[x:]) for x in range(len(self.lx[:-1]))])
+        self.Sx = np.array([np.sum(self.Nx[x:]) for x in range(len(self.Nx))])
         self.Cx = self.dx * np.power(self.d, range(1, len(self.dx) + 1))
         self.Mx = np.array([np.sum(self.Cx[x:]) for x in range(len(self.Cx))])
         self.Rx = np.array([np.sum(self.Mx[x:]) for x in range(len(self.Mx))])
@@ -33,7 +34,7 @@ class CommutationFunctions(MortalityTable):
             self.Rx = self.Rx * self.cont
 
     def df_commutation_table(self):
-        data = {'Dx': self.Dx, 'Nx': self.Nx, 'Cx': self.Cx, 'Mx': self.Mx, 'Rx': self.Rx}
+        data = {'Dx': self.Dx, 'Nx': self.Nx, 'Sx': self.Sx, 'Cx': self.Cx, 'Mx': self.Mx, 'Rx': self.Rx}
         df = pd.DataFrame(data)
         data_lf = self.df_life_table()
         df = pd.concat([data_lf, df], axis=1, sort=False)
