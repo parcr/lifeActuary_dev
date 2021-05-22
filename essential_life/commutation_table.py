@@ -357,8 +357,7 @@ class CommutationFunctions(MortalityTable):
             return 0
 
         if x + 1 + n <= self.w + 1:  # todo we've here a problem, because of the fractional approximation
-            aux = self.nax(x=x, n=n, m=m) * np.power(1 + self.g, 1) + \
-                  (m + 1) / (m * 2) * (1 - self.nEx(x, n) * np.power(1 + self.g, n))
+            aux = (self.Nx[x] - self.Nx[x + n]) / self.Dx[x] - (m - 1) / (m * 2) * (1 - self.nEx(x, n))
             if x + 1 + n <= self.w:
                 Nx2 = self.Nx[x + 1 + n]
             else:

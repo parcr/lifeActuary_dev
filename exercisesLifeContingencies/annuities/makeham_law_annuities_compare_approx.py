@@ -89,13 +89,14 @@ for x in x_s:
         alpha_m = i * d / (i_m * d_m)
         beta_m = (i - i_m) / (i_m * d_m)
         name = 'aa_' + str(x) + '_' + str(m) + '_comm'  # using the usual approximations
-        annuity = ct.naax(x=x, n=10, m=m)
-        rendas_temp_dict[name] = annuity
+        rendas_temp_dict[name] = ct.naax(x=x, n=10, m=m)
         name = 'aa_' + str(x) + '_' + str(m) + '_a_b'  # using alpha and beta obtained by the udd
-        rendas_temp_dict[name] = annuity * alpha_m - beta_m * (1 - ct.nEx(x=x, n=10))
+        rendas_temp_dict[name] = ct.naax(x=x, n=10, m=1) * alpha_m - beta_m * (1 - ct.nEx(x=x, n=10))
+
+        # a = [ct.naax(x=20, n=10, m=m) for m in range(1, 12)]
 
         name = 'ai_' + str(x) + '_' + str(m) + '_comm'  # using the usual approximations
-        annuity = ct.nax(x=x, n=10, m=m)
-        rendas_temp_dict[name] = annuity
+        rendas_temp_dict[name] = ct.nax(x=x, n=10, m=m)
         name = 'ai_' + str(x) + '_' + str(m) + '_a_b'  # using alpha and beta obtained by the udd
-        rendas_temp_dict[name] = annuity * alpha_m - (-alpha_m + beta_m + 1 / m) * (1 - ct.nEx(x=x, n=10))
+        rendas_temp_dict[name] = ct.nax(x=x, n=10, m=1) * alpha_m - (-alpha_m + beta_m + 1 / m) * (
+                    1 - ct.nEx(x=x, n=10))
