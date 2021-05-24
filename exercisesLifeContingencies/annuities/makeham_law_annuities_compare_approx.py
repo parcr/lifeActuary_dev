@@ -42,7 +42,7 @@ for x in x_s:
         name = 'ai_' + str(x) + '_' + str(m)
         rendas_dict[name] = sum(epv_ai) / m
         name = 'aC_' + str(x)  # continuous
-        rendas_dict[name] = mml.ax(x=x, interest_rate=interest_rate / 100)[0]
+        rendas_dict[name] = mml.ax(x=x, interest_rate=interest_rate)[0]
         # commutation table
         i = interest_rate / 100
         v = 1 / (1 + i)
@@ -78,7 +78,7 @@ for x in x_s:
         name = 'ai_' + str(x) + '_' + str(m)
         rendas_temp_dict[name] = sum(epv_ai) / m
         name = 'aC_' + str(x)  # continuous
-        rendas_temp_dict[name] = a_x = mml.ax(x=x, interest_rate=interest_rate / 100, n=10)[0]
+        rendas_temp_dict[name] = mml.ax(x=x, interest_rate=interest_rate, n=10)[0]
 
         # commutation table
         i = interest_rate / 100
@@ -99,4 +99,4 @@ for x in x_s:
         rendas_temp_dict[name] = ct.nax(x=x, n=10, m=m)
         name = 'ai_' + str(x) + '_' + str(m) + '_a_b'  # using alpha and beta obtained by the udd
         rendas_temp_dict[name] = ct.nax(x=x, n=10, m=1) * alpha_m - (-alpha_m + beta_m + 1 / m) * (
-                    1 - ct.nEx(x=x, n=10))
+                1 - ct.nEx(x=x, n=10))

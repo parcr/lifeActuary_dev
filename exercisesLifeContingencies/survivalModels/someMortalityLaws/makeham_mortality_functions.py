@@ -62,7 +62,7 @@ class Makeham:
         if x < 0:
             return np.nan
 
-        def a_x(t, interest_rate=.05):
+        def a_x(t, interest_rate=interest_rate / 100):
             v = 1 / (1 + interest_rate)
             return np.power(v, t) * \
                    np.exp(-self.b / np.log(self.c) * np.power(self.c, x) * (np.power(self.c, t) - 1)) * \
