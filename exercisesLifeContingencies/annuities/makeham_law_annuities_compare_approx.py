@@ -69,7 +69,7 @@ for x in x_s:
     for m in [1, 4]:
         ts = np.arange(0, 10 + 1 / m, 1 / m)
         v = 1 / (1 + interest_rate / 100)
-        epv_ai = [mml.S(x=x, t=u) * v ** u for u in ts[1:]]
+        epv_ai = [mml.S(x=x, t=u) * v ** u for u in ts[1:]] # [mml.S(x=x, t=u) * v ** u for u in ts[1:]]
         epv_aa = epv_ai.copy()
         epv_aa.insert(0, 1)
         epv_aa.pop()

@@ -34,7 +34,7 @@ for x in x_s:
         v = 1 / (1 + i)
         # exact
         rendas_temp_dict['x'].append(x)
-        epv_ai = [mml.S(x=x, t=u) * v ** u for u in ts[1:]]
+        epv_ai = [mml.S(x=x, t=u) * v ** u for u in ts[1:]] #todo: problem in here
         epv_aa = epv_ai.copy()
         epv_aa.insert(0, 1)
         epv_aa.pop()
