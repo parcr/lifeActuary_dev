@@ -1,7 +1,7 @@
 from exercisesLifeContingencies.survivalModels.someMortalityLaws import makeham_mortality_functions
 import numpy as np
 from essential_life import mortality_table, commutation_table
-import matplotlib.pyplot as plt
+import pandas as pd
 import os
 import sys
 
@@ -69,3 +69,6 @@ for x in x_s:
         factor2_app = (m ** 2 - 1) / (12 * m ** 2) * (
                 delta + mu_x_app - ct.nEx(x, period) * (delta + mu_x_n_app))
         rendas_temp_dict['W3_app'].append(renda - factor1 - factor2_app)
+
+df = pd.DataFrame(rendas_temp_dict)
+df.to_excel(this_py + '.xlsx', index=False, freeze_panes=(1, 0))
