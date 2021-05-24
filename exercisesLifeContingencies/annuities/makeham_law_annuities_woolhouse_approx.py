@@ -8,13 +8,13 @@ import sys
 this_py = os.path.split(sys.argv[0])[-1][:-3]
 mml = makeham_mortality_functions.Makeham(a=0.00022, b=2.7E-6, c=1.124)
 
-period = 25
+period = 10
 x_s = list(range(20, 100 + 10, 10))
 
 '''
 Compute Life Table and commutation table
 '''
-interest_rate = 5
+interest_rate = 10
 px = np.array([mml.S(x, t=1) for x in range(0, 130 + 1)])
 qx = 1 - px
 lt = mortality_table.MortalityTable(mt=list(np.append(0, qx)))
@@ -28,13 +28,14 @@ rendas_temp_dict = {'x': list(), "type": list(), 'Exact': list(), 'Continuous': 
                     'W3': list(), 'W3_app': list()}
 
 for x in x_s:
-    for m in [2]:
-        ts = np.arange(0, period + 1 / m, 1 / m)
+    for m in [12]:
+        # ts = np.arange(0, period + 1 / m, 1 / m) # todo: it is inconsistent, be careful
+        ts = np.linspace(start=0, stop=period, num=m * period + 1, endpoint=True)
         i = interest_rate / 100
         v = 1 / (1 + i)
         # exact
         rendas_temp_dict['x'].append(x)
-        epv_ai = [mml.S(x=x, t=u) * v ** u for u in ts[1:]] #todo: problem in here
+        epv_ai = [mml.S(x=x, t=u) * np.power(v, u) for u in ts[1:]]
         epv_aa = epv_ai.copy()
         epv_aa.insert(0, 1)
         epv_aa.pop()
