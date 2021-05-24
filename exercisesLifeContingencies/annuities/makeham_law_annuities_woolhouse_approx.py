@@ -8,12 +8,12 @@ import sys
 this_py = os.path.split(sys.argv[0])[-1][:-3]
 mml = makeham_mortality_functions.Makeham(a=0.00022, b=2.7E-6, c=1.124)
 
-period = 10
-x_s = list(range(20, 100 + 10, 10))
 
 '''
 Compute Life Table and commutation table
 '''
+period = 10
+x_s = list(range(20, 100 + 10, 10))
 interest_rate = 10
 px = np.array([mml.S(x, t=1) for x in range(0, 130 + 1)])
 qx = 1 - px
@@ -71,4 +71,4 @@ for x in x_s:
         rendas_temp_dict['W3_app'].append(renda - factor1 - factor2_app)
 
 df = pd.DataFrame(rendas_temp_dict)
-df.to_excel(this_py + '.xlsx', index=False, freeze_panes=(1, 0))
+df.to_excel(this_py + '_' + str(interest_rate) + '.xlsx', index=False, freeze_panes=(1, 0))
