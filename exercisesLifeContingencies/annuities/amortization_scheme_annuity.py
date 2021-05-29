@@ -18,8 +18,9 @@ x0 = 60
 renda = ct.aax(x=x0)
 fund_0 = ct.aax(x=x0) * instalment * lx
 
-dict_liability = {'t': [], 'x': [], 'tpx': [], 'tEx': [], 'EV_payment': [], 'annuity': [],
-                  'EV_fund1': [], 'lx': [], 'EV_fund': []}
+i = interest_rate / 100
+dict_liability = {'t': [], 'x': [], 'tpx': [], 'EV_payment': [],
+                  'EV_fund1': [], 'EV_lx': [], 'EV_fund': []}
 
 dict_fund = {'C_t': [instalment], 'j': [0], 'In': [0], 'Out': []}
 
@@ -27,22 +28,12 @@ for idx, x in enumerate(range(x0, lt.w + 1 + 1)):
     dict_liability['t'].append(idx)
     dict_liability['x'].append(x)
     dict_liability['tpx'].append(lt.tpx(x=x0, t=idx))
-    dict_liability['tEx'].append(ct.nEx(x=x0, n=idx))
-    dict_liability['EV_payment'].append(dict_liability['tEx'][-1] * instalment)
-    dict_liability['annuity'].append(ct.aax(x=x))
-    dict_liability['EV_fund1'].append(dict_liability['annuity'][-1] * dict_liability['tEx'][-1] * instalment)
-    dict_liability['lx'].append(lx * dict_liability['tpx'][-1])
-    dict_liability['EV_fund'].append(dict_liability['EV_fund1'][-1] * dict_liability['lx'][-1])
-
-for idx, x in enumerate(range(x0, lt.w + 1 + 1)):
-    dict_liability['t'].append(idx)
-    dict_liability['x'].append(x)
-    dict_liability['tpx'].append(lt.tpx(x=x0, t=idx))
-    dict_liability['tEx'].append(ct.nEx(x=x0, n=idx))
-    dict_liability['EV_payment'].append(dict_liability['tEx'][-1] * instalment)
-    dict_liability['annuity'].append(ct.aax(x=x))
-    dict_liability['EV_fund1'].append(dict_liability['annuity'][-1] * dict_liability['tEx'][-1] * instalment)
-    dict_liability['lx'].append(lx * dict_liability['tpx'][-1])
-    dict_liability['EV_fund'].append(dict_liability['EV_fund1'][-1] * dict_liability['lx'][-1])
+    dict_liability['EV_payment'].append(dict_liability['tpx'][-1] * instalment)
+    if idx == 0:
+        dict_liability['EV_fund1'].append(fund_0 / lx)
+    else:
+        dict_liability['EV_fund1'].append(dict_liability['EV_fund1'][-1] * (1 + i) - dict_liability['EV_payment'][-1])
+    dict_liability['EV_lx'].append(lx * dict_liability['tpx'][-1])
+    dict_liability['EV_fund'].append(dict_liability['EV_fund1'][-1] * lx)
 
 df_fund = pd.DataFrame(dict_liability)
