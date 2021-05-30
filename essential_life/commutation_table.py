@@ -347,7 +347,7 @@ class CommutationFunctions(MortalityTable):
         :param m: number of payments per period used to quote the interest rate
         :return:Expected Present Value (EPV) for payments of 1/m
         """
-        if x >= self.w:
+        if x >= self.w or n == 1:
             return 1
         if x < 0:
             return np.nan

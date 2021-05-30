@@ -13,27 +13,53 @@ ct = commutation_table.CommutationFunctions(i=interest_rate, g=0, mt=mt.table_qx
 
 lx = 1000
 frequency = 1
-instalment = 1000
+instalment = 10000
 x0 = 60
 renda = ct.aax(x=x0)
 fund_0 = ct.aax(x=x0) * instalment * lx
+premium_instalments = 1
+renda_aux = ct.naax(x=x0, n=premium_instalments)
+premium1 = fund_0 / lx / renda_aux
 
 i = interest_rate / 100
-dict_liability = {'t': [], 'x': [], 'tpx': [], 'EV_payment': [],
-                  'EV_fund1': [], 'EV_lx': [], 'EV_fund': []}
+dict_liability = {'t': [], 'x': [], 'tpx': [], 'premium1': [], 'claim1': [],
+                  'fund1': [], 'lx': [], 'premium': [], 'claim': [], 'fund': []}
 
-dict_fund = {'C_t': [instalment], 'j': [0], 'In': [0], 'Out': []}
+dict_reserves = {'t': [], 'x': [], 'insured': [], 'insurer': [], 'reserve': [], 'fund': []}
 
 for idx, x in enumerate(range(x0, lt.w + 1 + 1)):
     dict_liability['t'].append(idx)
     dict_liability['x'].append(x)
     dict_liability['tpx'].append(lt.tpx(x=x0, t=idx))
-    dict_liability['EV_payment'].append(dict_liability['tpx'][-1] * instalment)
-    if idx == 0:
-        dict_liability['EV_fund1'].append(fund_0 / lx)
+    if idx <= premium_instalments - 1:
+        dict_liability['premium1'].append(dict_liability['tpx'][-1] * premium1)
     else:
-        dict_liability['EV_fund1'].append(dict_liability['EV_fund1'][-1] * (1 + i) - dict_liability['EV_payment'][-1])
-    dict_liability['EV_lx'].append(lx * dict_liability['tpx'][-1])
-    dict_liability['EV_fund'].append(dict_liability['EV_fund1'][-1] * lx)
+        dict_liability['premium1'].append(.0)
+    dict_liability['claim1'].append(dict_liability['tpx'][-1] * instalment)
+    if idx == 0:
+        dict_liability['fund1'].append(fund_0 / lx - dict_liability['claim1'][-1])
+    else:
+        dict_liability['fund1'].append(dict_liability['fund1'][-1] * (1 + i) - dict_liability['claim1'][-1])
+    dict_liability['lx'].append(lx * dict_liability['tpx'][-1])
+    dict_liability['premium'].append(dict_liability['premium1'][-1] * lx)
+    dict_liability['claim'].append(dict_liability['claim1'][-1] * lx)
+    dict_liability['fund'].append(dict_liability['fund1'][-1] * lx)
 
-df_fund = pd.DataFrame(dict_liability)
+    # reserves
+    if idx <= premium_instalments - 1:
+        renda_aux = ct.naax(x=x0, n=premium_instalments - idx)
+        dict_reserves['insured'].append(dict_liability['lx'][-1] * premium1 * renda_aux)
+    else:
+        dict_reserves['insured'].append(.0)
+    renda_aux_2 = ct.aax(x=x0 + idx)
+    dict_reserves['insurer'].append(dict_liability['lx'][-1] * renda_aux_2 * instalment)
+    dict_reserves['reserve'].append(dict_reserves['insurer'][-1] - dict_reserves['insured'][-1])
+    dict_reserves['fund'].append(dict_reserves['reserve'][-1] - dict_liability['claim'][-1])
+
+dict_reserves['t'] = dict_liability['t']
+dict_reserves['x'] = dict_liability['x']
+
+df_liability = pd.DataFrame(dict_liability)
+df_reserves = pd.DataFrame(dict_reserves)
+df_liability.to_excel('amortization_scheme_annuity' + '.xlsx', index=False, freeze_panes=(1, 0))
+df_reserves.to_excel('reserves_annuity' + '.xlsx', index=False, freeze_panes=(1, 0))
