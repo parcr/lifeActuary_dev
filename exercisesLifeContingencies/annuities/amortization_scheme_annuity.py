@@ -14,7 +14,7 @@ ct = commutation_table.CommutationFunctions(i=interest_rate, g=0, mt=mt.table_qx
 lx = 1000
 frequency = 1
 instalment = 10000
-x0 = 60
+x0 = 50
 renda = ct.aax(x=x0)
 fund_0 = ct.aax(x=x0) * instalment * lx
 premium_instalments = 1
@@ -61,5 +61,12 @@ dict_reserves['x'] = dict_liability['x']
 
 df_liability = pd.DataFrame(dict_liability)
 df_reserves = pd.DataFrame(dict_reserves)
-df_liability.to_excel('amortization_scheme_annuity' + '.xlsx', index=False, freeze_panes=(1, 0))
-df_reserves.to_excel('reserves_annuity' + '.xlsx', index=False, freeze_panes=(1, 0))
+path = 'amortization_scheme_annuity.xlsx'
+# df_liability.to_excel('amortization_scheme_annuity' + '.xlsx', sheet_name='liability', index=False, freeze_panes=(1, 0))
+# df_reserves.to_excel('reserves_annuity' + '.xlsx', sheet_name='reserves', index=False, freeze_panes=(1, 0))
+
+writer = pd.ExcelWriter(path)
+df_liability.to_excel(writer, sheet_name='liability', index=False, freeze_panes=(1, 0))
+df_reserves.to_excel(writer, sheet_name='reserves', index=False, freeze_panes=(1, 0))
+writer.save()
+writer.close()
