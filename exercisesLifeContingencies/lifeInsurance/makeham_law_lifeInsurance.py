@@ -1,3 +1,4 @@
+import pandas as pd
 from exercisesLifeContingencies.survivalModels.someMortalityLaws import makeham_mortality_functions
 import numpy as np
 from essential_life import mortality_table, commutation_table
@@ -27,4 +28,13 @@ ct.df_commutation_table().to_excel(excel_writer='makeham' + '_comm' + '.xlsx', s
 compute Whole Life Insurance
 '''
 
-wli = [ct.Ax(age) for age in range(ct.w + 1)]
+# wli = [[age, ct.Ax(age)] for age in range(ct.w + 1)]
+wli = {'age': [], 'Ax': []}
+ages = range(ct.w + 1)
+for idx, x in enumerate(ages):
+    wli['age'].append(x)
+    wli['Ax'].append(ct.Ax(x))
+wli_df = pd.DataFrame(wli)
+
+fig, axes = plt.subplots()
+plt.plot(ages, wli['Ax'], label=f'Makeham({mml.a}, {mml.b}, {mml.c})')
