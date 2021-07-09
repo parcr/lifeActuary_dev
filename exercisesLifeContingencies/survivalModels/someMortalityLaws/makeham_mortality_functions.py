@@ -81,9 +81,42 @@ class Makeham:
         defer = age_first_instalment - x
         # nEx = np.power(v, defer) * self.S(x=x, t=defer)
         nEx = self.nEx(x=x, interest_rate=interest_rate, defer=defer)
+        start = 0
+        stop = min(w - age_first_instalment, terms)
+        num = min(round((stop - start) * fraction + 1), terms * fraction)
+
         if terms == np.inf:
-            ts = np.arange(0, w - age_first_instalment + 1 / fraction, 1 / fraction)
+            # ts = np.arange(0, w - age_first_instalment + 1 / fraction, 1 / fraction)
+            ts = np.linspace(start=start, stop=stop, num=num)
         else:
-            ts = np.arange(0, min(w - age_first_instalment, terms), 1 / fraction)
+            # ts = np.arange(0, min(w - age_first_instalment, terms), 1 / fraction)
+            ts = np.linspace(start=start, stop=stop - 1 / fraction, num=num)
         epv_ai = [self.S(x=age_first_instalment, t=u) * v ** u for u in ts]
         return sum(epv_ai) * nEx / fraction
+
+    def life_insurance(self, x=0, interest_rate=0, age_first_instalment=0, terms=np.inf, fraction=1, w=130):
+        def tqx(x, t):
+            if x + t >= w + 1:
+                return 1
+            return 1 - self.S(x=x, t=t)
+
+        def tpx(x, t):
+            return 1 - tqx(x, t)
+
+        v = 1 / (1 + interest_rate / 100)
+        defer = age_first_instalment - x
+        nEx = self.nEx(x=x, interest_rate=interest_rate, defer=defer)
+        start = 0
+        stop = min(w - age_first_instalment + 1, terms)
+        num = min(round((stop - start) * fraction + 1), terms * fraction)
+
+        if terms == np.inf:
+            ts = np.linspace(start=start, stop=stop, num=num)
+        else:
+            ts = ts = np.linspace(start=start, stop=stop - 1 / fraction, num=num)
+        px = [tpx(x=age_first_instalment, t=u) for u in ts]
+        qx = [tqx(x=age_first_instalment + u, t=1 / fraction) for u in ts]
+        vx = [v ** (u + 1 / fraction) for u in ts]
+        epv_li = [px[u] * qx[u] * vx[u] for u in range(len(ts))]
+
+        return sum(epv_li)

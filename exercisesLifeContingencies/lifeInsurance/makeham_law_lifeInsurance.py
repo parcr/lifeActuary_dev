@@ -38,3 +38,11 @@ wli_df = pd.DataFrame(wli)
 
 fig, axes = plt.subplots()
 plt.plot(ages, wli['Ax'], label=f'Makeham({mml.a}, {mml.b}, {mml.c})')
+
+plt.xlabel(r'$x$')
+plt.ylabel(r'$A_x$')
+plt.title(r'Whole Life Insurance $A_x$')
+plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
+plt.legend()
+plt.savefig(this_py + 'Ax' + '.eps', format='eps', dpi=3600)
+plt.show()
