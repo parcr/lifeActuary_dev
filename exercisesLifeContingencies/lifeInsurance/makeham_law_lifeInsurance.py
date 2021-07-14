@@ -25,7 +25,7 @@ ct.df_commutation_table().to_excel(excel_writer='makeham' + '_comm' + '.xlsx', s
                                    index=False, freeze_panes=(1, 1))
 
 '''
-compute Whole Life Insurance
+compute Whole Life Insurance using Commutation Functions
 '''
 
 # wli = [[age, ct.Ax(age)] for age in range(ct.w + 1)]
@@ -45,4 +45,31 @@ plt.title(r'Whole Life Insurance $A_x$')
 plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
 plt.legend()
 plt.savefig(this_py + 'Ax' + '.eps', format='eps', dpi=3600)
+plt.show()
+
+'''
+compute Whole Life Insurance with fraction for fraction ages using the survival function to compute 
+the probabilities of non integer ages
+'''
+
+wli_12 = {'age': [], 'Ax_frac12': []}
+# ages = range(ct.w + 1)
+ages = np.arange(start=0, stop=ct.w + 1, step=1 / 12)
+for idx, x in enumerate(ages):
+    wli_12['age'].append(x)
+    wli_12['Ax_frac12'].append(
+        mml.life_insurance(x=x, interest_rate=5, age_first_instalment=x, terms=np.inf, fraction=12, w=129))
+wli_12_df = pd.DataFrame(wli_12)
+wli_12_df.to_excel(excel_writer='makeham_wli_12' + '.xlsx', sheet_name='makeham',
+                            index=False, freeze_panes=(1, 1))
+
+fig, axes = plt.subplots()
+plt.plot(ages, wli_12['Ax_frac12'], label=f'Makeham({mml.a}, {mml.b}, {mml.c})')
+
+plt.xlabel(r'$x$')
+plt.ylabel(r'$A_x^{(12)}$')
+plt.title(r'Whole Life Insurance $A_x^{(12)}$')
+plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
+plt.legend()
+plt.savefig(this_py + 'Ax_12' + '.eps', format='eps', dpi=3600)
 plt.show()

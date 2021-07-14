@@ -126,4 +126,4 @@ class Makeham:
         vx = [v ** (u + 1 / fraction) for u in ts]
         epv_li = [px[u] * qx[u] * vx[u] for u in range(len(ts))]
 
-        return sum(epv_li)
+        return sum(epv_li) * nEx
