@@ -59,6 +59,13 @@ class Makeham:
         return ev_square - np.power(ev, 2)
 
     def ax(self, x=0, interest_rate=0, n=np.inf):
+        '''
+        Computes the continuous form of an annuity
+        :param x: age
+        :param interest_rate: interest rate
+        :param n: periods of payment
+        :return: the actuarial present value
+        '''
         if x < 0:
             return np.nan
 
