@@ -78,6 +78,11 @@ class Makeham:
         ev = scipy.integrate.quad(a_x, 0, n)
         return ev
 
+    def Ax(self, x=0, interest_rate=0, n=np.inf):
+        delta = np.log(1 + interest_rate / 100)
+        ax = self.ax(x=x, interest_rate=interest_rate, n=n)
+        return 1 - delta * ax[0]
+
     def nEx(self, x=0, interest_rate=0, defer=0):
         v = 1 / (1 + interest_rate / 100)
         return np.power(v, defer) * self.S(x=x, t=defer)

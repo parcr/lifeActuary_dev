@@ -45,3 +45,22 @@ Ax_2_12 = [
     mml.life_insurance(x=x, interest_rate=interest_rate_2, age_first_instalment=x, terms=np.inf, fraction=12, w=129)
     for x in ages]
 Ax_12_std_dev = [np.power(Ax_2_12[j] - np.power(Ax_12[j], 2), .5) * capital for j in range(len(ages))]
+
+'''
+compute Whole Life Insurance for fraction ages using the survival function to compute 
+the probabilities of non integer ages
+'''
+
+Ax_cont = [mml.Ax(x=x, interest_rate=interest_rate, n=np.inf) for x in ages]
+Ax_2_cont = [mml.Ax(x=x, interest_rate=interest_rate_2, n=np.inf) for x in ages]
+Ax_cont_std_dev = [np.power(Ax_2_cont[j] - np.power(Ax_cont[j], 2), .5) * capital for j in range(len(ages))]
+
+Ax_compare_df = pd.DataFrame({'Age': ages,
+                              'Ax_comm': np.round(np.array(Ax_comm) * capital, 2),
+                              'Ax_comm_std_dev': np.round(Ax_comm_std_dev, 2),
+                              'Ax_12': np.round(np.array(Ax_12) * capital, 2),
+                              'Ax_12_std_dev': np.round(Ax_12_std_dev, 2),
+                              'Ax_cont': np.round(np.array(Ax_cont) * capital, 2),
+                              'Ax_cont_std_dev': np.round(Ax_cont_std_dev, 2)}, )
+Ax_compare_df.to_excel(excel_writer='Ax_compare_df' + '.xlsx', sheet_name='Ax_compare',
+                       index=False, freeze_panes=(1, 1))

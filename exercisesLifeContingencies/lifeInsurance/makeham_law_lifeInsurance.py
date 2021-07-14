@@ -48,7 +48,7 @@ plt.savefig(this_py + 'Ax' + '.eps', format='eps', dpi=3600)
 plt.show()
 
 '''
-compute Whole Life Insurance with fraction for fraction ages using the survival function to compute 
+compute Whole Life Insurance for fraction ages using the survival function to compute 
 the probabilities of non integer ages
 '''
 
