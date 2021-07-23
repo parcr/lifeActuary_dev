@@ -79,9 +79,21 @@ class Makeham:
         return ev
 
     def Ax(self, x=0, interest_rate=0, n=np.inf):
+        '''
+        Computes the expected present value for a life insurance that pays at the moment of death
+        :param x:
+        :param interest_rate:
+        :param n:
+        :return:
+        '''
         delta = np.log(1 + interest_rate / 100)
         ax = self.ax(x=x, interest_rate=interest_rate, n=n)
-        return 1 - delta * ax[0]
+        nEx = self.nEx(x=x, interest_rate=interest_rate, defer=n)
+        return 1 - delta * ax[0] - nEx
+
+    def Endowment(self, x=0, interest_rate=0, n=np.inf):
+        nEx = self.nEx(x=x, interest_rate=interest_rate, defer=n)
+        return self.Ax(x=x, interest_rate=interest_rate, n=n) + nEx
 
     def nEx(self, x=0, interest_rate=0, defer=0):
         v = 1 / (1 + interest_rate / 100)
