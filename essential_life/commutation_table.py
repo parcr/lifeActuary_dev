@@ -93,10 +93,8 @@ class CommutationFunctions(MortalityTable):
             return self.v  # it will die before year's end, because already attained age>w
         D_x = self.Dx[x]
         if self.app_cont:
-            M_x = self.Mx[x] / self.cont
             R_x = self.Rx[x] / self.cont
         else:
-            M_x = self.Mx[x]
             R_x = self.Rx[x]
         self.msn.append(f"A_{x}={R_x} / {D_x}")
         return R_x / D_x
@@ -144,6 +142,33 @@ class CommutationFunctions(MortalityTable):
             M_x_n = self.Mx[x + n]
         self.msn.append(f"{n}_A_{x}=({M_x}-{M_x_n}) / {D_x}")
         return (M_x - M_x_n) / D_x / (1 + self.g)
+
+    def nIAx(self, x, n):
+        """
+        Whole life insurance
+        :param x: age at the beginning of the contract
+        :param n: period of the contract
+        :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m, at the
+        end of the year of death, if death happens between age x+m and x+m+1.
+        It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+        """
+        if x < 0:
+            return np.nan
+        if n < 0:
+            return np.nan
+        if x > self.w:
+            return self.v  # it will die before year's end, because already attained age>w
+        D_x = self.Dx[x]
+        if self.app_cont:
+            M_x_n = self.Mx[x + n] / self.cont
+            R_x = self.Rx[x] / self.cont
+            R_x_n = self.Rx[x + n] / self.cont
+        else:
+            M_x_n = self.Mx[x + n]
+            R_x = self.Rx[x]
+            R_x_n = self.Rx[x + n]
+        self.msn.append(f"A_{x}=({R_x}-{R_x_n}-{n}x{M_x_n} / {D_x}")
+        return (R_x - R_x_n - n * M_x_n) / D_x
 
     def nAx_(self, x, n):
         """

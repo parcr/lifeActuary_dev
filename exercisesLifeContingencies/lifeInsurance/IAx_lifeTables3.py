@@ -54,21 +54,21 @@ for id_ct, ct in enumerate(ct_lst):
         dict_liability['premium'].append(premium)
 
 df_liability = pd.DataFrame(dict_liability)
-df_liability.to_excel(excel_writer='IAx_lifeTables2' + '.xlsx',
-                      sheet_name='IAx_lifeTables2',
+df_liability.to_excel(excel_writer='IAx_lifeTables3' + '.xlsx',
+                      sheet_name='IAx_lifeTables3',
                       index=False, freeze_panes=(1, 1))
-
 
 '''
 Prepare the solution for (IA)x:n
 '''
+term = 10
 
 dict_liability = {'table': [], 'x': [], 'premium1_unit': [], 'premium2_unit': [],
-                  'premium1': [], 'premium2': [], 'premium': []} #todo: completar aqui
+                  'premium1': [], 'premium2': [], 'premium': []}
 for id_ct, ct in enumerate(ct_lst):
     for id_x, x in enumerate(ages):
-        premium1_unit = ct.Ax(x=x)ZZZZZZZZZZZZ
-        premium2_unit = ct.IAx(x=x)
+        premium1_unit = ct.nAx(x=x, n=term)
+        premium2_unit = ct.nIAx(x=x, n=term)
         premium1 = premium1_unit * (capital - capital_inc)
         premium2 = premium2_unit * capital_inc
         premium = premium1 + premium2
@@ -81,6 +81,6 @@ for id_ct, ct in enumerate(ct_lst):
         dict_liability['premium'].append(premium)
 
 df_liability = pd.DataFrame(dict_liability)
-df_liability.to_excel(excel_writer='IAxn_lifeTables2' + '.xlsx',
-                      sheet_name='IAxn_lifeTables2',
+df_liability.to_excel(excel_writer='nIAx_lifeTables3' + '.xlsx',
+                      sheet_name='nIAx_lifeTables3',
                       index=False, freeze_panes=(1, 1))
