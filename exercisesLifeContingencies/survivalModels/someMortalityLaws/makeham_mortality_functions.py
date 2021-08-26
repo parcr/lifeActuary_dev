@@ -44,8 +44,8 @@ class Makeham:
 
         def t_S_x(t):
             return k * np.power(t, k - 1) * \
-                   np.exp(-self.b / np.log(self.c) * np.power(self.c, x) * (np.power(self.c, t) - 1)) * np.exp(
-                -self.a * t)
+                   np.exp(-self.b / np.log(self.c) * np.power(self.c, x) * (np.power(self.c, t) - 1)) * \
+                   np.exp(-self.a * t)
 
         ev = scipy.integrate.quad(t_S_x, 0, np.inf)
         return ev
