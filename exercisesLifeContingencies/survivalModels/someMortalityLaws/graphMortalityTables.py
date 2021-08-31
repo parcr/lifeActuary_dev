@@ -22,3 +22,4 @@ plt.title('Mortality Tables for Portugal 2017-2019')
 plt.legend()
 this_py = os.path.split(sys.argv[0])[-1][:-3]
 plt.savefig(this_py + '_qx_mu' + '.eps', format='eps', dpi=3600)
+plt.show()
