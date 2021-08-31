@@ -128,13 +128,13 @@ relat_error_qx = np.abs(error_qx / qx)
 fig, ax = plt.subplots()
 plt.plot(ages, qx, label=f'$q_x$')
 plt.plot(ages, mu_s, label=f'$\mu_x$')
-
 plt.title(f'Mortality Law $q_x$ versus $\mu_x$')
 plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
 plt.legend()
 plt.xlabel('t')
 plt.ylabel(f'$q_x$ and $\mu_x$')
 plt.savefig(this_py + '_qx_mu' + '.eps', format='eps', dpi=3600)
+plt.show()
 
 for a in [20, 50, 110]:
     print(f"$q_{{{a}}}$={qx[a]} versus $\mu_{{{a}+.5}}$={mu_s[a]}")
@@ -148,26 +148,26 @@ ev_K_s = [expected_value_Kx(a) for a in ages[:]]
 fig, ax = plt.subplots()
 plt.plot(ages, ev_s, label=f'$E(T_x)$')
 plt.plot(ages, ev_K_s, label=f'$E(K_x)$')
-
 plt.title(f'Complete Expectation of Life')
 plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
 plt.legend()
 plt.xlabel('x')
 plt.ylabel(r'$E(T_x)$ and $E(K_x)$')
 plt.savefig(this_py + '_ev_Tx' + '.eps', format='eps', dpi=3600)
+plt.show()
 
 ev_s = [variance_Tx(a) for a in ages]
 ev_K_s = [variance_Kx(a) for a in ages]
 fig, ax = plt.subplots()
 plt.plot(ages, ev_s, label=r'$V(T_x)$')
 plt.plot(ages, ev_K_s, label=r'$V(K_x)$')
-
 plt.title(f'Variance for Future Lifetime')
 plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
 plt.legend()
 plt.xlabel('x')
 plt.ylabel(r'$V(T_x)$ and $V(K_x)$')
 plt.savefig(this_py + '_var_Tx' + '.eps', format='eps', dpi=3600)
+plt.show()
 
 for a in [0, 20, 30, 50, 80, 110]:
     print(f"$E(T_{{{a}}})$={expected_value_Tx(a)}" + ' and ' + f"$V(T_{{{a}}})$={variance_Tx(a)}")
