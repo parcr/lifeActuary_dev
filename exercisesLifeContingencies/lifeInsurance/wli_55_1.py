@@ -23,12 +23,14 @@ for idx, ct in enumerate(ct_lst):
 for idx, ct in enumerate(ct_lst):
     print("\\textbf{" + table_names[idx] + ":} " + f'{round(capital * wli[idx] / tad[idx], 5):,}')
 
-print()
+print("\nContinous Case")
 for idx, ct in enumerate(ct_lst):
     print("\\textbf{" + table_names[idx] + ":} " + f'{round(capital * wli_[idx], 5):,}')
+for idx, ct in enumerate(ct_lst):
+    print("\\textbf{" + table_names[idx] + ":} " + f'{round(capital * wli_[idx] / tad[idx], 5):,}')
 
 
 # show the annuities
-print('annuities')
+print('\nannuities')
 for idx, ct in enumerate(ct_lst):
     print("\\textbf{" + table_names[idx] + ":} " + f'{round(tad[idx], 5):,}')
