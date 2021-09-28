@@ -171,4 +171,7 @@ plt.show()
 for a in [0, 20, 30, 50, 80, 110]:
     print(
         f"$E(T_{{{a}}})$={expected_value_Tx(b=b, c=c, x=a)}" + ' and ' + f"$V(T_{{{a}}})$={variance_Tx(b=b, c=c, x=a)}")
+    print(
+        f"$E(K_{{{a}}})$={expected_value_Kx(b=b, c=c, x=a)}" + ' and ' + f"$V(K_{{{a}}})$={variance_Kx(b=b, c=c, x=a)}")
+
 
