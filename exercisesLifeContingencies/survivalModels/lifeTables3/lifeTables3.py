@@ -16,7 +16,8 @@ def parse_table_name(name):
 table_names = ['TV7377', 'GRF95', 'GRM95']
 mt_lst = [rst.SoaTable('../../../soa_tables/' + name + '.xml') for name in table_names]
 lt_lst = [mortality_table.MortalityTable(mt=mt.table_qx) for mt in mt_lst]
-ct_lst = [commutation_table.CommutationFunctions(i=4, g=0, mt=mt.table_qx) for mt in mt_lst]
+interest_rate = 4
+ct_lst = [commutation_table.CommutationFunctions(i=interest_rate, g=0, mt=mt.table_qx) for mt in mt_lst]
 
 for idx, lt in enumerate(lt_lst):
     name = parse_table_name(mt_lst[idx].name)
