@@ -45,14 +45,15 @@ plt.show()
 '''
 Compute Life Table
 '''
-interest_rate = 5
-px = np.array([mml.S(x, t=1) for x in range(0, 130 + 1)])
+interest_rate = 4
+px = np.array([mml.S(x, t=1) for x in range(0, 110 + 1)])
 qx = 1 - px
 lt = mortality_table.MortalityTable(mt=list(np.append(0, qx)))
-lt.df_life_table().to_excel(excel_writer='makeham' + '.xlsx', sheet_name='makeham',
+w = len(px)-1
+lt.df_life_table().to_excel(excel_writer='makeham_' + str(w) + '.xlsx', sheet_name='makeham',
                             index=False, freeze_panes=(1, 1))
 ct = commutation_table.CommutationFunctions(i=interest_rate, g=0, mt=list(lt.qx))
-ct.df_commutation_table().to_excel(excel_writer='makeham' + '_comm' + '.xlsx', sheet_name='makeham',
+ct.df_commutation_table().to_excel(excel_writer='makeham' + '_comm_' + str(w) + '.xlsx', sheet_name='makeham',
                                    index=False, freeze_panes=(1, 1))
 
 '''
