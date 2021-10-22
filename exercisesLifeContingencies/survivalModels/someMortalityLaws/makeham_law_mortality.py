@@ -10,6 +10,7 @@ this_py = os.path.split(sys.argv[0])[-1][:-3]
 mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.00035, c=1.075)
 
 e0 = mml.moments_Tx()
+e70 = mml.moments_Tx(x=70)
 
 t = np.linspace(0, 100, 1000 + 1)
 x_s = [0, 20, 50, 80]
@@ -59,6 +60,11 @@ ct.df_commutation_table().to_excel(excel_writer='makeham' + '_comm_' + str(w) + 
 
 print('px')
 print(lt.px)
+
+print(f'E(T_0)= {e0}')
+print(f'E(T_70)= {e70}')
+print(f'E(K_0)= {lt.ex[0]-.5}')
+print(f'E(K_70)= {lt.ex[70]-.5}')
 
 '''
 Plot ex
