@@ -6,8 +6,8 @@ import os
 import sys
 
 this_py = os.path.split(sys.argv[0])[-1][:-3]
-mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.0003, c=1.07)
-# mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.00035, c=1.075)
+# mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.0003, c=1.07)
+mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.00035, c=1.075)
 
 e0 = mml.moments_Tx()
 
@@ -57,6 +57,9 @@ ct = commutation_table.CommutationFunctions(i=interest_rate, g=0, mt=list(np.app
 ct.df_commutation_table().to_excel(excel_writer='makeham' + '_comm_' + str(w) + '.xlsx', sheet_name='makeham',
                                    index=False, freeze_panes=(1, 1))
 
+print('px')
+print(lt.px)
+
 '''
 Plot ex
 '''
@@ -77,6 +80,9 @@ Plot t|q_70
 
 t_s = np.array(range(0, lt.w - 70))
 t_1q70 = [mml.S(x=70, t=t) - mml.S(x=70, t=t + 1) for t in t_s]
+max_at = t_1q70.index(max(t_1q70))
+print(f'The maximum is {max(t_1q70)} at t={max_at}')
+print(np.round(np.array(t_1q70)[0:max_at + 3], 7))
 
 fig, axes = plt.subplots()
 plt.plot(t_s + 70, t_1q70, label=f'Makeham({mml.a}, {mml.b}, {mml.c})')

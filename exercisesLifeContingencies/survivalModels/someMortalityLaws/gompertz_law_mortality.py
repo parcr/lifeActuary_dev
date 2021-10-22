@@ -97,6 +97,7 @@ plt.xlabel('t')
 plt.ylabel(f'$S_x(t)$')
 this_py = os.path.split(sys.argv[0])[-1][:-3]
 plt.savefig(this_py + '_sf' + '.eps', format='eps', dpi=3600)
+plt.show()
 
 pdf_vec = np.vectorize(pdf)
 fig, ax = plt.subplots()
@@ -113,7 +114,7 @@ plt.savefig(this_py + '_pdf' + '.eps', format='eps', dpi=3600)
 plt.show()
 
 '''
-Compare q_x with \mu_x+.5
+Compare q_x with \mu_{x+.5}
 '''
 
 mu_vec = np.vectorize(mu)
