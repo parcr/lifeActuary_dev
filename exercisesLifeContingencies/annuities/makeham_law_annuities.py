@@ -24,9 +24,12 @@ plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewid
 plt.legend()
 plt.xlabel('t')
 plt.ylabel(f'$S_x(t)$')
+
+'''
 this_py = os.path.split(sys.argv[0])[-1][:-3]
 plt.savefig(this_py + '_sf' + '.eps', format='eps', dpi=3600)
 plt.show()
+'''
 
 pdf_vec = np.vectorize(mml.pdf)
 fig, ax = plt.subplots()
