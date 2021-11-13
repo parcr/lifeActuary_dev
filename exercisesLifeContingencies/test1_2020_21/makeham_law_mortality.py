@@ -80,3 +80,4 @@ renda2 =  (Nx_t - Nx_t2) / Dx
 print('renda2=', round(renda2, 5))
 renda2_ct = ct.t_nax(x=x, n=term, m=1, defer=10)
 renda2_cap = capital * renda2
+print('P=', round(renda2_cap, 2))
