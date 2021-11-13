@@ -9,6 +9,8 @@ this_py = os.path.split(sys.argv[0])[-1][:-3]
 # mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.0003, c=1.07)
 mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.00035, c=1.075)
 
+mml = makeham_mortality_functions.Makeham(a=0.00015, b=0.0004, c=1.1)
+
 e0 = mml.moments_Tx()
 e70 = mml.moments_Tx(x=70)
 
@@ -47,8 +49,8 @@ plt.show()
 '''
 Compute Life Table
 '''
-interest_rate = 4
-px = np.array([mml.S(x, t=1) for x in range(0, 130)])
+interest_rate = 3.546
+px = np.array([mml.S(x, t=1) for x in range(0, 125+1)])
 qx = 1 - px
 lt = mortality_table.MortalityTable(mt=list(np.append(0, qx)))
 w = len(px)
