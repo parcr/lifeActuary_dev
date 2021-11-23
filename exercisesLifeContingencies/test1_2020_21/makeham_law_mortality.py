@@ -7,7 +7,9 @@ import sys
 
 this_py = os.path.split(sys.argv[0])[-1][:-3]
 # mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.0003, c=1.07)
-mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.00035, c=1.075)
+mml = makeham_mortality_functions.Makeham(a=0.00022, b=2.7E-6, c=1.124)
+# mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.00035, c=1.075)
+
 interest_rate = 4
 
 e0 = mml.moments_Tx()
