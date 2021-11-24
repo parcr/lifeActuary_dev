@@ -35,6 +35,8 @@ for idx, x in enumerate(ages):
     wli['age'].append(x)
     wli['Ax'].append(ct.Ax(x))
 wli_df = pd.DataFrame(wli)
+wli_df.to_excel(excel_writer='makeham_wli' + '.xlsx', sheet_name='makeham_wli',
+                index=False, freeze_panes=(1, 1))
 
 fig, axes = plt.subplots()
 plt.plot(ages, wli['Ax'], label=f'Makeham({mml.a}, {mml.b}, {mml.c})')
@@ -60,8 +62,8 @@ for idx, x in enumerate(ages):
     wli_12['Ax_frac12'].append(
         mml.life_insurance(x=x, interest_rate=5, age_first_instalment=x, terms=np.inf, fraction=12, w=129))
 wli_12_df = pd.DataFrame(wli_12)
-wli_12_df.to_excel(excel_writer='makeham_wli_12' + '.xlsx', sheet_name='makeham',
-                            index=False, freeze_panes=(1, 1))
+wli_12_df.to_excel(excel_writer='makeham_wli_12' + '.xlsx', sheet_name='makeham_wli_12',
+                   index=False, freeze_panes=(1, 1))
 
 fig, axes = plt.subplots()
 plt.plot(ages, wli_12['Ax_frac12'], label=f'Makeham({mml.a}, {mml.b}, {mml.c})')
