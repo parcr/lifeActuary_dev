@@ -29,7 +29,7 @@ ct = commutation_table.CommutationFunctions(i=interest_rate, g=0, mt=list(np.app
 ct_2 = commutation_table.CommutationFunctions(i=interest_rate_2, g=0, mt=list(np.append(0, qx)))
 
 '''
-compute Whole Life Insurance using Commutation Functions
+compute Whole Life Insurance using Commutation Functions with payments at the end of the year
 '''
 Ax_comm = [ct.Ax(x) for x in ages]
 Ax_2_comm = [ct_2.Ax(x) for x in ages]
@@ -47,7 +47,7 @@ Ax_2_12 = [
 Ax_12_std_dev = [np.power(Ax_2_12[j] - np.power(Ax_12[j], 2), .5) * capital for j in range(len(ages))]
 
 '''
-compute Whole Life Insurance for fraction ages using the survival function to compute 
+compute Whole Life Insurance for the continuous case using the survival function to compute 
 the probabilities of non integer ages
 '''
 
