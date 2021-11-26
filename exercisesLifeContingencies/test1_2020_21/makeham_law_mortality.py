@@ -7,8 +7,9 @@ import sys
 
 this_py = os.path.split(sys.argv[0])[-1][:-3]
 # mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.0003, c=1.07)
-mml = makeham_mortality_functions.Makeham(a=0.00022, b=2.7E-6, c=1.124)
+# mml = makeham_mortality_functions.Makeham(a=0.00022, b=2.7E-6, c=1.124)
 # mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.00035, c=1.075)
+mml = makeham_mortality_functions.Makeham(a=0.00018, b=1.9E-6, c=1.124)
 
 interest_rate = 4
 
@@ -64,12 +65,16 @@ print()
 level = 10
 N_x1 = ct.Nx[x]
 N_x2 = ct.Nx[x + level]
+
+print(f'N1=', round(N_x1, 5))
+print(f'N2=', round(N_x2, 5))
 print('ann_level=', round((N_x1 - N_x2) / Dx, 5))
 ann_level_ct = ct.naax(x=x, n=level, m=1)
 print('ann_level_ct=', round(ann_level_ct, 5))
 print('Pleveled=', round(P / ann_level_ct, 2))
 
 '''c'''
+print()
 x = 55
 t = 10
 term = 15
@@ -78,7 +83,9 @@ Dx = ct.Dx[x]
 Nx_t = ct.Nx[x + t + 1]
 Nx_t2 = ct.Nx[x + t + 1 + term]
 
-renda2 =  (Nx_t - Nx_t2) / Dx
+print(f'N1=', round(Nx_t, 5))
+print(f'N2=', round(Nx_t2, 5))
+renda2 = (Nx_t - Nx_t2) / Dx
 print('renda2=', round(renda2, 5))
 renda2_ct = ct.t_nax(x=x, n=term, m=1, defer=10)
 renda2_cap = capital * renda2
