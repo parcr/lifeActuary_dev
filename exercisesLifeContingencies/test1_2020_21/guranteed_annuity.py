@@ -24,6 +24,7 @@ lt.df_life_table().to_excel(excel_writer=name + '.xlsx', sheet_name=name,
 ct.df_commutation_table().to_excel(excel_writer=name + '_comm' + '.xlsx', sheet_name=name,
                                    index=False, freeze_panes=(1, 1))
 
+capital = 10000
 ac = annuities_certain.Annuities_Certain(interest_rate=interest_rate, frequency=1)
 ac5 = ac.annuity_due(terms=5)
 print('renda certa', ac5)
@@ -31,6 +32,9 @@ renda_vital = ct.aax(x=70)
 print('renda vital', renda_vital)
 renda_vital_def = ct.t_aax(x=70, m=1, defer=5)
 print('renda vital def', renda_vital_def)
+b_guarantee = renda_vital / (ac5 + renda_vital_def)
+print('b_guarantee', b_guarantee * capital)
 
-reduction = 10000 * (1 - renda_vital / (ac5 + renda_vital_def))
+reduction = capital * (1 - renda_vital / (ac5 + renda_vital_def))
 print(f'reduction', reduction)
+print(f'reduction', capital - b_guarantee*capital)
