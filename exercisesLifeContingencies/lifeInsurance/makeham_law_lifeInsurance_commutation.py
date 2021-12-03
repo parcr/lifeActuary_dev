@@ -50,48 +50,34 @@ plt.savefig(this_py + 'Ax' + '.eps', format='eps', dpi=3600)
 plt.show()
 
 '''
-compute Whole Life Insurance for fraction ages using the survival function to compute 
+compute Whole Life Insurance for fraction ages using the commutation symbols to compute 
 the probabilities of non integer ages
 '''
 
-wli_12 = {'age': [], 'Ax_frac12': []}
-# ages = range(ct.w + 1)
-ages = np.arange(start=0, stop=ct.w + 1, step=1 / 12)
-for idx, x in enumerate(ages):
-    wli_12['age'].append(x)
-    wli_12['Ax_frac12'].append(
-        mml.life_insurance(x=x, interest_rate=5, age_first_instalment=x, terms=np.inf, fraction=12, w=129))
-wli_12_df = pd.DataFrame(wli_12)
-wli_12_df.to_excel(excel_writer='makeham_wli_12' + '.xlsx', sheet_name='makeham_wli_12',
-                   index=False, freeze_panes=(1, 1))
-
-fig, axes = plt.subplots()
-plt.plot(ages, wli_12['Ax_frac12'], label=f'Makeham({mml.a}, {mml.b}, {mml.c})')
-
-plt.xlabel(r'$x$')
-plt.ylabel(r'$A_x^{(12)}$')
-plt.title(r'Whole Life Insurance $A_x^{(12)}$')
-plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
-plt.legend()
-plt.savefig(this_py + 'Ax_12' + '.eps', format='eps', dpi=3600)
-plt.show()
-
-''' Survival Probabilities'''
-surv_probs = [(idx_a, a, mml.S(x=a, t=1 / 12)) for idx_a, a in enumerate(ages)]
-
 ''' commutation table '''
-m = 1
-ages = np.arange(start=0, stop=ct.w + 1, step=m)
+m = 12
+ages = np.arange(start=0, stop=ct.w + 1, step=1 / m)
+surv_probs = [(idx_a, a, mml.S(x=a, t=1 / m)) for idx_a, a in enumerate(ages)]
+
 px = np.array([mml.S(x=a, t=1 / m) for idx_a, a in enumerate(ages)])
 qx = 1 - px
 tpx = np.cumprod(px)
 l0 = lt.lx[0]
 lx = np.append(l0, l0 * tpx)
-v_m = (1 + interest_rate / 100) ** (1 / m)
-Dx = lx[:-1] * np.power(v_m, range(len(lx[:-1])))
-Nx = np.array([np.sum(Dx[x:]) for x in range(len(lx[:-1]))])
+lx = lx[:-1]
+v_m = (1 + interest_rate / 100) ** (-1 / m)
+Dx = lx[:] * np.power(v_m, range(len(lx[:])))
+Nx = np.array([np.sum(Dx[x:]) for x in range(len(lx[:]))])
 Sx = np.array([np.sum(Nx[x:]) for x in range(len(Nx))])
-dx = lx[:-1] - lx[1:]
-Cx = dx * np.power(v_m, range(len(lx[:-1]))) * v_m
-Mx = np.array([np.sum(Cx[x:]) for x in range(len(lx[:-1]))])
-Rx = np.array([np.sum(Mx[x:]) for x in range(len(lx[:-1]))])
+dx = np.append(lx[:-1] - lx[1:], lx[-1])
+
+Cx = dx * np.power(v_m, range(len(lx[:]))) * v_m
+Mx = np.array([np.sum(Cx[x:]) for x in range(len(lx[:]))])
+Rx = np.array([np.sum(Mx[x:]) for x in range(len(lx[:]))])
+
+wli_m = {'age': ages, 'lx': lx, 'dx': dx, 'qx': qx, 'px': px, 'Dx': Dx, 'Nx': Nx, 'Sx': Sx, 'Cx': Cx, 'Mx': Mx,
+         'Rx': Rx}
+
+wli_m_df = pd.DataFrame(wli_m)
+wli_m_df.to_excel(excel_writer=f'makeham_wli_comm_{m}' + '.xlsx', sheet_name=f'makeham_wli_{m}',
+                  index=False, freeze_panes=(1, 1))
