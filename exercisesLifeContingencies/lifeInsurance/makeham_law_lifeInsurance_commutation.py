@@ -92,3 +92,17 @@ plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewid
 plt.legend()
 plt.savefig(this_py + f'Ax_{m}' + '.eps', format='eps', dpi=3600)
 plt.show()
+
+''' Compare plots '''
+ages_int = range(ct.w + 1)
+fig, axes = plt.subplots()
+plt.plot(ages, Mx / Dx, label=f'Makeham({mml.a}, {mml.b}, {mml.c})_{m}')
+plt.plot(ages_int, wli['Ax'], label=f'Makeham({mml.a}, {mml.b}, {mml.c})')
+
+plt.xlabel(r'$x$')
+plt.ylabel(r'$A_x^{(m)}$ and $A_x$')
+plt.title(r'Whole Life Insurance')
+plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
+plt.legend()
+plt.savefig(this_py + f'Ax_s' + '.eps', format='eps', dpi=3600)
+plt.show()
