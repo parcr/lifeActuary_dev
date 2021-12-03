@@ -81,3 +81,14 @@ wli_m = {'age': ages, 'lx': lx, 'dx': dx, 'qx': qx, 'px': px, 'Dx': Dx, 'Nx': Nx
 wli_m_df = pd.DataFrame(wli_m)
 wli_m_df.to_excel(excel_writer=f'makeham_wli_comm_{m}' + '.xlsx', sheet_name=f'makeham_wli_{m}',
                   index=False, freeze_panes=(1, 1))
+
+fig, axes = plt.subplots()
+plt.plot(ages, Mx / Dx, label=f'Makeham({mml.a}, {mml.b}, {mml.c})_{m}')
+
+plt.xlabel(r'$x$')
+plt.ylabel(r'$A_x^{(m)}$')
+plt.title(r'Whole Life Insurance $A_x^{m}$')
+plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
+plt.legend()
+plt.savefig(this_py + f'Ax_{m}' + '.eps', format='eps', dpi=3600)
+plt.show()
