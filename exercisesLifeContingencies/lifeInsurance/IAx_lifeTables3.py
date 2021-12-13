@@ -49,7 +49,7 @@ for id_ct, ct in enumerate(ct_lst):
         dict_liability['x'].append(x)
         dict_liability['premium1_unit'].append(premium1_unit)
         dict_liability['premium2_unit'].append(premium2_unit)
-        dict_liability['premium1'].append(premium2)
+        dict_liability['premium1'].append(premium1)
         dict_liability['premium2'].append(premium2)
         dict_liability['premium'].append(premium)
 
@@ -63,7 +63,7 @@ Prepare the solution for (IA)x:n
 '''
 term = 10
 
-dict_liability = {'table': [], 'x': [], 'premium1_unit': [], 'premium2_unit': [],
+dict_liability_term = {'table': [], 'x': [], 'premium1_unit': [], 'premium2_unit': [],
                   'premium1': [], 'premium2': [], 'premium': []}
 for id_ct, ct in enumerate(ct_lst):
     for id_x, x in enumerate(ages):
@@ -72,15 +72,15 @@ for id_ct, ct in enumerate(ct_lst):
         premium1 = premium1_unit * (capital - capital_inc)
         premium2 = premium2_unit * capital_inc
         premium = premium1 + premium2
-        dict_liability['table'].append(table_names[id_ct])
-        dict_liability['x'].append(x)
-        dict_liability['premium1_unit'].append(premium1_unit)
-        dict_liability['premium2_unit'].append(premium2_unit)
-        dict_liability['premium1'].append(premium2)
-        dict_liability['premium2'].append(premium2)
-        dict_liability['premium'].append(premium)
+        dict_liability_term['table'].append(table_names[id_ct])
+        dict_liability_term['x'].append(x)
+        dict_liability_term['premium1_unit'].append(premium1_unit)
+        dict_liability_term['premium2_unit'].append(premium2_unit)
+        dict_liability_term['premium1'].append(premium1)
+        dict_liability_term['premium2'].append(premium2)
+        dict_liability_term['premium'].append(premium)
 
-df_liability = pd.DataFrame(dict_liability)
+df_liability_term = pd.DataFrame(dict_liability_term)
 df_liability.to_excel(excel_writer='nIAx_lifeTables3' + '.xlsx',
                       sheet_name='nIAx_lifeTables3',
                       index=False, freeze_panes=(1, 1))

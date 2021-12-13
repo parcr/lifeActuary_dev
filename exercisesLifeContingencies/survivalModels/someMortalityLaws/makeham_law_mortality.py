@@ -6,8 +6,8 @@ import os
 import sys
 
 this_py = os.path.split(sys.argv[0])[-1][:-3]
-# mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.0003, c=1.07) # E(T_0)= 71.66316
-mml = makeham_mortality_functions.Makeham(a=2E-6, b=6E-6, c=1.07) #E(T_0)= 129.36947076690612
+mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.0003, c=1.07) # E(T_0)= 71.66316
+# mml = makeham_mortality_functions.Makeham(a=2E-6, b=6E-6, c=1.07) #E(T_0)= 129.36947076690612
 #mml = makeham_mortality_functions.Makeham(a=0.0001, b=0.00035, c=1.075)
 # mml = makeham_mortality_functions.Makeham(a=0.00015, b=0.0004, c=1.1)
 
