@@ -81,6 +81,6 @@ for id_ct, ct in enumerate(ct_lst):
         dict_liability_term['premium'].append(premium)
 
 df_liability_term = pd.DataFrame(dict_liability_term)
-df_liability.to_excel(excel_writer='nIAx_lifeTables3' + '.xlsx',
+df_liability_term.to_excel(excel_writer='nIAx_lifeTables3' + '.xlsx',
                       sheet_name='nIAx_lifeTables3',
                       index=False, freeze_panes=(1, 1))
