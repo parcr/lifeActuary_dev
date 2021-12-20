@@ -27,3 +27,36 @@ for idx, ct in enumerate(ct_lst):
 print('\nannuities')
 for idx, ct in enumerate(ct_lst):
     print("\\textbf{" + table_names[idx] + ":} " + f'{round(tad[idx], 5):,}')
+
+'''Premiums Refund'''
+print('\nSingle Net Risk Premium Refund at End of the Year of Death')
+termLifeInsurance = [ct.nAx(x=55, n=term) for ct in ct_lst]
+pureEndow_refund = [ct.nEx(x=55, n=term) / (1 - ct.nAx(x=55, n=term)) for ct in ct_lst]
+
+print('\nTerm Life Insurance')
+for idx, ct in enumerate(ct_lst):
+    print("\\textbf{" + table_names[idx] + ":} " +
+          f'{round(termLifeInsurance[idx], 5):,}')
+
+print('\nSingle Net Premium Refund Cost at End of the Year of Death')
+for idx, ct in enumerate(ct_lst):
+    print("\\textbf{" + table_names[idx] + ":} " +
+          f'{round(capital * pureEndow[idx] / (1 - termLifeInsurance[idx]), 5):,}')
+
+print('Refund Cost at End of the Year of Death')
+for idx, ct in enumerate(ct_lst):
+    print("\\textbf{" + table_names[idx] + ":} " +
+          f'{round(capital * (pureEndow_refund[idx] - pureEndow[idx]), 5):,}')
+
+print('\nSingle Net Risk Premium Refund at End of the Term')
+pureEndow_refund_eot = [ct.nEx(x=55, n=term) / (1 - (1 + interest_rate / 100) ** (-term) + ct.nEx(x=55, n=term))
+                        for ct in ct_lst]
+
+for idx, ct in enumerate(ct_lst):
+    print("\\textbf{" + table_names[idx] + ":} " +
+          f'{round(capital * pureEndow_refund_eot[idx], 5):,}')
+
+print('Refund Cost at End of the the Term')
+for idx, ct in enumerate(ct_lst):
+    print("\\textbf{" + table_names[idx] + ":} " +
+          f'{round(capital * (pureEndow_refund_eot[idx] - pureEndow[idx]), 5):,}')

@@ -19,6 +19,7 @@ tli = [ct.nAx(x=55, n=term) for ct in ct_lst]
 tli_ = [ct.nAx_(x=55, n=term) for ct in ct_lst]
 tad = [ct.naax(x=x, n=term_annuity, m=1) for ct in ct_lst]  # temporary annuity due
 
+print()
 for idx, ct in enumerate(ct_lst):
     print("\\textbf{" + table_names[idx] + ":} " + f'{round(capital * tli[idx], 5):,}')
 for idx, ct in enumerate(ct_lst):
@@ -34,3 +35,34 @@ for idx, ct in enumerate(ct_lst):
 print('\nannuities')
 for idx, ct in enumerate(ct_lst):
     print("\\textbf{" + table_names[idx] + ":} " + f'{round(tad[idx], 5):,}')
+
+'''Premiums Refund'''
+print('\nSingle Net Risk Premium Refund at End of the Year of Death')
+pureEndow = [ct.nEx(x=55, n=term) for ct in ct_lst]
+tli_refund = [ct.nAx(x=55, n=term) / (1 - ct.nEx(x=55, n=term)) for ct in ct_lst]
+tli_refund_ = [ct.nAx_(x=55, n=term) / (1 - ct.nEx(x=55, n=term)) for ct in ct_lst]
+
+print('\nPure Endowment')
+for idx, ct in enumerate(ct_lst):
+    print("\\textbf{" + table_names[idx] + ":} " +
+          f'{round(pureEndow[idx], 5):,}')
+
+print('\nSingle Net Risk Premium Refund at End of the Term for Discrete Case')
+for idx, ct in enumerate(ct_lst):
+    print("\\textbf{" + table_names[idx] + ":} " +
+          f'{round(capital * tli_refund[idx], 5):,}')
+
+print('Refund Cost at End of the the Term for Discrete Case')
+for idx, ct in enumerate(ct_lst):
+    print("\\textbf{" + table_names[idx] + ":} " +
+          f'{round(capital * (tli_refund[idx] - tli[idx]), 5):,}')
+
+print('\nSingle Net Risk Premium Refund at End of the Term for Approximation to Continuous Case')
+for idx, ct in enumerate(ct_lst):
+    print("\\textbf{" + table_names[idx] + ":} " +
+          f'{round(capital * tli_refund_[idx], 5):,}')
+
+print('Refund Cost at End of the the Term for Approximation to Continuous Case')
+for idx, ct in enumerate(ct_lst):
+    print("\\textbf{" + table_names[idx] + ":} " +
+          f'{round(capital * (tli_refund_[idx] - tli_[idx]), 5):,}')
