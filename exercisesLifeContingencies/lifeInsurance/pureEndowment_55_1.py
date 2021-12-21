@@ -20,6 +20,7 @@ term_annuity = 10
 pureEndow = [ct.nEx(x=x, n=term) for ct in ct_lst]
 tad = [ct.naax(x=x, n=term_annuity, m=1) for ct in ct_lst]  # temporary annuity due
 
+print()
 for idx, ct in enumerate(ct_lst):
     print("\\textbf{" + table_names[idx] + ":} " + f'{round(capital * pureEndow[idx], 5):,}')
 for idx, ct in enumerate(ct_lst):
