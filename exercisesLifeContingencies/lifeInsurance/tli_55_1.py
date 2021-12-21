@@ -72,10 +72,9 @@ Refund of Leveled Premiums
 '''
 
 print('\nLeveled Net Risk Premium Refund at End of the Term for Discrete Case')
-tli_leveled_refund = [capital * tli[idx_ct] / (tad[idx_ct] - term_annuity * pureEndow[idx_ct]) for idx_ct, ct in
+tli_leveled_refund = [tli[idx_ct] / (tad[idx_ct] - term_annuity * pureEndow[idx_ct]) for idx_ct, ct in
                       enumerate(ct_lst)]
 
 for idx, ct in enumerate(ct_lst):
     print("\\textbf{" + table_names[idx] + ":} " +
-          f'{round(tli_leveled_refund[idx], 5):,}')
-
+          f'{round(capital * tli_leveled_refund[idx], 5):,}')

@@ -1,3 +1,5 @@
+import numpy as np
+
 from soa_tables import read_soa_table_xml as rst
 from essential_life import mortality_table, commutation_table
 
@@ -15,7 +17,7 @@ x = 55
 capital = 1000
 term = 10
 term_annuity = 10
-pureEndow = [ct.nEx(x=55, n=term) for ct in ct_lst]
+pureEndow = [ct.nEx(x=x, n=term) for ct in ct_lst]
 tad = [ct.naax(x=x, n=term_annuity, m=1) for ct in ct_lst]  # temporary annuity due
 
 for idx, ct in enumerate(ct_lst):
@@ -30,8 +32,8 @@ for idx, ct in enumerate(ct_lst):
 
 '''Premiums Refund'''
 print('\nSingle Net Risk Premium Refund at End of the Year of Death')
-termLifeInsurance = [ct.nAx(x=55, n=term) for ct in ct_lst]
-pureEndow_refund = [ct.nEx(x=55, n=term) / (1 - ct.nAx(x=55, n=term)) for ct in ct_lst]
+termLifeInsurance = [ct.nAx(x=x, n=term) for ct in ct_lst]
+pureEndow_refund = [ct.nEx(x=x, n=term) / (1 - ct.nAx(x=x, n=term)) for ct in ct_lst]
 
 print('\nTerm Life Insurance')
 for idx, ct in enumerate(ct_lst):
@@ -49,7 +51,7 @@ for idx, ct in enumerate(ct_lst):
           f'{round(capital * (pureEndow_refund[idx] - pureEndow[idx]), 5):,}')
 
 print('\nSingle Net Risk Premium Refund at End of the Term')
-pureEndow_refund_eot = [ct.nEx(x=55, n=term) / (1 - (1 + interest_rate / 100) ** (-term) + ct.nEx(x=55, n=term))
+pureEndow_refund_eot = [ct.nEx(x=x, n=term) / (1 - (1 + interest_rate / 100) ** (-term) + ct.nEx(x=x, n=term))
                         for ct in ct_lst]
 
 for idx, ct in enumerate(ct_lst):
@@ -60,3 +62,29 @@ print('Refund Cost at End of the the Term')
 for idx, ct in enumerate(ct_lst):
     print("\\textbf{" + table_names[idx] + ":} " +
           f'{round(capital * (pureEndow_refund_eot[idx] - pureEndow[idx]), 5):,}')
+
+'''
+Refund of Leveled Premiums
+'''
+
+print('\nLeveled Net Risk Premium Refund at End of the Year of Death')
+tli_increasing = [ct.nIAx(x=x, n=term_annuity) for ct in ct_lst]
+tli_deferred = [ct.t_nAx(x=x, n=term - term_annuity, defer=term_annuity) for ct in ct_lst]
+pureEndow_leveled_refund = [
+    pureEndow[idx_ct] / (tad[idx_ct] - tli_increasing[idx_ct] - term_annuity * tli_deferred[idx_ct])
+    for idx_ct, ct in enumerate(ct_lst)]
+
+for idx, ct in enumerate(ct_lst):
+    print("\\textbf{" + table_names[idx] + ":} " +
+          f'{round(capital * pureEndow_leveled_refund[idx], 5):,}')
+
+''' 
+Test 
+'''
+term_annuity = 1
+test_m_equal_1_a = [1 - ct.nAx(x=x, n=term) for ct in ct_lst]
+test_m_equal_1_b = [ct.naax(x=x, n=term_annuity) -
+                    ct.nIAx(x=x, n=term_annuity) -
+                    term_annuity * ct.t_nAx(x=x, n=term - term_annuity, defer=term_annuity)
+                    for ct in ct_lst]
+test = np.array(test_m_equal_1_a) - np.array(test_m_equal_1_b)
