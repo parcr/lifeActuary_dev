@@ -18,7 +18,7 @@ class MortalityTable:
             return
         self.__methods = ('udd', 'cfm', 'bal')
         self.mt = mt
-        self.x0 = mt[0]
+        self.x0 = np.int(mt[0])
         self.last_q = last_q
         self.w = 0
         self.lx = []
@@ -64,7 +64,7 @@ class MortalityTable:
         data = {'x': np.arange(self.w + 1), 'lx': self.lx[:-1], 'dx': self.dx,
                 'qx': self.qx, 'px': self.px, 'exo': self.ex}
         df = pd.DataFrame(data)
-        df = df.astype({'x': 'int8'})
+        df = df.astype({'x': 'int16'})
         return df
 
     def lx_udd(self, t):

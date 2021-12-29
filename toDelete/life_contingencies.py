@@ -398,7 +398,7 @@ def tax(mt, x, t, m=1):
     return mt.Nx[x + t + 1] / mt.Dx[x] + ((float(m - 1) / float(m * 2)) * (1 - nEx(mt, x, t)))
 
 
-# Arithmetically increasing annuities (unitary) ----------------- 
+# Arithmetically increasing annuities_1 (unitary) -----------------
 
 def Iaaxn(mt, x, n, *args):
     """ during a term certain, IAn """
@@ -438,7 +438,7 @@ def Itax(mt, x, t):
     return (Sx(mt, x + 1) - Sx(mt, x + t + 1)) / Dx(mt, x)
 
 
-# Geometrically increasing annuities ---------------
+# Geometrically increasing annuities_1 ---------------
 def qax(mt, x, q, m=1):
     """ geometrica """
     q = float(q)

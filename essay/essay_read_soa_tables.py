@@ -1,8 +1,8 @@
 from xml.dom import minidom
 
 http_header = 'https://mort.soa.org/ViewTable.aspx?&TableIdentity='
-xmldoc = minidom.parse('CSO_1941.xml')
-xmldoc = minidom.parse('GRF95.xml')
+xmldoc = minidom.parse('../soa_tables/CSO_1941.xml')
+xmldoc = minidom.parse('../soa_tables/GRF95.xml')
 # xmldoc = minidom.parse('TV8890.xml')
 table_id = xmldoc.getElementsByTagName('TableIdentity')[0].childNodes[0].data
 url = http_header + table_id

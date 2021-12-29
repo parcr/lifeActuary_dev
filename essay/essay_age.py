@@ -26,6 +26,7 @@ print(f"Age for {a} is {a.age_f()[0]} years, {a.age_f()[1]} months and {a.age_f(
 d1 = "1968-02-14"
 d2 = datetime.date.today()
 print(a.age_f())
+print('actuarial age:', a.age_act())
 print((pd.to_datetime(d2) - pd.to_datetime(d1)))
 
 # test error

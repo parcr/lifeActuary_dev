@@ -38,7 +38,7 @@ def annuity_xy(mtx, mty, x, x_first, x_last, y, i=None, g=.0, m=1, method='udd')
     return np.sum(instalments)
 
 
-# life annuities 2 head
+# life annuities_1 2 head
 # immediate
 def axy(mtx, mty, x, y, i=None, g=0, m=1, method='udd'):
     '''

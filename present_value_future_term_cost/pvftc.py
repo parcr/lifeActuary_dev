@@ -323,7 +323,8 @@ class PVTermCost:
         axes1 = plt.gca()
         axes1.set_xticks(ticks_years)
         axes1.set_xticklabels(ticks_labels)
-        plt.title(f"Present Value of Future Term Cost for {self.decrement} @{self.age_of_term_cost}|x={x}")
+        plt.title(f"Present Value of Future Term Cost for {str(self.decrement).title()} "
+                  f"@{self.age_of_term_cost}|x={x}")
         plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
         return ax
 
@@ -332,7 +333,6 @@ class PVTermCost:
 
     '''
     Applies the various amortizations schemes
-    
     '''
 
     def series_Projected_Unit_Credit(self, atc_initial=None, atc_final=None, x=None,
@@ -367,17 +367,60 @@ class PVTermCost:
             sum_discounted_pvfnc = sum(discounted_pvfnc)
             test_puc = pvft_today - (al_today + sum_discounted_pvfnc)
 
-            if atc <= x:  # sum all past
-                sum_past_AL = 0
-                sum_past_NC = 0
-            else:  # sum all future
-                sum_future_AL = 0
-                sum_future_NC = 0
-                sum_future_AL_px = 0
-                sum_future_NC_px = 0
             # append everything
             pvftc_path_proj['PUC'] = lst_puc
             pvftc_path_proj['PUC_px'] = lst_puc_px
             pvftc_path_proj['PUC_test'] = test_puc
             series.append(pvftc_path_proj)
-        return series
+
+        # prepare the sums for all past and future liabilities
+        sum_past_AL = np.zeros((len(lst_puc),))
+        sum_past_NC = np.zeros((len(lst_puc),))
+        sum_future_AL = np.zeros((len(lst_puc),))
+        sum_future_NC = np.zeros((len(lst_puc),))
+        sum_future_AL_px = np.zeros((len(lst_puc),))
+        sum_future_NC_px = np.zeros((len(lst_puc),))
+        for atc in range(atc_initial, atc_final + 1):
+            idx = atc - atc_initial
+            if atc <= x:  # sum all past
+                sum_past_AL += np.array([l['AL'] for l in series[idx]['PUC']])
+                sum_past_NC += np.array([l['NC'] for l in series[idx]['PUC']])
+            else:  # sum all future
+                sum_future_AL += np.array([l['AL'] for l in series[idx]['PUC']])
+                sum_future_NC += np.array([l['NC'] for l in series[idx]['PUC']])
+                sum_future_AL_px += np.array([l['AL_px'] for l in series[idx]['PUC_px']])
+                sum_future_NC_px += np.array([l['NC_px'] for l in series[idx]['PUC_px']])
+        dic_sums = {'Sum_Past_AL': sum_past_AL, 'Sum_Past_NC': sum_past_NC,
+                    'Sum_Future_AL': sum_future_AL, 'Sum_Future_NC': sum_future_NC,
+                    'Sum_Future_AL_px': sum_future_AL_px, 'Sum_Future_NC_px': sum_future_NC_px}
+        return series, dic_sums
+
+    def graph_series_amortization_scheme(self, series_sums):
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots(constrained_layout=True)
+        lst_pvftc = self.pvftc_path_proj(atc=self.age_of_term_cost, x=self.x)
+        x = lst_pvftc['AAge_x']
+        years = [l['Year'] for l in lst_pvftc['PVFTC']]
+        ages = [l['AAge'] for l in lst_pvftc['PVFTC']]
+        pvftc = [l['pvftc_AAge'] for l in lst_pvftc['PVFTC']]
+        pvftc_px = [l['pvftc_px'] for l in lst_pvftc['PVFTC_px']]
+        future = [l['Future'] for l in lst_pvftc['PVFTC']]
+        year_of_age = years[ages.index(x)]
+
+        ax.plot(years, series_sums['Sum_Future_AL'], 'o-', label=f'AL {self.decrement}')
+        ax.plot(years, series_sums['Sum_Future_AL_px'], 'o-', mfc='none', label=f'AL {self.decrement}|{x}')
+        ax.axvline(x=years[future[0]], linewidth=.5, color='r')
+        ax.axvline(x=year_of_age, linewidth=.5, color='green')
+        ax.axvline(x=years[-1], linewidth=.5, color='gray')
+        ax.legend()
+        ticks_ages = [self.y, x, self.age_of_term_cost, ages[-1]]
+        ticks_ages.sort()
+        ticks_years = [years[ages.index(l)] for l in ticks_ages]
+        ticks_labels = [f"{y}\n{ticks_ages[y_i]}" for y_i, y in enumerate(ticks_years)]
+        axes1 = plt.gca()
+        axes1.set_xticks(ticks_years)
+        axes1.set_xticklabels(ticks_labels)
+        plt.title(f"Actuarial Liability for {str(self.decrement).title()} with last Term Cost "
+                  f"@{self.age_of_term_cost}|x={x}")
+        plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
+        return ax

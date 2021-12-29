@@ -7,6 +7,11 @@ http_header = 'https://mort.soa.org/ViewTable.aspx?&TableIdentity='
 
 class SoaTable:
     def __init__(self, table_name):
+        '''
+        Reads a previously downloaded life table, from Society of Actuaries, in the xml format and prepares
+        all the information to create a life (mortality table).
+        :param table_name: The SOA table, in xml format, to be read.
+        '''
         self.table_name = table_name
         self.xmldoc = minidom.parse(table_name)
         self.table_id = self.xmldoc.getElementsByTagName('TableIdentity')[0].childNodes[0].data
@@ -19,3 +24,4 @@ class SoaTable:
         self.max_age = self.min_age + len(self.ages) - 1
         self.table_qx = [float(age.childNodes[0].data) for age in self.ages]
         self.table_qx.insert(0, self.min_age)
+        # todo: scrap the tables from SOA

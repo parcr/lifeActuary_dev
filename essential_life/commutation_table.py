@@ -25,6 +25,7 @@ class CommutationFunctions(MortalityTable):
         # self.Dx = np.array([self.lx[x] * np.power(self.d, x) for x in range(len(self.lx))])
         self.Dx = self.lx[:-1] * np.power(self.d, range(len(self.lx[:-1])))
         self.Nx = np.array([np.sum(self.Dx[x:]) for x in range(len(self.lx[:-1]))])
+        self.Sx = np.array([np.sum(self.Nx[x:]) for x in range(len(self.Nx))])
         self.Cx = self.dx * np.power(self.d, range(1, len(self.dx) + 1))
         self.Mx = np.array([np.sum(self.Cx[x:]) for x in range(len(self.Cx))])
         self.Rx = np.array([np.sum(self.Mx[x:]) for x in range(len(self.Mx))])
@@ -33,7 +34,7 @@ class CommutationFunctions(MortalityTable):
             self.Rx = self.Rx * self.cont
 
     def df_commutation_table(self):
-        data = {'Dx': self.Dx, 'Nx': self.Nx, 'Cx': self.Cx, 'Mx': self.Mx, 'Rx': self.Rx}
+        data = {'Dx': self.Dx, 'Nx': self.Nx, 'Sx': self.Sx, 'Cx': self.Cx, 'Mx': self.Mx, 'Rx': self.Rx}
         df = pd.DataFrame(data)
         data_lf = self.df_life_table()
         df = pd.concat([data_lf, df], axis=1, sort=False)
@@ -92,10 +93,8 @@ class CommutationFunctions(MortalityTable):
             return self.v  # it will die before year's end, because already attained age>w
         D_x = self.Dx[x]
         if self.app_cont:
-            M_x = self.Mx[x] / self.cont
             R_x = self.Rx[x] / self.cont
         else:
-            M_x = self.Mx[x]
             R_x = self.Rx[x]
         self.msn.append(f"A_{x}={R_x} / {D_x}")
         return R_x / D_x
@@ -143,6 +142,33 @@ class CommutationFunctions(MortalityTable):
             M_x_n = self.Mx[x + n]
         self.msn.append(f"{n}_A_{x}=({M_x}-{M_x_n}) / {D_x}")
         return (M_x - M_x_n) / D_x / (1 + self.g)
+
+    def nIAx(self, x, n):
+        """
+        Whole life insurance
+        :param x: age at the beginning of the contract
+        :param n: period of the contract
+        :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m, at the
+        end of the year of death, if death happens between age x+m and x+m+1.
+        It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+        """
+        if x < 0:
+            return np.nan
+        if n < 0:
+            return np.nan
+        if x > self.w:
+            return self.v  # it will die before year's end, because already attained age>w
+        D_x = self.Dx[x]
+        if self.app_cont:
+            M_x_n = self.Mx[x + n] / self.cont
+            R_x = self.Rx[x] / self.cont
+            R_x_n = self.Rx[x + n] / self.cont
+        else:
+            M_x_n = self.Mx[x + n]
+            R_x = self.Rx[x]
+            R_x_n = self.Rx[x + n]
+        self.msn.append(f"A_{x}=({R_x}-{R_x_n}-{n}x{M_x_n} / {D_x}")
+        return (R_x - R_x_n - n * M_x_n) / D_x
 
     def nAx_(self, x, n):
         """
@@ -275,7 +301,7 @@ class CommutationFunctions(MortalityTable):
         self.msn.append(f"{defer}|{n}_AE_{x}={defer}_E_{x}*{n}_AE_{x + defer}_")
         return aux
 
-    # life annuities
+    # life annuities_1
     def ax(self, x, m=1):
         """
         axn : Returns the actuarial present value of an (immediate) annuity of 1 per time period
@@ -346,7 +372,7 @@ class CommutationFunctions(MortalityTable):
         :param m: number of payments per period used to quote the interest rate
         :return:Expected Present Value (EPV) for payments of 1/m
         """
-        if x >= self.w:
+        if x >= self.w or n == 1:
             return 1
         if x < 0:
             return np.nan
@@ -356,8 +382,7 @@ class CommutationFunctions(MortalityTable):
             return 0
 
         if x + 1 + n <= self.w + 1:  # todo we've here a problem, because of the fractional approximation
-            aux = self.nax(x=x, n=n, m=m) * np.power(1 + self.g, 1) + \
-                  (m + 1) / (m * 2) * (1 - self.nEx(x, n) * np.power(1 + self.g, n))
+            aux = (self.Nx[x] - self.Nx[x + n]) / self.Dx[x] - (m - 1) / (m * 2) * (1 - self.nEx(x, n))
             if x + 1 + n <= self.w:
                 Nx2 = self.Nx[x + 1 + n]
             else:
@@ -369,7 +394,7 @@ class CommutationFunctions(MortalityTable):
             return self.aax(x=x, m=m)
         return aux
 
-    # deferred annuities
+    # deferred annuities_1
     def t_ax(self, x, m=1, defer=0):
         """
         axn : Returns the actuarial present value of an (immediate) annuity of 1 per time period
