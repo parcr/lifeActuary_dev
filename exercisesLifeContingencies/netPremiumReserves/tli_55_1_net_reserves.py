@@ -32,4 +32,10 @@ for idx_clt, clt in enumerate(tli_55_1.ct_lst):
     plt.plot(ages, reserves_df.loc[reserves_df['table'] == tli_55_1.table_names[idx_clt]]['reserve'],
              label=tli_55_1.table_names[idx_clt])
 
+plt.xlabel(r'$x$')
+plt.ylabel('Reserves')
+plt.title('Net Premium Reserves Term Life Insurance')
+plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
+plt.legend()
+# plt.savefig(this_py + '.eps', format='eps', dpi=3600)
 plt.show()
