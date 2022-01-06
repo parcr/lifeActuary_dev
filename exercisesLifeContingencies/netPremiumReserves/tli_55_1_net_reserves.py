@@ -25,6 +25,10 @@ for idx_clt, clt in enumerate(tli_55_1.ct_lst):
 
 reserves_df = pd.DataFrame(reserves_dict)
 
+name = 'tli_55_1'
+reserves_df.to_excel(excel_writer=name + '_netReserves' + '.xlsx', sheet_name=name,
+                     index=False, freeze_panes=(1, 1))
+
 '''
 plot the reserves
 '''

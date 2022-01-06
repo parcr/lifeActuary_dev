@@ -26,6 +26,9 @@ for idx_clt, clt in enumerate(pureEndowment_55_1.ct_lst):
         reserves_dict['reserve'].append(reserve)
 
 reserves_df = pd.DataFrame(reserves_dict)
+name = 'pureEndowment_55_1'
+reserves_df.to_excel(excel_writer=name + '_netReserves' + '.xlsx', sheet_name=name,
+                     index=False, freeze_panes=(1, 1))
 
 '''
 plot the reserves

@@ -14,7 +14,7 @@ ct_lst = [commutation_table.CommutationFunctions(i=interest_rate, g=0, mt=mt.tab
 x = 55
 capital = 1000
 term = 10
-term_annuity = 5
+term_annuity = 10
 tli = [ct.nAx(x=55, n=term) for ct in ct_lst]
 tli_ = [ct.nAx_(x=55, n=term) for ct in ct_lst]
 tad = [ct.naax(x=x, n=term_annuity, m=1) for ct in ct_lst]  # temporary annuity due
