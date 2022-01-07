@@ -31,11 +31,12 @@ for idx_clt, clt in enumerate(pureEndowment_55_1.ct_lst):
         reserves_dict['reserve'].append(reserve)
 
         prob_survival = clt.tpx(x=pureEndowment_55_1.x, t=age - pureEndowment_55_1.x)
-        expected_reserve_dict['insurer_exp'].append(insurer_liability*prob_survival*l0)
-        expected_reserve_dict['insured_exp'].append(insured_liability*prob_survival*l0)
-        expected_reserve_dict['reserve_exp'].append(reserve*prob_survival*l0)
-        # fund # fund # fund # fund # fund # fund # fund # fund
         lx = l0 * prob_survival
+        expected_reserve_dict['insurer_exp'].append(insurer_liability*lx)
+        expected_reserve_dict['insured_exp'].append(insured_liability*lx)
+        expected_reserve_dict['reserve_exp'].append(reserve*prob_survival*lx)
+
+        # fund # fund # fund # fund # fund # fund # fund # fund
         fund_dict['lx'].append(lx)
         qx_1 = clt.tqx(x=age, t=1)
         claim = 0
