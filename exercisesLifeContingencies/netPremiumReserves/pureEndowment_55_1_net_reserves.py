@@ -5,7 +5,11 @@ import matplotlib.pyplot as plt
 '''
 Net premium reserves path
 '''
+l0 = 1000
 reserves_dict = {'table': [], 'x': [], 'insurer': [], 'insured': [], 'reserve': []}
+fund_dict = {'lx': [], 'claim': [], 'premium': [], 'fund': []}
+# expected reserves value, that is, considering the survivorship of the group
+expected_reserve_dict = {'insurer_exp': [], 'insured_exp': [], 'reserve_exp': []}
 ages = range(pureEndowment_55_1.x, pureEndowment_55_1.x + pureEndowment_55_1.term + 1)
 print('\n\n Net Premium reserves \n\n')
 for idx_clt, clt in enumerate(pureEndowment_55_1.ct_lst):
@@ -14,21 +18,45 @@ for idx_clt, clt in enumerate(pureEndowment_55_1.ct_lst):
     premium_unit_leveled = premium_unit / pureEndowment_55_1.tad[idx_clt]
     premium_leveled = premium_unit_leveled * pureEndowment_55_1.capital
     for age in ages:
+        # reserves # reserves # reserves # reserves # reserves # reserves
         reserves_dict['table'].append(pureEndowment_55_1.table_names[idx_clt])
         reserves_dict['x'].append(age)
         insurer_liability = clt.nEx(x=age, n=pureEndowment_55_1.term - (age - pureEndowment_55_1.x)) * \
                             pureEndowment_55_1.capital
         reserves_dict['insurer'].append(insurer_liability)
-        insured_liability = premium_leveled * clt.naax(x=age, n=pureEndowment_55_1.term_annuity -
-                                                                (age - pureEndowment_55_1.x))
+        tad = clt.naax(x=age, n=pureEndowment_55_1.term_annuity - (age - pureEndowment_55_1.x))
+        insured_liability = premium_leveled * tad
         reserves_dict['insured'].append(insured_liability)
         reserve = insurer_liability - insured_liability
         reserves_dict['reserve'].append(reserve)
 
+        prob_survival = clt.tpx(x=pureEndowment_55_1.x, t=age - pureEndowment_55_1.x)
+        expected_reserve_dict['insurer_exp'].append(insurer_liability*prob_survival*l0)
+        expected_reserve_dict['insured_exp'].append(insured_liability*prob_survival*l0)
+        expected_reserve_dict['reserve_exp'].append(reserve*prob_survival*l0)
+        # fund # fund # fund # fund # fund # fund # fund # fund
+        lx = l0 * prob_survival
+        fund_dict['lx'].append(lx)
+        qx_1 = clt.tqx(x=age, t=1)
+        claim = 0
+        if age == pureEndowment_55_1.x + pureEndowment_55_1.term:
+            claim = pureEndowment_55_1.capital * lx
+        fund_dict['claim'].append(claim)
+        premium = 0
+        if tad > 0:
+            premium = premium_leveled*lx
+        fund_dict['premium'].append(premium)
+        if age == pureEndowment_55_1.x:
+            fund = lx * premium_leveled
+        else:
+            fund = fund_dict['fund'][-1] * (1 + pureEndowment_55_1.interest_rate / 100) - claim + premium
+        fund_dict['fund'].append(fund)
+
 reserves_df = pd.DataFrame(reserves_dict)
+expected_reserve_df = pd.DataFrame(expected_reserve_dict)
+fund_df = pd.DataFrame(fund_dict)
 name = 'pureEndowment_55_1'
-reserves_df.to_excel(excel_writer=name + '_netReserves' + '.xlsx', sheet_name=name,
-                     index=False, freeze_panes=(1, 1))
+# reserves_df.to_excel(excel_writer=name + '_netReserves' + '.xlsx', sheet_name=name, index=False, freeze_panes=(1, 1))
 
 '''
 plot the reserves

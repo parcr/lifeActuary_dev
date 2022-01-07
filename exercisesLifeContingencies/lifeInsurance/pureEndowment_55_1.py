@@ -82,10 +82,10 @@ for idx, ct in enumerate(ct_lst):
 ''' 
 Test 
 '''
-term_annuity = 1
+term_annuity_b = 1
 test_m_equal_1_a = [1 - ct.nAx(x=x, n=term) for ct in ct_lst]
-test_m_equal_1_b = [ct.naax(x=x, n=term_annuity) -
-                    ct.nIAx(x=x, n=term_annuity) -
-                    term_annuity * ct.t_nAx(x=x, n=term - term_annuity, defer=term_annuity)
+test_m_equal_1_b = [ct.naax(x=x, n=term_annuity_b) -
+                    ct.nIAx(x=x, n=term_annuity_b) -
+                    term_annuity_b * ct.t_nAx(x=x, n=term - term_annuity_b, defer=term_annuity_b)
                     for ct in ct_lst]
 test = np.array(test_m_equal_1_a) - np.array(test_m_equal_1_b)
