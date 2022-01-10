@@ -80,16 +80,16 @@ print('wli_1_eoy=', wli_1_eoy)
 pure_whole_life_insurance = wli_1__ * capital_whole_life_insurance
 print('pure_whole_life_insurance=', round(pure_whole_life_insurance, 5))
 
-wlad_12 = mml.annuity(x=x, interest_rate=interest_rate, age_first_instalment=x,
+tad_12 = mml.annuity(x=x, interest_rate=interest_rate, age_first_instalment=x,
                       terms=annuity_terms, fraction=annuity_fraction, w=w * 2)
-wlad_1 = mml.annuity(x=x, interest_rate=interest_rate, age_first_instalment=x, terms=annuity_terms, fraction=1, w=w * 2)
-wlad_1_ = mml.ax(x=x, interest_rate=interest_rate, n=annuity_terms)
+tad_1 = mml.annuity(x=x, interest_rate=interest_rate, age_first_instalment=x, terms=annuity_terms, fraction=1, w=w * 2)
+tad_1_ = mml.ax(x=x, interest_rate=interest_rate, n=annuity_terms)
 
-print('wlad_12=', wlad_12)
-print('wlad_1=', wlad_1)
-print('wlad_1_=', wlad_1_)
+print('tad_12=', tad_12)
+print('tad_1=', tad_1)
+print('tad_1_=', tad_1_)
 
-print('wli_1__leveled=', pure_whole_life_insurance / wlad_1)
+print('wli_1__leveled=', pure_whole_life_insurance / tad_1)
 print(411.10086350538955 * annuity_terms * annuity_fraction)
 
 '''
@@ -113,14 +113,14 @@ endowment = mml.Endowment(x=x, interest_rate=interest_rate, n=term_2)
 term_life_insurance_frac = mml.life_insurance(x=x, interest_rate=interest_rate, age_first_instalment=x,
                                               terms=term_2, fraction=life_insurance_fraction)
 
-wlad_12 = mml.annuity(x=x, interest_rate=interest_rate, age_first_instalment=x,
+tad_12 = mml.annuity(x=x, interest_rate=interest_rate, age_first_instalment=x,
                       terms=annuity_terms, fraction=annuity_fraction, w=w * 2)
 print()
 print('term_life_insurance=', term_life_insurance)
 print('pure_endowment_2=', pure_endowment_2)
 endowment_capital = endowment * capital_endowment_insurance
 print('endowment_capital=', endowment_capital)
-premium_leveled = endowment_capital / wlad_12 / annuity_fraction
+premium_leveled = endowment_capital / tad_12 / annuity_fraction
 print('premium_leveled=', premium_leveled)
 print('compare Premium vs Leveled Premium:', premium_leveled * annuity_terms * annuity_fraction - endowment_capital)
 
@@ -130,7 +130,7 @@ endowment_frac = term_life_insurance_frac + pure_endowment_2
 print('endowment_frac=', endowment_frac)
 endowment_frac_capital = endowment_frac * capital_endowment_insurance
 print('endowment_frac_capital=', round(endowment_frac_capital, 5))
-premium_leveled_frac = endowment_frac_capital / wlad_12 / annuity_fraction
+premium_leveled_frac = endowment_frac_capital / tad_12 / annuity_fraction
 print('premium_leveled_frac=', premium_leveled_frac)
 print('compare Premium vs Leveled Premium:', premium_leveled_frac * annuity_terms * annuity_fraction -
       endowment_capital)
