@@ -2,7 +2,7 @@ from soa_tables import read_soa_table_xml as rst
 from essential_life import mortality_table, commutation_table
 
 table_names = ['TV7377', 'GRF95', 'GRM95']
-interest_rate = 4
+interest_rate = 3.8
 mt_lst = [rst.SoaTable('../../soa_tables/' + name + '.xml') for name in table_names]
 lt_lst = [mortality_table.MortalityTable(mt=mt.table_qx) for mt in mt_lst]
 ct_lst = [commutation_table.CommutationFunctions(i=interest_rate, g=0, mt=mt.table_qx) for mt in mt_lst]
@@ -35,6 +35,7 @@ print()
 for idx, ct in enumerate(ct_lst):
     print("\\textbf{" + table_names[idx] + ":} " + f'{round(tli[idx], 10):,}')
     print("\\textbf{" + table_names[idx] + ":} " + f'{round(capital * tli[idx], 5):,}')
+
 for idx, ct in enumerate(ct_lst):
     print("\\textbf{" + table_names[idx] + ":} " + f'{round(capital * tli[idx] / tad[idx], 5):,}')
 
