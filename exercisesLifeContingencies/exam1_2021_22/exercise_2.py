@@ -26,7 +26,7 @@ e0 = mml.moments_Tx()
 print('e0=', e0)
 
 w = 125
-interest_rate = 1.8
+interest_rate = 1.8 * 0 + 2.5
 interest_rate_2 = ((1 + interest_rate / 100) ** 2 - 1) * 100
 
 '''
@@ -43,13 +43,35 @@ ct.df_commutation_table().to_excel(excel_writer='makeham_comm' + '.xlsx', sheet_
 ct_2 = commutation_table.CommutationFunctions(i=interest_rate_2, g=0, mt=list(np.append(0, qx)))
 
 '''
-\item The 5 years monthly leveled risk premiums for an Endowment Insurance with term 10 years purchased by a life aged 
-50 if the payment in the event of death happens at the final of quarter of the death with capital 
+\item The 5 years monthly leveled risk premiums for an Endowment Insurance with term 10 years purchased by a 
+life aged  50 if the payment in the event of death happens at the final of quarter of the death with capital 
 underwritten $100\:000$\euro.
 '''
 capital_endowment = 100000
 x = 50
 term = 10
-term_annuity = 5
+life_insurance_fraction = 4
+annuity_terms = 10
+annuity_fraction = 12
 
+pure_endowment = ct.nEx(x=x, n=term)
+pure_endowment_mml = mml.nEx(x=x, interest_rate=interest_rate, defer=term)
+term_life_insurance = mml.Ax(x=x, interest_rate=interest_rate, n=term)
+endowment = mml.Endowment(x=x, interest_rate=interest_rate, n=term)
+term_life_insurance_ = mml.Ax(x=x, interest_rate=interest_rate, n=term)
+term_life_insurance_frac = mml.life_insurance(x=x, interest_rate=interest_rate, age_first_instalment=x,
+                                              terms=term, fraction=life_insurance_fraction)
+endowment_frac = term_life_insurance_frac + pure_endowment
+tad_12 = mml.annuity(x=x, interest_rate=interest_rate, age_first_instalment=x,
+                     terms=annuity_terms, fraction=annuity_fraction, w=w * 2)
+
+print('\n q1')
+print('term_life_insurance_frac:', round(term_life_insurance_frac, 10))
+print('endowment:', round(endowment, 10))
+print('endowment_frac=', round(endowment_frac, 10))
+endowment_frac_capital = endowment_frac * capital_endowment
+print('endowment_frac_capital=', round(endowment_frac_capital, 5))
+print('annuity:', round(tad_12, 10))
+premium_leveled = capital_endowment / tad_12 / annuity_fraction
+print('premium_leveled=', round(premium_leveled, 5))
 
