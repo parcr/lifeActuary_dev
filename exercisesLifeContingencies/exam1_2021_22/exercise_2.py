@@ -16,6 +16,7 @@ from exercisesLifeContingencies.survivalModels.someMortalityLaws import makeham_
 import numpy as np
 from essential_life import mortality_table, commutation_table
 import matplotlib.pyplot as plt
+from annuities_certain import annuities_certain
 import os
 import sys
 
@@ -75,3 +76,41 @@ print('annuity:', round(tad_12, 10))
 premium_leveled = capital_endowment / tad_12 / annuity_fraction
 print('premium_leveled=', round(premium_leveled, 5))
 
+'''
+\item The 15 years leveled risk premiums for a Whole Life Insurance purchased by a life aged 50, paying 
+$200\:000$\euro\ at the moment of death.
+'''
+print('\n q2')
+x = 50
+annuity_terms = 15
+capital = 200000
+wli = mml.Ax(x=x, interest_rate=interest_rate)
+wli_capital = capital * wli
+print('whole life insurance=', round(wli, 10))
+print('whole life insurance capital=', round(wli_capital, 10))
+tad = mml.annuity(x=x, interest_rate=interest_rate, age_first_instalment=x, terms=15)
+tad_comm = ct.naax(x=x, n=annuity_terms, m=1)
+print('tad=', round(tad, 10))
+premium_leveled_capital = wli_capital / tad
+print('premium_leveled_capital=', round(premium_leveled_capital, 5))
+
+'''
+\item What is price for the single premium (risk single premium) of the guarantee if a life 65 years old decide to swap 
+a whole life annuity-due that pays $10\:000$\euro$\:$ per year for an annuity with a guarantee of $10$ terms.
+'''
+x = 65
+terms_certain = 10
+capital = 10000
+ac = annuities_certain.Annuities_Certain(interest_rate=interest_rate, frequency=1)
+ac10 = ac.annuity_due(terms=terms_certain)
+print('renda certa', ac10)
+renda_vital = ct.aax(x=x)
+print('renda vital', round(renda_vital, 5))
+renda_vital_def = ct.t_aax(x=x, m=1, defer=terms_certain)
+print('renda vital def', round(renda_vital_def, 5))
+b_guarantee = renda_vital / (ac10 + renda_vital_def)
+print('b_guarantee', round(b_guarantee * capital, 5))
+
+reduction = capital * (1 - renda_vital / (ac10 + renda_vital_def))
+print(f'reduction', round(reduction,5))
+print(f'reduction', round(capital - b_guarantee * capital,5))
