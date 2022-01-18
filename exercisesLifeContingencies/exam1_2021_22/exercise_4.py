@@ -51,7 +51,7 @@ that will be paid in yearly equal amortizations with a 25 years term.
 '''
 Prepare the solution for Equal Instalments
 '''
-ages = np.linspace(start=45, stop=45, num=1, dtype=int)
+ages = np.linspace(start=x, stop=x, num=1, dtype=int)
 capital = 300000
 terms = 25
 terms_annuity_leveled = 5
