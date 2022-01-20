@@ -93,8 +93,9 @@ annuity_terms = 10
 annuities_certain_m = ac.annuity_immediate(terms=annuity_terms)
 annuities_certain_n_m = ac.annuity_immediate(terms=terms - annuity_terms)
 
-loan_balance=capital/ac_certain*annuities_certain_n_m
-premiums_paid=equal_instalments_dict['premium_leveled'][0]*annuities_certain_m*(1+interest_rate/100)**annuity_terms
+loan_balance = capital / ac_certain * annuities_certain_n_m
+premiums_paid = equal_instalments_dict['premium_leveled'][1] * annuities_certain_m * (
+            1 + interest_rate / 100) ** annuity_terms
 print('loan balance=', loan_balance)
 print('premiums paid=', premiums_paid)
-print('Loss=', loan_balance-premiums_paid)
+print('Loss=', loan_balance - premiums_paid)
