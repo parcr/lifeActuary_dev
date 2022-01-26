@@ -1,17 +1,17 @@
 '''
-Considering \textbf{Makehams law of mortality} with $A=0.0004,B=1.2E-6$ and $c=1.08$ with a rate of interest of $1.8\%$/annum, determine:
+\item Consider a \textbf{woman} aged 30 years old that purchases an Endowment with term at 65 years old. Considering $2\%$/annum as rate of interest and justifying all calculus, please determine:
 
 \begin{enumerate}
-\item The 5 years monthly leveled risk premiums for an Endowment Insurance with term 10 years purchased by a life aged 50 if the payment in the event of death happens at the final of quarter of the death with capital underwritten $100\:000$\euro.
+\item For a capital of $500\:000$\euro, the monthly leveled risk premiums paid 25 years if in case of death the capital is paid at the moment of death.
 
-\item The 15 years leveled risk premiums for a Whole Life Insurance purchased by a life aged 50, paying $200\:000$\euro\ at the moment of death.
+\item For a capital of $100\:000$\euro, where in case of death the capital is paid at the end of the year of death, the probability that the present value of this (risk) liability is larger than its expected present value.
 
-\item What is the reduction produced by the guarantee of $10$ terms, if a life 65 years old decide to swap a whole life annuity-due that pays $10\:000$\euro$\:$ per year for an annuity with this guarantee.
+\item For a capital of $500\:000$\euro, the single risk premium if in case of death the capital is paid at the end of the year but considering that the cover is deferred until the age of 40, keeping the term age at 65.
+\end{enumerate}
 '''
 
 import numpy as np
-from annuities_certain import annuities_certain
-import pandas as pd
+from plotCDF.discrete import plot
 import os
 import sys
 
@@ -34,8 +34,9 @@ ct_lst = [commutation_table.CommutationFunctions(i=interest_rate, g=0, mt=mt.tab
 
 table_index = 1  # woman
 '''
-\item For a capital of $500\:000$\euro, the monthly leveled risk premiums paid 25 years if in case of death 
-the capital is paid at the moment of death.
+\item For a capital of $100\:000$\euro, where in case of death the capital is paid at the end of the year of death, 
+the probability that the present value of this (risk) liability is larger than its expected present value. 
+
 '''
 
 x = 30
@@ -61,15 +62,18 @@ print('single_premium_capital:', round(single_premium_capital, 5))
 print('tad_12:', round(tad_12, 10))
 print('leveled_premium_capital:', round(leveled_premium_capital, 5))
 
-'''\item The 15 years leveled risk premiums for a Whole Life Insurance purchased by a life aged 50, paying 
-$200\:000$\euro\ at the moment of death.
+'''
+\item For a capital of $500\:000$\euro, the single risk premium if in case of death the capital is paid at the 
+end of the year but considering that the cover is deferred until the age of 40, keeping the term age at 65.
 '''
 print('\n q2')
 endow = ct_lst[table_index].nAEx(x=x, n=term)
 v = 1 / (1 + interest_rate / 100)
 support = [v ** j for j in range(1, term + 1)]
+support.reverse()
 pmf = [ct_lst[table_index].t_nqx(x=x, t=j - 1, n=1) for j in range(1, term)]
 pmf.append(ct_lst[table_index].tpx(x=x, t=term - 1))
+pmf.reverse()
 cdf = np.cumsum(pmf)
 
 print('endowment:', round(endow, 10))
@@ -87,6 +91,13 @@ print('answer:', round(1 - ct_lst[table_index].tpx(x=x, t=term - 1), 10) * 100, 
 # another way
 probs_bool = [pmf[idx_v] for idx_v, v in enumerate(support) if v > endow]
 print('answer:', round(sum(probs_bool), 10) * 100, '%', sep='')
+
+# some graphics
+discrete_rv = plot.RV(support=support, prob=pmf, complete_left=True, complete_right=True, max_tol=1e-12)
+discrete_rv.plot_pmf(rv_name='Z')
+discrete_rv.plot_cdf(rv_name='Z')
+discrete_rv.plot_sf(rv_name='Z')
+discrete_rv.plot_quantile(rv_name='Z')
 
 '''
 \item For a capital of $500\:000$\euro, the single risk premium if in case of death the capital is paid at the 
