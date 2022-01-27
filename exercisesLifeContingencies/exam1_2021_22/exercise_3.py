@@ -105,7 +105,7 @@ end of the year but considering that the cover is deferred until the age of 40, 
 '''
 
 print('\n q3')
-defer = 5
+defer = 10
 term = term - defer
 deferment_factor = ct_lst[table_index].nEx(x=x, n=defer)
 pure_endowment = ct_lst[table_index].nEx(x=x + defer, n=term)
