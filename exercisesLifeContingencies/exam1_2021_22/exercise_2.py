@@ -27,7 +27,7 @@ e0 = mml.moments_Tx()
 print('e0=', e0)
 
 w = 125
-interest_rate = 1.8 * 0 + 2.5
+interest_rate = 1.8
 interest_rate_2 = ((1 + interest_rate / 100) ** 2 - 1) * 100
 
 '''
@@ -52,7 +52,7 @@ capital_endowment = 100000
 x = 50
 term = 10
 life_insurance_fraction = 4
-annuity_terms = 10
+annuity_terms = 5
 annuity_fraction = 12
 
 pure_endowment = ct.nEx(x=x, n=term)
@@ -68,12 +68,12 @@ tad_12 = mml.annuity(x=x, interest_rate=interest_rate, age_first_instalment=x,
 
 print('\n q1')
 print('term_life_insurance_frac:', round(term_life_insurance_frac, 10))
-print('endowment:', round(endowment, 10))
+print('pure_endowment:', round(pure_endowment, 10))
 print('endowment_frac=', round(endowment_frac, 10))
 endowment_frac_capital = endowment_frac * capital_endowment
 print('endowment_frac_capital=', round(endowment_frac_capital, 5))
 print('annuity:', round(tad_12, 10))
-premium_leveled = capital_endowment / tad_12 / annuity_fraction
+premium_leveled = endowment_frac_capital / tad_12 / annuity_fraction
 print('premium_leveled=', round(premium_leveled, 5))
 
 '''
@@ -98,6 +98,8 @@ print('premium_leveled_capital=', round(premium_leveled_capital, 5))
 \item What is price for the single premium (risk single premium) of the guarantee if a life 65 years old decide to swap 
 a whole life annuity-due that pays $10\:000$\euro$\:$ per year for an annuity with a guarantee of $10$ terms.
 '''
+
+print('\n q3')
 x = 65
 terms_certain = 10
 capital = 10000
