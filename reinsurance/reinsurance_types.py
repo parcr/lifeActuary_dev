@@ -4,43 +4,30 @@ Quota-share
 
 
 class QuotaShare:
-    def __init__(self, share_cedant, cedant_capacity, total_capacity, capital_at_risk):
-        self.share_cedant = share_cedant
-        self.cedant_capacity = cedant_capacity
+    def __init__(self, cedant_share, total_capacity, capital_at_risk):
+        self.cedant_share = cedant_share
         self.total_capacity = total_capacity
         self.capital_at_risk = capital_at_risk
 
+        self.reinsurer_share
+        self.cedant_capacity
         self.reinsurer_capacity
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.share_cedant}, {self.cedant_capacity}, {self.total_capacity}," \
-               f"{self.capital_at_risk})"
+        return f"{self.__class__.__name__}({self.cedant_share}, {self.total_capacity}, {self.capital_at_risk})"
 
     @property
-    def share_cedant(self):
-        return self.__share_cedant
+    def cedant_share(self):
+        return self.__cedant_share
 
-    @share_cedant.setter
-    def share_cedant(self, sc):
+    @cedant_share.setter
+    def cedant_share(self, sc):
         if sc < 0:
-            self.__share_cedant = 0
+            self.__cedant_share = 0
         if sc > 1:
-            self.__share_cedant = 1
-        self.__share_cedant = sc
+            self.__cedant_share = 1
+        self.__cedant_share = sc
 
-    @property
-    def cedant_capacity(self):
-        return self.__cedant_capacity
-
-    @cedant_capacity.setter
-    def cedant_capacity(self, cc):
-        if cc < 0:
-            self.__cedant_capacity = 0
-        self.__cedant_capacity = cc
-        try:
-            self.total_capacity = self.__total_capacity
-        except:
-            pass
 
     @property
     def total_capacity(self):
@@ -48,8 +35,8 @@ class QuotaShare:
 
     @total_capacity.setter
     def total_capacity(self, tc):
-        if tc < self.cedant_capacity:
-            self.__total_capacity = self.cedant_capacity
+        if tc < 0:
+            self.__total_capacity = 0
         else:
             self.__total_capacity = tc
 
@@ -62,6 +49,15 @@ class QuotaShare:
         if cr < 0:
             self.__capital_at_risk = 0
         self.__capital_at_risk = min(cr, self.__total_capacity)
+
+
+    @property
+    def reinsurer_share(self):
+        return 1 - self.cedant_share
+
+    @property
+    def cedant_capacity(self):
+        return self.total_capacity*(1 - self.cedant_share)
 
     @property
     def reinsurer_capacity(self):
@@ -70,32 +66,33 @@ class QuotaShare:
     def cedant_claim(self, claim):
         if claim < 0:
             return 0
-        return min(claim, self.capital_at_risk) * self.__share_cedant
+        return min(claim, self.capital_at_risk) * self.__cedant_share
 
     def reinsurer_claim(self, claim):
         return claim - self.cedant_claim(claim)
 
 
 class Surplus:
-    def __init__(self, line_cedant, total_capacity, capital_at_risk):
-        self.line_cedant = line_cedant
+    def __init__(self, cedant_line, total_capacity, capital_at_risk):
+        self.cedant_line = cedant_line
         self.total_capacity = total_capacity
         self.capital_at_risk = capital_at_risk
 
         self.reinsurer_capacity
+        self.cedant_share
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.line_cedant}, {self.total_capacity}, {self.capital_at_risk})"
+        return f"{self.__class__.__name__}({self.cedant_line}, {self.total_capacity}, {self.capital_at_risk})"
 
     @property
-    def line_cedant(self):
-        return self.__line_cedant
+    def cedant_line(self):
+        return self.__cedant_line
 
-    @line_cedant.setter
-    def line_cedant(self, lc):
+    @cedant_line.setter
+    def cedant_line(self, lc):
         if lc < 0:
-            self.__share_cedant = 0
-        self.__line_cedant = lc
+            self.__cedant_line = 0
+        self.__cedant_line = lc
         try:
             self.total_capacity = self.__total_capacity
         except:
@@ -107,8 +104,8 @@ class Surplus:
 
     @total_capacity.setter
     def total_capacity(self, tc):
-        if tc < self.line_cedant:
-            self.__total_capacity = self.line_cedant
+        if tc < self.cedant_line:
+            self.__total_capacity = self.cedant_line
         else:
             self.__total_capacity = tc
 
@@ -124,12 +121,28 @@ class Surplus:
 
     @property
     def reinsurer_capacity(self):
-        return self.total_capacity - self.line_cedant
+        return self.total_capacity - self.cedant_line
 
     @property
     def reinsurer_lines(self):
-        return self.reinsurer_capacity/self.line_cedant
+        return self.reinsurer_capacity / self.cedant_line
 
+    @property
+    def cedant_share(self):
+        if self.capital_at_risk>self.cedant_line:
+            return self.cedant_line/self.capital_at_risk
+        return 1
 
-qs = QuotaShare(0.2, 1000, 10000, 2000)
-sp = Surplus(10000, 100000, 25000)
+    @property
+    def reinsurer_share(self):
+        return 1-self.cedant_share
+
+    def cedant_claim(self, claim):
+        if claim < 0:
+            return 0
+        if claim <= self.cedant_line:
+            return claim
+        return 0
+
+    def reinsurer_claim(self, claim):
+        return claim - self.cedant_claim(claim)
