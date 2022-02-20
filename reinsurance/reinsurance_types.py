@@ -28,7 +28,6 @@ class QuotaShare:
             self.__cedant_share = 1
         self.__cedant_share = sc
 
-
     @property
     def total_capacity(self):
         return self.__total_capacity
@@ -50,14 +49,13 @@ class QuotaShare:
             self.__capital_at_risk = 0
         self.__capital_at_risk = min(cr, self.__total_capacity)
 
-
     @property
     def reinsurer_share(self):
         return 1 - self.cedant_share
 
     @property
     def cedant_capacity(self):
-        return self.total_capacity*(1 - self.cedant_share)
+        return self.total_capacity * (1 - self.cedant_share)
 
     @property
     def reinsurer_capacity(self):
@@ -69,7 +67,9 @@ class QuotaShare:
         return min(claim, self.capital_at_risk) * self.__cedant_share
 
     def reinsurer_claim(self, claim):
-        return claim - self.cedant_claim(claim)
+        if claim < 0:
+            return 0
+        return min(claim - self.cedant_claim(claim), self.reinsurer_capacity)
 
 
 class Surplus:
@@ -79,7 +79,6 @@ class Surplus:
         self.capital_at_risk = capital_at_risk
 
         self.reinsurer_capacity
-        self.cedant_share
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.cedant_line}, {self.total_capacity}, {self.capital_at_risk})"
@@ -129,20 +128,76 @@ class Surplus:
 
     @property
     def cedant_share(self):
-        if self.capital_at_risk>self.cedant_line:
-            return self.cedant_line/self.capital_at_risk
+        if self.capital_at_risk > self.cedant_line:
+            return self.cedant_line / self.capital_at_risk
         return 1
 
     @property
     def reinsurer_share(self):
-        return 1-self.cedant_share
+        return 1 - self.cedant_share
 
     def cedant_claim(self, claim):
         if claim < 0:
             return 0
-        if claim <= self.cedant_line:
-            return claim
-        return 0
+        return min(claim, self.capital_at_risk) * self.cedant_share
 
     def reinsurer_claim(self, claim):
-        return claim - self.cedant_claim(claim)
+        if claim < 0:
+            return 0
+        return min(claim - self.cedant_claim(claim), self.reinsurer_capacity)
+
+
+'''
+class Excess of loss per risk
+'''
+
+
+class ExcessOfLoss:
+    def __init__(self, cedant_retention, total_capacity):
+        self.cedant_retention = cedant_retention
+        self.total_capacity = total_capacity
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.cedant_retention}, {self.total_capacity})"
+
+    @property
+    def cedant_retention(self):
+        return self.__cedant_retention
+
+    @cedant_retention.setter
+    def cedant_retention(self, lc):
+        if lc < 0:
+            self.__cedant_retention = 0
+        self.__cedant_retention = lc
+        try:
+            self.total_capacity = self.__total_capacity
+        except:
+            pass
+
+    @property
+    def total_capacity(self):
+        return self.__total_capacity
+
+    @total_capacity.setter
+    def total_capacity(self, tc):
+        if tc < self.cedant_retention:
+            self.__total_capacity = self.cedant_retention
+        else:
+            self.__total_capacity = tc
+
+    def cedant_claim(self, claim):
+        if claim < 0:
+            return 0
+        if claim <= self.cedant_retention:
+            return claim
+        else:
+            return self.cedant_retention
+
+    @property
+    def reinsurer_capacity(self):
+        return self.total_capacity - self.cedant_retention
+
+    def reinsurer_claim(self, claim):
+        if claim < 0:
+            return 0
+        return min(claim - self.cedant_claim(claim), self.reinsurer_capacity)
