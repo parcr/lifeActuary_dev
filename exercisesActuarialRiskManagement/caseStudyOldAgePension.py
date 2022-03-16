@@ -64,9 +64,46 @@ def puc_oldAge(y, x, r, table_name, interest_rate, benefit=1):
     tts = max(r - y, 0)
     pts = min(tts, x - y)
     fts = tts - pts
+    if x < r:
+        cn = pvfb / tts
+    else:
+        cn = 0
     al = pvfb * pts / tts
 
-    return pts, fts, al
+    return {'pts': pts, 'fts': fts, 'al': al, 'cn': cn}
+
+
+def leveled_oldAge(y, x, r, table_name, interest_rate, benefit=1):
+    '''
+    Calculus for projected unit credit
+    :param y:
+    :param x:
+    :param r:
+    :param table_name:
+    :param interest_rate:
+    :param benefit:
+    :return:
+    '''
+    mt = rst.SoaTable(path + table_name + '.xml')
+    lt = mortality_table.MortalityTable(mt=mt.table_qx)
+    ct = commutation_table.CommutationFunctions(i=interest_rate, g=0, mt=mt.table_qx)
+
+    premium_annuity_y = ct.naax(x=y, n=r - y, m=1)
+    pvfb_y = pvfb_oldAge(y, y, r, table_name, interest_rate, benefit)
+    premium_leveled = pvfb_y / premium_annuity_y
+
+    pvfb = pvfb_oldAge(y, x, r, table_name, interest_rate, benefit)
+    tts = max(r - y, 0)
+    pts = min(tts, x - y)
+    fts = tts - pts
+    if x < r:
+        cn = premium_leveled
+    else:
+        cn = 0
+    premium_annuity_x = ct.naax(x=x, n=r - x, m=1)
+    al = pvfb - premium_leveled * premium_annuity_x
+
+    return {'pts': pts, 'fts': fts, 'al': al, 'cn': cn}
 
 
 '''
@@ -75,14 +112,16 @@ Solving Case Study
 y = 25
 r = 65
 ages = range(y, r + 11)
-pvfb_path = [pvfb_oldAge(y=y, x=age, r=r, table_name=name, interest_rate=4) for age in ages]
-puc_path = [puc_oldAge(y=y, x=age, r=r, table_name=name, interest_rate=4)[2] for age in ages]
+pvfb_path = [pvfb_oldAge(y=y, x=age, r=r, table_name=name, interest_rate=interest_rate) for age in ages]
+puc_path = [puc_oldAge(y=y, x=age, r=r, table_name=name, interest_rate=interest_rate)['al'] for age in ages]
+leveled_path = [leveled_oldAge(y=y, x=age, r=r, table_name=name, interest_rate=interest_rate)['al'] for age in ages]
 
 plt.plot(ages, pvfb_path, label='Present Value Future Benefits')
 plt.plot(ages, puc_path, label='Actuarial Liability PUC')
+# plt.plot(ages, puc_path, label='Actuarial Liability leveled')
 plt.xlabel(r'$x$')
-plt.ylabel('PVFB')
-plt.title('Old Age PVFB')
+plt.ylabel('Estimates')
+plt.title('Old Age')
 plt.grid(visible=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
 plt.legend()
 plt.savefig(this_py + '_pvfb' + '.eps', format='eps', dpi=3600)
