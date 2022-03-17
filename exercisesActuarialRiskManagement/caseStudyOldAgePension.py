@@ -65,12 +65,12 @@ def puc_oldAge(y, x, r, table_name, interest_rate, benefit=1):
     pts = min(tts, x - y)
     fts = tts - pts
     if x < r:
-        cn = pvfb / tts
+        nc = pvfb / tts
     else:
-        cn = 0
+        nc = 0
     al = pvfb * pts / tts
 
-    return {'pts': pts, 'fts': fts, 'al': al, 'cn': cn}
+    return {'pts': pts, 'fts': fts, 'al': al, 'nc': nc}
 
 
 def leveled_oldAge(y, x, r, table_name, interest_rate, benefit=1):
@@ -97,13 +97,13 @@ def leveled_oldAge(y, x, r, table_name, interest_rate, benefit=1):
     pts = min(tts, x - y)
     fts = tts - pts
     if x < r:
-        cn = premium_leveled
+        nc = premium_leveled
     else:
-        cn = 0
+        nc = 0
     premium_annuity_x = ct.naax(x=x, n=r - x, m=1)
     al = pvfb - premium_leveled * premium_annuity_x
 
-    return {'pts': pts, 'fts': fts, 'al': al, 'cn': cn}
+    return {'pts': pts, 'fts': fts, 'al': al, 'nc': nc}
 
 
 '''
@@ -113,12 +113,15 @@ y = 25
 r = 65
 ages = range(y, r + 11)
 pvfb_path = [pvfb_oldAge(y=y, x=age, r=r, table_name=name, interest_rate=interest_rate) for age in ages]
-puc_path = [puc_oldAge(y=y, x=age, r=r, table_name=name, interest_rate=interest_rate)['al'] for age in ages]
-leveled_path = [leveled_oldAge(y=y, x=age, r=r, table_name=name, interest_rate=interest_rate)['al'] for age in ages]
+puc_path = [puc_oldAge(y=y, x=age, r=r, table_name=name, interest_rate=interest_rate) for age in ages]
+leveled_path = [leveled_oldAge(y=y, x=age, r=r, table_name=name, interest_rate=interest_rate) for age in ages]
+
+puc_path_al = [puc_path[j]['al'] for j in range(0, len(puc_path))]
+leveled_path_al = [leveled_path[j]['al'] for j in range(0, len(leveled_path))]
 
 plt.plot(ages, pvfb_path, label='Present Value Future Benefits')
-plt.plot(ages, puc_path, label='Actuarial Liability PUC')
-# plt.plot(ages, puc_path, label='Actuarial Liability leveled')
+plt.plot(ages, puc_path_al, label='Actuarial Liability PUC')
+plt.plot(ages, leveled_path_al, label='Actuarial Liability Leveled')
 plt.xlabel(r'$x$')
 plt.ylabel('Estimates')
 plt.title('Old Age')
@@ -127,13 +130,15 @@ plt.legend()
 plt.savefig(this_py + '_pvfb' + '.eps', format='eps', dpi=3600)
 plt.show()
 
-'''
-plt.plot(ages, puc_path, label='Actuarial Liability')
+puc_path_nc = [puc_path[j]['nc'] for j in range(0, len(puc_path))]
+leveled_path_nc = [leveled_path[j]['nc'] for j in range(0, len(leveled_path))]
+plt.plot(ages, puc_path_nc, 'o', label='Normal Contribution PUC')
+plt.plot(ages, leveled_path_nc, 'o', label='Normal Contribution Leveled')
 plt.xlabel(r'$x$')
-plt.ylabel('PVFB')
-plt.title('Old Age AL')
+plt.ylabel('NC')
+plt.title('Old Age NC')
 plt.grid(visible=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
 plt.legend()
-plt.savefig(this_py + '_al' + '.eps', format='eps', dpi=3600)
+plt.savefig(this_py + '_nc' + '.eps', format='eps', dpi=3600)
 plt.show()
-'''
+
