@@ -12,6 +12,13 @@ class MortalityTable:
     '''
 
     def __init__(self, data_type='q', mt=None, perc=100, last_q=1):
+        '''
+        Initializes the MortalityTable class so we can construct a mortality table with the usual fields.
+        :param data_type: Should be "l" for lx, "p" for px and "q" for qx.
+        :param mt: Should be "l" for lx, "p" for px and "q" for qx.
+        :param perc: The percentage of qx to use, e.g., you should use 50 for 50%.
+        :param last_q: The value for qw.
+        '''
         if data_type not in ('l', 'q', 'p'):
             return
         if not mt:
