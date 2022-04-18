@@ -381,7 +381,7 @@ class RV:
         plt.plot(self.support, self.__prob, **points)  # 'ko--'
         plt.title('Probability Mass Function for ' + rv_name.upper())
         plt.xlabel(rv_name.lower())
-        plt.ylabel(f'F({rv_name.lower()})')
+        plt.ylabel(f'f({rv_name.lower()})')
         if x_y_ticks and len(self.__support) <= x_y_ticks:
             ax.set_xticks(self.__support)
             ax.set_yticks(self.__prob)
