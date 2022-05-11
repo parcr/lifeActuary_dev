@@ -116,5 +116,8 @@ sum_pl_endow = portfolio['epv_endow'].sum()
 sum_pl_ann = portfolio['epv_annuity'].sum()
 print('Expected Present Value P&L for Endowment:', "{:.2f}".format(sum_pl_endow))
 print('Expected Present Value P&L for Annuity:', "{:.2f}".format(sum_pl_ann))
-print('Expected Present Value P&L for the Product:', "{:.2f}".format(sum_pl_endow+sum_pl_ann))
-print('Expected Present Value P&L for the Product (50%):', "{:.2f}".format(sum_pl_endow+sum_pl_ann/2))
+print('Expected Present Value P&L for the Product:', "{:.2f}".format(sum_pl_endow + sum_pl_ann))
+print('Expected Present Value P&L for the Product (50%):', "{:.2f}".format(sum_pl_endow + sum_pl_ann / 2))
+
+''' Some Statistics of the Portfolio '''
+print(portfolio.describe(include='all'))
