@@ -20,7 +20,8 @@ portfolio = pd.read_excel('portfolio_arm.xlsx')
 ''' Creates the Technical Basis of 1st and 2nd Order '''
 table_names = ['GRM95', 'GRF95']
 mt_lst = [rst.SoaTable('../soa_tables/' + name + '.xml') for name in table_names]
-lt_lst = [mortality_table.MortalityTable(mt=mt.table_qx) for mt in mt_lst]
+lt_lst_1 = [mortality_table.MortalityTable(mt=mt.table_qx) for mt in mt_lst]
+lt_lst_2 = [mortality_table.MortalityTable(mt=mt.table_qx) for mt in mt_lst]
 interest_rate_endow_1 = 2.1
 interest_rate_endow_2 = 2.5
 interest_rate_ann_1 = 1.3
@@ -28,12 +29,19 @@ interest_rate_ann_2 = 1.5
 
 ct_lst_endow_1 = [commutation_table.CommutationFunctions(i=interest_rate_endow_1,
                                                          g=0, mt=mt.table_qx) for mt in mt_lst]
+perc_qx = [90, 95]
 ct_lst_endow_2 = [commutation_table.CommutationFunctions(i=interest_rate_endow_2,
-                                                         g=0, mt=mt.table_qx) for mt in mt_lst]
+                                                         g=0, mt=mt.table_qx, perc=perc_qx[idx_mt])
+                  for idx_mt, mt in enumerate(mt_lst)]
+
+perc_qx = [80, 85]
 ct_lst_ann_1 = [commutation_table.CommutationFunctions(i=interest_rate_ann_1,
-                                                       g=0, mt=mt.table_qx) for mt in mt_lst]
+                                                       g=0, mt=mt.table_qx, perc=perc_qx[idx_mt])
+                for idx_mt, mt in enumerate(mt_lst)]
+perc_qx = [85, 90]
 ct_lst_ann_2 = [commutation_table.CommutationFunctions(i=interest_rate_ann_2,
-                                                       g=0, mt=mt.table_qx) for mt in mt_lst]
+                                                       g=0, mt=mt.table_qx, perc=perc_qx[idx_mt])
+                for idx_mt, mt in enumerate(mt_lst)]
 
 ''' Starts Computing the Premiums at inception'''
 premiums_endow_1 = []
@@ -85,7 +93,7 @@ for index, row in portfolio.iterrows():
     annuity_survival_2.append(round(annuity_2, 2))
 
     # Premiums for Annuity...Expected Present value P&L
-    pl_ann = ((ct_lst_ann_1[index_table].aax(x=age_final)/ct_lst_ann_2[index_table].aax(x=age_final)-1) *
+    pl_ann = ((ct_lst_ann_1[index_table].aax(x=age_final) / ct_lst_ann_2[index_table].aax(x=age_final) - 1) *
               row['capital']) * (1 + interest_rate_endow_2 / 100) ** (row['age'] - age_final) * \
              ct_lst_ann_2[index_table].tpx(x=row['age'], t=age_final - row['age'])
     pl_annuity.append(round(pl_ann, 2))
@@ -112,12 +120,19 @@ if save_tables_boolean:
                        index=True, index_label="policy", freeze_panes=(1, 1))
 
 ''' The Sums of P&L '''
+sum_premium_endow = portfolio['premiums_endow_1'].sum()
 sum_pl_endow = portfolio['epv_endow'].sum()
 sum_pl_ann = portfolio['epv_annuity'].sum()
+
+print('Gross Writen Premium (GWP):', "{:,.2f}".format(sum_premium_endow))
 print('Expected Present Value P&L for Endowment:', "{:,.2f}".format(sum_pl_endow))
 print('Expected Present Value P&L for Annuity:', "{:,.2f}".format(sum_pl_ann))
 print('Expected Present Value P&L for the Product:', "{:,.2f}".format(sum_pl_endow + sum_pl_ann))
+print('Expected Present Value P&L for the Product/GWP: ',
+      "{:,.2f}".format((sum_pl_endow + sum_pl_ann) / sum_premium_endow * 100), '%', sep='')
 print('Expected Present Value P&L for the Product (50%):', "{:,.2f}".format(sum_pl_endow + sum_pl_ann / 2))
+print('Expected Present Value P&L for the Product (50%)/GWP: ',
+      "{:,.2f}".format((sum_pl_endow + sum_pl_ann / 2) / sum_premium_endow * 100), '%', sep='')
 
 ''' Some Statistics of the Portfolio '''
 pd.set_option('display.max_columns', 500)
