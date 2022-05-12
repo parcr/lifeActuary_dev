@@ -85,8 +85,8 @@ for index, row in portfolio.iterrows():
     annuity_survival_2.append(round(annuity_2, 2))
 
     # Premiums for Annuity...Expected Present value P&L
-    pl_ann = ((ct_lst_ann_1[index_table].aax(x=age_final) - ct_lst_ann_2[index_table].aax(x=age_final)) *
-              row['capital']) * (1 + interest_rate_ann_2 / 100) ** (row['age'] - age_final) * \
+    pl_ann = ((ct_lst_ann_1[index_table].aax(x=age_final)/ct_lst_ann_2[index_table].aax(x=age_final)-1) *
+              row['capital']) * (1 + interest_rate_endow_2 / 100) ** (row['age'] - age_final) * \
              ct_lst_ann_2[index_table].tpx(x=row['age'], t=age_final - row['age'])
     pl_annuity.append(round(pl_ann, 2))
 
@@ -114,10 +114,12 @@ if save_tables_boolean:
 ''' The Sums of P&L '''
 sum_pl_endow = portfolio['epv_endow'].sum()
 sum_pl_ann = portfolio['epv_annuity'].sum()
-print('Expected Present Value P&L for Endowment:', "{:.2f}".format(sum_pl_endow))
-print('Expected Present Value P&L for Annuity:', "{:.2f}".format(sum_pl_ann))
-print('Expected Present Value P&L for the Product:', "{:.2f}".format(sum_pl_endow + sum_pl_ann))
-print('Expected Present Value P&L for the Product (50%):', "{:.2f}".format(sum_pl_endow + sum_pl_ann / 2))
+print('Expected Present Value P&L for Endowment:', "{:,.2f}".format(sum_pl_endow))
+print('Expected Present Value P&L for Annuity:', "{:,.2f}".format(sum_pl_ann))
+print('Expected Present Value P&L for the Product:', "{:,.2f}".format(sum_pl_endow + sum_pl_ann))
+print('Expected Present Value P&L for the Product (50%):', "{:,.2f}".format(sum_pl_endow + sum_pl_ann / 2))
 
 ''' Some Statistics of the Portfolio '''
+pd.set_option('display.max_columns', 500)
+print()
 print(portfolio.describe(include='all'))
