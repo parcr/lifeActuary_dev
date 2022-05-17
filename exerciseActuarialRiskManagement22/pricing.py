@@ -93,9 +93,10 @@ for index, row in portfolio.iterrows():
     annuity_survival_2.append(round(annuity_2, 2))
 
     # Premiums for Annuity...Expected Present value P&L
-    pl_ann = ((ct_lst_ann_1[index_table].aax(x=age_final) / ct_lst_ann_2[index_table].aax(x=age_final) - 1) *
-              row['capital']) * (1 + interest_rate_endow_2 / 100) ** (row['age'] - age_final) * \
+    pl_ann = annuity_1 * (ct_lst_ann_1[index_table].aax(x=age_final) - ct_lst_ann_2[index_table].aax(x=age_final))
+    pl_ann *= (1 + interest_rate_endow_2 / 100) ** (row['age'] - age_final) * \
              ct_lst_ann_2[index_table].tpx(x=row['age'], t=age_final - row['age'])
+
     pl_annuity.append(round(pl_ann, 2))
 
 portfolio['premiums_endow_1'] = premiums_endow_1
@@ -119,22 +120,30 @@ if save_tables_boolean:
     portfolio.to_excel(excel_writer='portfolio_arm' + '_sol' + '.xlsx', sheet_name='sol',
                        index=True, index_label="policy", freeze_panes=(1, 1))
 
-''' The Sums of P&L '''
-sum_premium_endow = portfolio['premiums_endow_1'].sum()
-sum_pl_endow = portfolio['epv_endow'].sum()
-sum_pl_ann = portfolio['epv_annuity'].sum()
-
-print('Gross Writen Premium (GWP):', "{:,.2f}".format(sum_premium_endow))
-print('Expected Present Value P&L for Endowment:', "{:,.2f}".format(sum_pl_endow))
-print('Expected Present Value P&L for Annuity:', "{:,.2f}".format(sum_pl_ann))
-print('Expected Present Value P&L for the Product:', "{:,.2f}".format(sum_pl_endow + sum_pl_ann))
-print('Expected Present Value P&L for the Product/GWP: ',
-      "{:,.2f}".format((sum_pl_endow + sum_pl_ann) / sum_premium_endow * 100), '%', sep='')
-print('Expected Present Value P&L for the Product (50%):', "{:,.2f}".format(sum_pl_endow + sum_pl_ann / 2))
-print('Expected Present Value P&L for the Product (50%)/GWP: ',
-      "{:,.2f}".format((sum_pl_endow + sum_pl_ann / 2) / sum_premium_endow * 100), '%', sep='')
-
 ''' Some Statistics of the Portfolio '''
 pd.set_option('display.max_columns', 500)
 print()
 print(portfolio.describe(include='all'))
+
+''' The Sums of P&L '''
+gwp = portfolio['premiums_endow_1'].sum()
+sum_premium_endow_2 = portfolio['premiums_endow_2'].sum()
+sum_pl_endow = portfolio['epv_endow'].sum()
+sum_pl_ann = portfolio['epv_annuity'].sum()
+risk_margin_inception = (gwp - sum_premium_endow_2) / sum_premium_endow_2
+
+print('\n\nAggregated Values:')
+print('Risk Margin:', "{:,.2f}".format(risk_margin_inception * 100), "%", sep='')
+print('Gross Writen Premium (GWP):', "{:,.2f}".format(gwp))
+print('Expected Present Value P&L for Endowment:', "{:,.2f}".format(sum_pl_endow))
+print('Expected Present Value P&L for Annuity:', "{:,.2f}".format(sum_pl_ann))
+print('Expected Present Value P&L for the Product:', "{:,.2f}".format(sum_pl_endow + sum_pl_ann))
+print('Expected Present Value P&L for the Product/GWP: ',
+      "{:,.2f}".format((sum_pl_endow + sum_pl_ann) / gwp * 100), '%', sep='')
+print('Expected Present Value P&L for the Product (50%):', "{:,.2f}".format(sum_pl_endow + sum_pl_ann / 2))
+print('Expected Present Value P&L for the Product (50%)/GWP: ',
+      "{:,.2f}".format((sum_pl_endow + sum_pl_ann / 2) / gwp * 100), '%', sep='')
+print('Expected Present Value P&L for the Product (0%)/GWP: ',
+      "{:,.2f}".format((sum_pl_endow + sum_pl_ann * 0) / gwp * 100), '%', sep='')
+
+
