@@ -133,7 +133,7 @@ sum_pl_ann = portfolio['epv_annuity'].sum()
 risk_margin_inception = (gwp - sum_premium_endow_2) / sum_premium_endow_2
 
 print('\n\nAggregated Values:')
-print('Risk Margin:', "{:,.2f}".format(risk_margin_inception * 100), "%", sep='')
+print('Risk Margin: ', "{:,.2f}".format(risk_margin_inception * 100), "%", sep='')
 print('Gross Writen Premium (GWP):', "{:,.2f}".format(gwp))
 print('Expected Present Value P&L for Endowment:', "{:,.2f}".format(sum_pl_endow))
 print('Expected Present Value P&L for Annuity:', "{:,.2f}".format(sum_pl_ann))
