@@ -95,7 +95,7 @@ for index, row in portfolio.iterrows():
     # Premiums for Annuity...Expected Present value P&L
     pl_ann = annuity_1 * (ct_lst_ann_1[index_table].aax(x=age_final) - ct_lst_ann_2[index_table].aax(x=age_final))
     pl_ann *= (1 + interest_rate_endow_2 / 100) ** (row['age'] - age_final) * \
-             ct_lst_ann_2[index_table].tpx(x=row['age'], t=age_final - row['age'])
+              ct_lst_ann_2[index_table].npx(x=row['age'], n=age_final - row['age'])
 
     pl_annuity.append(round(pl_ann, 2))
 

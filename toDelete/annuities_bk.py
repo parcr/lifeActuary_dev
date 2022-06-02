@@ -27,7 +27,7 @@ def annuity_x(mt, x, x_first, x_last, i=None, g=.0, m=1, method='udd'):
     d = float((1 + g) / (1 + i))
     number_of_payments = int((x_last - x_first) * m + 1)
     payments_instants = np.linspace(x_first - x, x_last - x, number_of_payments)
-    instalments = [mt.tpx(x, t=t, method=method) *
+    instalments = [mt.npx(x, n=t, method=method) *
                    np.power(d, t) for t in payments_instants]
     instalments = np.array(instalments) / np.power(1 + g, x_first - x) / m
     return np.sum(instalments)
@@ -56,7 +56,7 @@ def ax(mtx, x, i=None, g=0, m=1, defer=0, method='udd'):
     number_of_payments = int(years_to_end * m - 1)
     # starts paying one period after the deferment
     payments_instants = np.linspace(defer + 1 / m, years_to_end - 1, number_of_payments)
-    instalments = [mtx.tpx(x, t=t, method=method) *
+    instalments = [mtx.npx(x, n=t, method=method) *
                    np.power(d, t) for t in payments_instants]
     instalments = np.array(instalments) / np.power(1 + g, defer) / m
 
@@ -86,7 +86,7 @@ def aax(mtx, x, i=None, g=0, m=1, defer=0, method='udd'):
     number_of_payments = int(years_to_end * m)
     # starts paying immediately after the deferment
     payments_instants = np.linspace(defer + 1 / m * 0, years_to_end, number_of_payments)
-    instalments = [mtx.tpx(x, t=t, method=method) *
+    instalments = [mtx.npx(x, n=t, method=method) *
                    np.power(d, t) for t in payments_instants]
     instalments = np.array(instalments) / np.power(1 + g, defer) / m
 
@@ -119,7 +119,7 @@ def axy(mtx, mty, x, y, i=None, g=0, m=1, defer=0, method='udd'):
     number_of_payments = int(years_to_end * m - 1)
     # starts paying one period after the deferment
     payments_instants = np.linspace(defer + 1 / m, years_to_end - 1, number_of_payments)
-    instalments = [mtx.tpx(x, t=t, method=method) * mty.tpx(y, t=t, method=method) *
+    instalments = [mtx.npx(x, n=t, method=method) * mty.npx(y, n=t, method=method) *
                    np.power(d, t) for t in payments_instants]
     instalments = np.array(instalments) / np.power(1 + g, defer) / m
 
@@ -152,7 +152,7 @@ def aaxy(mtx, mty, x, y, i=None, g=0, m=1, defer=0, method='udd'):
     number_of_payments = int(years_to_end * m)
     # starts paying immediately after the deferment
     payments_instants = np.linspace(defer + 1 / m * 0, years_to_end, number_of_payments)
-    instalments = [mtx.tpx(x, t=t, method=method) * mty.tpx(y, t=t, method=method) *
+    instalments = [mtx.npx(x, n=t, method=method) * mty.npx(y, n=t, method=method) *
                    np.power(d, t) for t in payments_instants]
     instalments = np.array(instalments) / np.power(1 + g, defer) / m
 

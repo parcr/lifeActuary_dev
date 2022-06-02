@@ -29,7 +29,7 @@ class MultiDecrementTable:
             for i_q, q in enumerate(t.qx):
                 factor_to_apply = 1
                 for k_t2, t2 in copy_tables.items():
-                    factor_to_apply *= (1 - .5 * t2.tqx(i_q, t=1, method='udd'))
+                    factor_to_apply *= (1 - .5 * t2.nqx(i_q, n=1, method='udd'))
                 qx.append(q * factor_to_apply)
             # append the first age to the vector of qx
             qx = [0] + qx
@@ -41,7 +41,7 @@ class MultiDecrementTable:
         for x in range(max_w + 1):
             q = 0
             for k_t, t in self.multidecrement_tables.items():
-                q += t.tqx(x=x, t=1, method='udd')
+                q += t.nqx(x=x, n=1, method='udd')
             qx.append(q)
 
         # append the first age to the vector of qx

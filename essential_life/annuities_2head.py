@@ -31,7 +31,7 @@ def annuity_xy(mtx, mty, x, x_first, x_last, y, i=None, g=.0, m=1, method='udd')
     d = float((1 + g) / (1 + i))
     number_of_payments = int((x_last - x_first) * m + 1)
     payments_instants = np.linspace(x_first - x, x_last - x, number_of_payments)
-    instalments = [mtx.tpx(x, t=t, method=method) * mty.tpx(y, t=t, method=method) *
+    instalments = [mtx.npx(x, n=t, method=method) * mty.npx(y, n=t, method=method) *
                    np.power(d, t)
                    for t in payments_instants]
     instalments = np.array(instalments) / np.power(1 + g, x_first - x) / m

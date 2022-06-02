@@ -50,7 +50,7 @@ class PUC(PVTermCost):
         '''
         all_nc = self.nc_all_ages()
         discount_nc_y = [
-            nc * self.multi_table.net_table.tpx(self.y, t=nc_i, method='udd') * np.power(self.v, nc_i)
+            nc * self.multi_table.net_table.npx(self.y, n=nc_i, method='udd') * np.power(self.v, nc_i)
             for nc_i, nc in enumerate(all_nc[2])]
         sum_discount_nc_y = sum(discount_nc_y)
         pvfb_y = self.pvftc(self.y)

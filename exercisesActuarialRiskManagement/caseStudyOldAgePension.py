@@ -36,7 +36,7 @@ def pvfb_oldAge(y, x, r, table_name, interest_rate, benefit=1):
 
     if x < y:
         return .0
-    prob_surv = lt.tpx(x=x, t=r - x)
+    prob_surv = lt.npx(x=x, n=r - x)
     i = interest_rate / 100
     v = 1 / (1 + i)
     discount = v ** (max(0, r - x))

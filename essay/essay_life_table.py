@@ -9,8 +9,8 @@ cf_tv7377 = commutation_table.CommutationFunctions(i=2, g=1.5, mt=TV7377)
 print(cf_tv7377.df_commutation_table())
 
 # test to probabilities
-p = lt_gkm95.tpx(x=50, t=5)
-q = lt_gkm95.tqx(x=50, t=5)
+p = lt_gkm95.npx(x=50, n=5)
+q = lt_gkm95.nqx(x=50, n=5)
 print(p)
 print(q)
 print(p + q)

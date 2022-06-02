@@ -25,11 +25,11 @@ lt_q_max_xy = []
 
 table_names_min_max = []
 for idx_lt, lt in enumerate(lt_lst):
-    l = [1 - lt.tpx(x=x, t=1) * lt.tpx(x=x + dif_age, t=1) for x in range(lt.w - dif_age + 1)]
+    l = [1 - lt.npx(x=x, n=1) * lt.npx(x=x + dif_age, n=1) for x in range(lt.w - dif_age + 1)]
     l.insert(0, 0)
     lt_q_min_xy.append(l)
     table_names_min_max.append(table_names[idx_lt] + ' joint life xy')
-    l = [lt.tqx(x=x, t=1) * lt.tqx(x=x + dif_age, t=1) for x in range(lt.w - dif_age + 1)]
+    l = [lt.nqx(x=x, n=1) * lt.nqx(x=x + dif_age, n=1) for x in range(lt.w - dif_age + 1)]
     l.insert(0, 0)
     lt_q_max_xy.append(l)
     table_names_min_max.append(table_names[idx_lt] + ' last survivor xy')

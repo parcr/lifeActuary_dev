@@ -72,7 +72,7 @@ v = 1 / (1 + interest_rate / 100)
 support = [v ** j for j in range(1, term + 1)]
 support.reverse()
 pmf = [ct_lst[table_index].t_nqx(x=x, t=j - 1, n=1) for j in range(1, term)]
-pmf.append(ct_lst[table_index].tpx(x=x, t=term - 1))
+pmf.append(ct_lst[table_index].npx(x=x, n=term - 1))
 pmf.reverse()
 cdf = np.cumsum(pmf)
 
@@ -85,8 +85,8 @@ print('expected present value:', sum(epv_lst))
 print('test:', sum(epv_lst) - endow)
 cut_year = np.log(endow) / np.log(v)
 print('cut_year:', cut_year)
-print('cut_probability:', round(ct_lst[table_index].tpx(x=x, t=term - 1), 10))
-print('answer:', round(1 - ct_lst[table_index].tpx(x=x, t=term - 1), 10) * 100, '%', sep='')
+print('cut_probability:', round(ct_lst[table_index].npx(x=x, n=term - 1), 10))
+print('answer:', round(1 - ct_lst[table_index].npx(x=x, n=term - 1), 10) * 100, '%', sep='')
 
 # another way
 probs_bool = [pmf[idx_v] for idx_v, v in enumerate(support) if v > endow]

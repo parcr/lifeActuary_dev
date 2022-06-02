@@ -64,8 +64,8 @@ for x in x_s:
         factor1 = (m - 1) / (2 * m) * (1 - ct.nEx(x, period))
         factor2 = (m ** 2 - 1) / (12 * m ** 2) * (delta + mml.mu(x) - ct.nEx(x, period) * (delta + mml.mu(x + period)))
         rendas_temp_dict['W3'].append(renda - factor1 - factor2)
-        mu_x_app = -.5 * np.log(ct.tpx(x=x - 1, t=2))
-        mu_x_n_app = -.5 * np.log(ct.tpx(x=x - 1 + period, t=2))
+        mu_x_app = -.5 * np.log(ct.npx(x=x - 1, n=2))
+        mu_x_n_app = -.5 * np.log(ct.npx(x=x - 1 + period, n=2))
         factor2_app = (m ** 2 - 1) / (12 * m ** 2) * (
                 delta + mu_x_app - ct.nEx(x, period) * (delta + mu_x_n_app))
         rendas_temp_dict['W3_app'].append(renda - factor1 - factor2_app)

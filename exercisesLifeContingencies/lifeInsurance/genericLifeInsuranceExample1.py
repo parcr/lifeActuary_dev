@@ -47,7 +47,7 @@ dict_liability = {'table': [], 'x': [], 'tpx': [], 'premium1': [], 'n_tqx': [], 
                   'premium': [], 'var1': [], 'var2': [], 'cov': [], 'var': []}
 for id_ct, ct in enumerate(ct_lst):
     for id_x, x in enumerate(ages):
-        prob1 = ct.tqx(x=x, t=period1_1)
+        prob1 = ct.nqx(x=x, n=period1_1)
         prob2 = ct.t_nqx(x=x, t=period1_1, n=period2_1 - period2_0)
         premium1 = cap1 * prob1
         premium2 = cap2 * prob2

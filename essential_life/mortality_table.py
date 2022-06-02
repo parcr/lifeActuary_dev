@@ -127,46 +127,46 @@ class MortalityTable:
         else:
             return np.nan
 
-    def tqx(self, x, t=1, method='udd'):
+    def nqx(self, x, n=1, method='udd'):
         '''
         Obtains the probability that a life x dies before x+t
         :param method: the method used to approximate lx for non-integer x's
         :param x: age at beginning
-        :param t: period
+        :param n: period
         :return: probability of x dying before x+t
         '''
         if method not in self.__methods:
             return np.nan
         if x < 0:
             return np.nan
-        if t <= 0:
+        if n <= 0:
             return .0
-        if x + t > self.w:
+        if x + n > self.w:
             return self.qx[-1]
         l_x = self.get_lx_method(x, method)
-        l_x_t = self.get_lx_method(x + t, method)
-        self.msn.append(f"{t}_q_{x}=1-({l_x_t} / {l_x})")
+        l_x_t = self.get_lx_method(x + n, method)
+        self.msn.append(f"{n}_q_{x}=1-({l_x_t} / {l_x})")
         return 1 - l_x_t / l_x
 
-    def tpx(self, x, t=1, method='udd'):
+    def npx(self, x, n=1, method='udd'):
         '''
         Obtains the probability that a life x dies before x+t
         :param method: the method used to approximate lx for non-integer x's
         :param x: age at beginning
-        :param t: period
+        :param n: period
         :return: probability of x dying before x+t
         '''
         if method not in self.__methods:
             return np.nan
         if x < 0:
             return np.nan
-        if t <= 0:
+        if n <= 0:
             return 1.
-        if x + t > self.w:
+        if x + n > self.w:
             return self.px[-1]
         l_x = self.get_lx_method(x, method)
-        l_x_t = self.get_lx_method(x + t, method)
-        self.msn.append(f"{t}_p_{x}={l_x_t} / {l_x}")
+        l_x_t = self.get_lx_method(x + n, method)
+        self.msn.append(f"{n}_p_{x}={l_x_t} / {l_x}")
         return l_x_t / l_x
 
     def t_nqx(self, x, t=1, n=1, method='udd'):

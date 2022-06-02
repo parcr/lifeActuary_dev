@@ -53,9 +53,9 @@ def transition_matrix_1(transition_info, x):
         for c_i, c in enumerate(r):
             if type(transition_info[r_i][c_i]) == tuple:
                 if transition_info[r_i][c_i][1] == 'p':
-                    mat[r_i][c_i] = transition_info[r_i][c_i][0].tpx(x=x, t=1, method='udd')
+                    mat[r_i][c_i] = transition_info[r_i][c_i][0].npx(x=x, n=1, method='udd')
                 else:
-                    mat[r_i][c_i] = transition_info[r_i][c_i][0].tqx(x=x, t=1, method='udd')
+                    mat[r_i][c_i] = transition_info[r_i][c_i][0].nqx(x=x, n=1, method='udd')
             else:
                 mat[r_i][c_i] = transition_info[r_i][c_i]
         control[r_i] = sum(mat[r_i])  # todo: pass control to log when sum of rows are different of 1
