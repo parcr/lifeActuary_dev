@@ -455,7 +455,7 @@ class CommutationFunctions(MortalityTable):
         :param n: number of total periods of the interest rate used
         :param m: number of payments per period used to quote the interest rate
         :param defer: deferment period
-        :return:Expected Present Value (EPV) for payments of 1/m
+        :return: Expected Present Value (EPV) for payments of 1/m
         """
         aux = self.naax(x + defer, n, m) * self.nEx(x, defer)
         if x + 1 + n + defer <= self.w + 1:
@@ -470,3 +470,83 @@ class CommutationFunctions(MortalityTable):
         else:
             return self.t_aax(x=x, m=m, defer=defer)
         return aux
+
+    '''
+    Annuities Increasing and Decreasing Arithmetically
+    '''
+
+    # todo: Rita
+    def t_nIaax(self, x, n, m=1, defer=0, first_amount=1, increase_amount=1):
+        '''
+
+        :param x:
+        :param n:
+        :param m:
+        :param defer:
+        :param first_amount:
+        :param increase_amount:
+        :return:
+        '''
+
+        if first_amount + (n - 1) * increase_amount < 0:
+            return .0
+        if x + n + defer > self.w:
+            return .0
+
+        term1 = first_amount * self.t_naax(x=x, n=n, m=m, defer=defer)
+        list_increases = [increase_amount * self.t_nax(x=x + defer, n=n-j, m=m, defer=defer + j - 1)
+                          for j in range(1, n)]
+
+        return term1+sum(list_increases)
+
+    def t_nIax(self, x, n, m=1, defer=0, first_amount=1, increase_amount=1):
+        '''
+
+        :param x:
+        :param n:
+        :param m:
+        :param defer:
+        :param first_amount:
+        :param increase_amount:
+        :return:
+        '''
+
+        if first_amount + (n - 1) * increase_amount < 0:
+            return .0
+        if x + n + defer > self.w:
+            return .0
+
+        term1 = first_amount * self.t_nax(x=x, n=n, m=m, defer=defer)
+        list_increases = [increase_amount * self.t_nax(x=x + defer, n=n-j, m=m, defer=defer + j)
+                          for j in range(1, n)]
+
+        return term1+sum(list_increases)
+
+    '''
+    Standard types of Variable Life Insurance Increasing and Decreasing Arithmetically
+    '''
+
+    # todo: Rita
+    def nIAx_g(self, x, n, defer=0, first_amount=1, increase_amount=1):
+        '''
+
+        :param x:
+        :param n:
+        :param increase_amount:
+        :param first_amount:
+        :return:
+        '''
+
+        if first_amount + (n - 1) * increase_amount < 0:
+            return .0
+
+        term1 = first_amount * self.t_nAx(x=x, n=n, defer=defer)
+        list_increases = [increase_amount * self.t_nAx(x=x + defer, n=n - j, defer=defer + j)
+                          for j in range(1, n)]
+
+        return term1 + sum(list_increases)
+
+
+
+
+
