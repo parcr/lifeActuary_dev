@@ -23,6 +23,7 @@ class MortalityTable:
             return
         if not mt:
             return
+        self.data_type = data_type
         self.__methods = ('udd', 'cfm', 'bal')
         self.mt = mt
         self.x0 = np.int(mt[0])
@@ -66,6 +67,9 @@ class MortalityTable:
         self.ex = sum_lx[1:] / self.lx[:-2]
         self.ex = np.append(self.ex, 0) + .5
         self.w = len(self.lx) - 2
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.data_type, self.mt, self.perc, self.last_q})"
 
     def df_life_table(self):
         data = {'x': np.arange(self.w + 1), 'lx': self.lx[:-1], 'dx': self.dx,
