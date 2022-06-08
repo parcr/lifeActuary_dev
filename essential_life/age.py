@@ -26,13 +26,13 @@ class Age(object):
             # print('ok to instantiate')
             return object.__new__(cls)
         elif not is_date1 and is_date2:
-            print(f"We could't parse {date1} to date")
+            print(f"We couldn't parse {date1} to date")
             return None
         elif is_date1 and not is_date2:
-            print(f"We could't parse {date2} to date")
+            print(f"We couldn't parse {date2} to date")
             return None
         else:
-            print(f"We could't parse neither {date1} and {date2} to date")
+            print(f"We couldn't parse neither {date1} and {date2} to date")
             return None
 
     def __init__(self, date1, date2):
