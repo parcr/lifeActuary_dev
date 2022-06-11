@@ -112,10 +112,6 @@ class MortalityTable:
     def perc(self):
         return self.__perc
 
-
-
-
-
     def df_life_table(self):
         data = {'x': np.arange(self.w + 1), 'lx': self.__lx[:-1], 'dx': self.__dx,
                 'qx': self.__qx, 'px': self.__px, 'exo': self.__ex}
@@ -168,11 +164,11 @@ class MortalityTable:
         if x > self.w:
             return 0
         if method == 'udd':
-            return self.__lx_udd(x)
+            return self.lx_udd(x)
         elif method == 'cfm':
-            return self.__lx_cfm(x)
+            return self.lx_cfm(x)
         elif method == 'bal':
-            return self.__lx_bal(x)
+            return self.lx_bal(x)
         else:
             return np.nan
 
