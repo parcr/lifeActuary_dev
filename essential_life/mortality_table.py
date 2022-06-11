@@ -85,6 +85,10 @@ class MortalityTable:
         return self.__mt
 
     @property
+    def methods(self):
+        return self.__methods
+
+    @property
     def x0(self):
         return self.__x0
 
