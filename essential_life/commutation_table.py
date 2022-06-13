@@ -15,26 +15,80 @@ class CommutationFunctions(MortalityTable):
         MortalityTable.__init__(self, data_type, mt, perc)
         if i is None:
             return
-        self.i = i / 100.
-        self.g = g / 100.
-        self.v = 1 / (1 + self.i)
-        self.d = (1 + self.g) / (1 + self.i)
-        self.app_cont = app_cont
-        self.cont = np.sqrt(1 + self.i)
+        self.__i = i / 100.
+        self.__g = g / 100.
+        self.__v = 1 / (1 + self.__i)
+        self.__d = (1 + self.__g) / (1 + self.__i)
+        self.__app_cont = app_cont
+        self.__cont = np.sqrt(1 + self.__i)
 
-        # self.Dx = np.array([self.lx[x] * np.power(self.d, x) for x in range(len(self.lx))])
-        self.Dx = self.lx[:-1] * np.power(self.d, range(len(self.lx[:-1])))
-        self.Nx = np.array([np.sum(self.Dx[x:]) for x in range(len(self.lx[:-1]))])
-        self.Sx = np.array([np.sum(self.Nx[x:]) for x in range(len(self.Nx))])
-        self.Cx = self.dx * np.power(self.d, range(1, len(self.dx) + 1))
-        self.Mx = np.array([np.sum(self.Cx[x:]) for x in range(len(self.Cx))])
-        self.Rx = np.array([np.sum(self.Mx[x:]) for x in range(len(self.Mx))])
-        if self.app_cont:
-            self.Mx = self.Mx * self.cont
-            self.Rx = self.Rx * self.cont
+        # self.__Dx = np.array([self.lx[x] * np.power(self__d, x) for x in range(len(self.lx))])
+        self.__Dx = self.lx[:-1] * np.power(self.__d, range(len(self.lx[:-1])))
+        self.__Nx = np.array([np.sum(self.__Dx[x:]) for x in range(len(self.lx[:-1]))])
+        self.__Sx = np.array([np.sum(self.__Nx[x:]) for x in range(len(self.__Nx))])
+        self.__Cx = self.dx * np.power(self.__d, range(1, len(self.dx) + 1))
+        self.__Mx = np.array([np.sum(self.__Cx[x:]) for x in range(len(self.__Cx))])
+        self.__Rx = np.array([np.sum(self.__Mx[x:]) for x in range(len(self.__Mx))])
+        if self.__app_cont:
+            self.__Mx = self.__Mx * self.__cont
+            self.__Rx = self.__Rx * self.__cont
+
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.i, self.g, self.data_type, self.mt, self.perc, self.app_cont})"
+
+    # getters and setters
+    @property
+    def i(self):
+        return self.__i*100
+
+    @property
+    def g(self):
+        return self.__g*100
+
+    @property
+    def v(self):
+        return self.__v
+
+    @property
+    def d(self):
+        return self.__d
+
+    @property
+    def app_cont(self):
+        return self.__app_cont
+
+    @property
+    def cont(self):
+        return self.__cont
+
+    @property
+    def Dx(self):
+        return self.__Dx
+
+    @property
+    def Nx(self):
+        return self.__Nx
+
+    @property
+    def Sx(self):
+        return self.__Sx
+
+    @property
+    def Cx(self):
+        return self.__Cx
+
+    @property
+    def Mx(self):
+        return self.__Mx
+
+    @property
+    def Rx(self):
+        return self.__Rx
+
 
     def df_commutation_table(self):
-        data = {'Dx': self.Dx, 'Nx': self.Nx, 'Sx': self.Sx, 'Cx': self.Cx, 'Mx': self.Mx, 'Rx': self.Rx}
+        data = {'Dx': self.__Dx, 'Nx': self.__Nx, 'Sx': self.__Sx, 'Cx': self.__Cx, 'Mx': self.__Mx, 'Rx': self.__Rx}
         df = pd.DataFrame(data)
         data_lf = self.df_life_table()
         df = pd.concat([data_lf, df], axis=1, sort=False)
@@ -54,11 +108,11 @@ class CommutationFunctions(MortalityTable):
             return 1
         if x + n > self.w:
             return 0.
-        D_x = self.Dx[x]
-        D_x_n = self.Dx[x + n]
+        D_x = self.__Dx[x]
+        D_x_n = self.__Dx[x + n]
         self.msn.append(f"{n}_E_{x}={D_x_n} / {D_x}")
-        # note: nEx discounts the growth rate np.power(1 + self.g, defer + 1) so only survival is considered
-        return D_x_n / D_x / np.power(1 + self.g, n)
+        # note: nEx discounts the growth rate np.power(1 + self.__g, defer + 1) so only survival is considered
+        return D_x_n / D_x / np.power(1 + self.__g, n)
 
     def Ax(self, x):
         """
@@ -70,14 +124,14 @@ class CommutationFunctions(MortalityTable):
         if x < 0:
             return np.nan
         if x > self.w:
-            return self.v  # it will die before year's end, because already attained age>w
-        D_x = self.Dx[x]
-        if self.app_cont:
-            M_x = self.Mx[x] / self.cont
+            return self.__v  # it will die before year's end, because already attained age>w
+        D_x = self.__Dx[x]
+        if self.__app_cont:
+            M_x = self.__Mx[x] / self.__cont
         else:
-            M_x = self.Mx[x]
+            M_x = self.__Mx[x]
         self.msn.append(f"A_{x}={M_x} / {D_x}")
-        return M_x / D_x / (1 + self.g)
+        return M_x / D_x / (1 + self.__g)
 
     def IAx(self, x):
         """
@@ -90,12 +144,12 @@ class CommutationFunctions(MortalityTable):
         if x < 0:
             return np.nan
         if x > self.w:
-            return self.v  # it will die before year's end, because already attained age>w
-        D_x = self.Dx[x]
-        if self.app_cont:
-            R_x = self.Rx[x] / self.cont
+            return self.__v  # it will die before year's end, because already attained age>w
+        D_x = self.__Dx[x]
+        if self.__app_cont:
+            R_x = self.__Rx[x] / self.__cont
         else:
-            R_x = self.Rx[x]
+            R_x = self.__Rx[x]
         self.msn.append(f"A_{x}={R_x} / {D_x}")
         return R_x / D_x
 
@@ -109,14 +163,14 @@ class CommutationFunctions(MortalityTable):
         if x < 0:
             return np.nan
         if x > self.w:  # it will die before year's end, because already attained age>w
-            return self.v ** .5
-        D_x = self.Dx[x]
-        if self.app_cont:
-            M_x = self.Mx[x]
+            return self.__v ** .5
+        D_x = self.__Dx[x]
+        if self.__app_cont:
+            M_x = self.__Mx[x]
         else:
-            M_x = self.Mx[x] * self.cont
+            M_x = self.__Mx[x] * self.__cont
         self.msn.append(f"A_{x}_={M_x} / {D_x}")
-        return M_x / D_x / (1 + self.g)
+        return M_x / D_x / (1 + self.__g)
 
     def nAx(self, x, n):
         """
@@ -133,15 +187,15 @@ class CommutationFunctions(MortalityTable):
             return np.nan
         if x + n > self.w:
             return self.Ax(x)
-        D_x = self.Dx[x]
-        if self.app_cont:
-            M_x = self.Mx[x] / self.cont
-            M_x_n = self.Mx[x + n] / self.cont
+        D_x = self.__Dx[x]
+        if self.__app_cont:
+            M_x = self.__Mx[x] / self.__cont
+            M_x_n = self.__Mx[x + n] / self.__cont
         else:
-            M_x = self.Mx[x]
-            M_x_n = self.Mx[x + n]
+            M_x = self.__Mx[x]
+            M_x_n = self.__Mx[x + n]
         self.msn.append(f"{n}_A_{x}=({M_x}-{M_x_n}) / {D_x}")
-        return (M_x - M_x_n) / D_x / (1 + self.g)
+        return (M_x - M_x_n) / D_x / (1 + self.__g)
 
     def nIAx(self, x, n):
         """
@@ -157,16 +211,16 @@ class CommutationFunctions(MortalityTable):
         if n < 0:
             return np.nan
         if x > self.w:
-            return self.v  # it will die before year's end, because already attained age>w
-        D_x = self.Dx[x]
-        if self.app_cont:
-            M_x_n = self.Mx[x + n] / self.cont
-            R_x = self.Rx[x] / self.cont
-            R_x_n = self.Rx[x + n] / self.cont
+            return self.__v  # it will die before year's end, because already attained age>w
+        D_x = self.__Dx[x]
+        if self.__app_cont:
+            M_x_n = self.__Mx[x + n] / self.__cont
+            R_x = self.__Rx[x] / self.__cont
+            R_x_n = self.__Rx[x + n] / self.__cont
         else:
-            M_x_n = self.Mx[x + n]
-            R_x = self.Rx[x]
-            R_x_n = self.Rx[x + n]
+            M_x_n = self.__Mx[x + n]
+            R_x = self.__Rx[x]
+            R_x_n = self.__Rx[x + n]
         self.msn.append(f"A_{x}=({R_x}-{R_x_n}-{n}x{M_x_n} / {D_x}")
         return (R_x - R_x_n - n * M_x_n) / D_x
 
@@ -184,16 +238,16 @@ class CommutationFunctions(MortalityTable):
         if n < 0:
             return np.nan
         if x + n > self.w:
-            return self.Ax(x) * self.cont
-        D_x = self.Dx[x]
-        if self.app_cont:
-            M_x = self.Mx[x]
-            M_x_n = self.Mx[x + n]
+            return self.Ax(x) * self.__cont
+        D_x = self.__Dx[x]
+        if self.__app_cont:
+            M_x = self.__Mx[x]
+            M_x_n = self.__Mx[x + n]
         else:
-            M_x = self.Mx[x] * self.cont
-            M_x_n = self.Mx[x + n] * self.cont
+            M_x = self.__Mx[x] * self.__cont
+            M_x_n = self.__Mx[x + n] * self.__cont
         self.msn.append(f"{n}_A_{x}_=({M_x}-{M_x_n}) / {D_x}")
-        return (M_x - M_x_n) / D_x / (1 + self.g)
+        return (M_x - M_x_n) / D_x / (1 + self.__g)
 
     def nAEx(self, x, n):
         """
@@ -317,8 +371,8 @@ class CommutationFunctions(MortalityTable):
             return np.nan
         if x >= self.w:
             return 0
-        aux = self.Nx[x + 1] / self.Dx[x] / (1 + self.g) + (m - 1) / (m * 2)
-        self.msn.append(f"ax_{x}={self.Nx[x + 1]}/{self.Dx[x]}+({m}-1)/({m}*2)")
+        aux = self.__Nx[x + 1] / self.__Dx[x] / (1 + self.__g) + (m - 1) / (m * 2)
+        self.msn.append(f"ax_{x}={self.__Nx[x + 1]}/{self.__Dx[x]}+({m}-1)/({m}*2)")
         return aux
 
     def aax(self, x, m=1):
@@ -331,8 +385,8 @@ class CommutationFunctions(MortalityTable):
         """
         if x > self.w:
             return 1
-        aux = self.Nx[x] / self.Dx[x] - (m - 1) / (m * 2)
-        self.msn.append(f"aax_{x}={self.Nx[x]}/{self.Dx[x]}-({m}-1)/({m}*2)")
+        aux = self.__Nx[x] / self.__Dx[x] - (m - 1) / (m * 2)
+        self.msn.append(f"aax_{x}={self.__Nx[x]}/{self.__Dx[x]}-({m}-1)/({m}*2)")
         return aux
 
     def nax(self, x, n, m=1):
@@ -354,10 +408,10 @@ class CommutationFunctions(MortalityTable):
             return 0
 
         if x + 1 + n <= self.w:
-            aux = (self.Nx[x + 1] - self.Nx[x + 1 + n]) / self.Dx[x] / (1 + self.g) + \
+            aux = (self.__Nx[x + 1] - self.__Nx[x + 1 + n]) / self.__Dx[x] / (1 + self.__g) + \
                   (m - 1) / (m * 2) * (1 - self.nEx(x, n))
-            self.msn.append(f"{n}_ax_{x}={self.Nx[x + 1] - self.Nx[x + 1 + n]}/{self.Dx[x]}+({m}-1)/({m}*2)*"
-                            f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
+            self.msn.append(f"{n}_ax_{x}={self.__Nx[x + 1] - self.__Nx[x + 1 + n]}/{self.__Dx[x]}+({m}-1)/({m}*2)*"
+                            f"(1-{self.__Dx[x + n]}/{self.__Dx[x]})")
         else:
             return self.ax(x=x, m=m)
 
@@ -382,14 +436,14 @@ class CommutationFunctions(MortalityTable):
             return 0
 
         if x + 1 + n <= self.w + 1:  # todo we've here a problem, because of the fractional approximation
-            aux = (self.Nx[x] - self.Nx[x + n]) / self.Dx[x] - (m - 1) / (m * 2) * (1 - self.nEx(x, n))
+            aux = (self.__Nx[x] - self.__Nx[x + n]) / self.__Dx[x] - (m - 1) / (m * 2) * (1 - self.nEx(x, n))
             if x + 1 + n <= self.w:
-                Nx2 = self.Nx[x + 1 + n]
+                Nx2 = self.__Nx[x + 1 + n]
             else:
                 Nx2 = 0
             self.msn.append(
-                f"{n}_aax_{x}={self.Nx[x + 1] - Nx2}/{self.Dx[x]}*(1+{self.g}) + ({m}+1)/({m}*2)*"
-                f"(1-{self.Dx[x + n]}/{self.Dx[x]})")
+                f"{n}_aax_{x}={self.__Nx[x + 1] - Nx2}/{self.__Dx[x]}*(1+{self.__g}) + ({m}+1)/({m}*2)*"
+                f"(1-{self.__Dx[x + n]}/{self.__Dx[x]})")
         else:
             return self.aax(x=x, m=m)
         return aux
@@ -405,11 +459,11 @@ class CommutationFunctions(MortalityTable):
         :param defer: deferment period
         :return:Expected Present Value (EPV) for payments of 1/m
         """
-        # note: nEx discounts the growth rate np.power(1 + self.g, defer + 1)
+        # note: nEx discounts the growth rate np.power(1 + self.__g, defer + 1)
         aux = self.ax(x + defer, m) * self.nEx(x, defer)
         if aux > 0:
-            self.msn.append(f"{defer}_ax_{x}=[{self.Nx[x + 1 + defer]}/{self.Dx[x + defer]}+({m} + 1)/({m}*2)]"
-                            f"*{self.Dx[x + defer]}/{self.Dx[x]}")
+            self.msn.append(f"{defer}_ax_{x}=[{self.__Nx[x + 1 + defer]}/{self.__Dx[x + defer]}+({m} + 1)/({m}*2)]"
+                            f"*{self.__Dx[x + defer]}/{self.__Dx[x]}")
         return aux
 
     def t_aax(self, x, m=1, defer=0):
@@ -423,8 +477,8 @@ class CommutationFunctions(MortalityTable):
         """
         aux = self.aax(x + defer, m) * self.nEx(x, defer)
         if x + defer < self.w:
-            self.msn.append(f"{defer}_aax_{x}=[{self.Nx[x + defer]}/{self.Dx[x + defer]}-({m}-1)/({m}*2)]"
-                            f"*{self.Dx[x + defer]}/{self.Dx[x]}")
+            self.msn.append(f"{defer}_aax_{x}=[{self.__Nx[x + defer]}/{self.__Dx[x + defer]}-({m}-1)/({m}*2)]"
+                            f"*{self.__Dx[x + defer]}/{self.__Dx[x]}")
         return aux
 
     def t_nax(self, x, n, m=1, defer=0):
@@ -440,9 +494,9 @@ class CommutationFunctions(MortalityTable):
         aux = self.nax(x + defer, n, m) * self.nEx(x, defer)
         if x + 1 + n + defer <= self.w:
             self.msn.append(
-                f"{defer}|{n}_ax_{x}=[{self.Nx[x + 1 + defer] - self.Nx[x + 1 + n + defer]}/{self.Dx[x + defer]}"
-                f"+ ({m}-1)/({m}*2)*(1-{self.Dx[x + n + defer]}/{self.Dx[x + defer]})]"
-                f"*{self.Dx[x + defer]}/{self.Dx[x]}")
+                f"{defer}|{n}_ax_{x}=[{self.__Nx[x + 1 + defer] - self.__Nx[x + 1 + n + defer]}/{self.__Dx[x + defer]}"
+                f"+ ({m}-1)/({m}*2)*(1-{self.__Dx[x + n + defer]}/{self.__Dx[x + defer]})]"
+                f"*{self.__Dx[x + defer]}/{self.__Dx[x]}")
         else:
             return self.t_ax(x=x, m=m, defer=defer)
         return aux
@@ -460,13 +514,13 @@ class CommutationFunctions(MortalityTable):
         aux = self.naax(x + defer, n, m) * self.nEx(x, defer)
         if x + 1 + n + defer <= self.w + 1:
             if x + 1 + n + defer <= self.w:
-                Nx2 = self.Nx[x + 1 + n + defer]
+                Nx2 = self.__Nx[x + 1 + n + defer]
             else:
                 Nx2 = 0
             self.msn.append(
-                f"{defer}|{n}_aax_{x}=[{self.Nx[x + 1 + defer] - Nx2}/{self.Dx[x + defer]}"
-                f"+({m}+1)/({m}*2)*(1-{self.Dx[x + n + defer]}/{self.Dx[x + defer]})]"
-                f"*{self.Dx[x + defer]}/{self.Dx[x]}")
+                f"{defer}|{n}_aax_{x}=[{self.__Nx[x + 1 + defer] - Nx2}/{self.__Dx[x + defer]}"
+                f"+({m}+1)/({m}*2)*(1-{self.__Dx[x + n + defer]}/{self.__Dx[x + defer]})]"
+                f"*{self.__Dx[x + defer]}/{self.__Dx[x]}")
         else:
             return self.t_aax(x=x, m=m, defer=defer)
         return aux

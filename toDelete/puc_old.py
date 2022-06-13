@@ -33,7 +33,7 @@ class PUC:
         '''
         self.i = i / 100
         self.v = 1 / (1 + self.i)
-        self.date_of_valuation = date_of_valuation
+        self__date_of_valuation = date_of_valuation
         self.date_of_birth = date_of_birth
         self.date_of_entry = date_of_entry
         self.date_of_term_cost = date_of_term_cost

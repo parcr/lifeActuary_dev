@@ -1,4 +1,4 @@
-from essential_life import mortality_table
+from essential_life import mortality_table, commutation_table
 from soa_tables import read_soa_table_xml as rst
 import pandas as pd
 
@@ -26,3 +26,10 @@ lst_npx_2 = [grf95.npx(x=int(x0), n=int(n0), method=m) for m in grf95.methods]
 
 print(lst_npx)
 print(lst_npx_2)
+
+''' Commutation Table '''
+tv7377_ct = commutation_table.CommutationFunctions(i=2, g=0, data_type='q', mt=soa.table_qx, perc=100, app_cont=False)
+grf95_ct = commutation_table.CommutationFunctions(i=1.5, g=0, data_type='q',
+                                                  mt=list(table_manual_qx['GRF95']), perc=100, app_cont=False)
+grm95_ct = commutation_table.CommutationFunctions(i=1.5, g=0, data_type='l',
+                                                  mt=list(table_manual_lx['GRM95']), perc=100, app_cont=False)
