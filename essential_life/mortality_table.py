@@ -69,7 +69,7 @@ class MortalityTable:
         self.__w = len(self.__lx) - 2
 
     def __repr__(self):
-        return f"{self.__class__.__name__}({self.data_type, self.mt, self.__perc, self.__last_q})"
+        return f"{self.__class__.__name__}{self.data_type, self.mt, self.__perc, self.__last_q}"
 
     # getters and setters
     @property
@@ -176,6 +176,34 @@ class MortalityTable:
         else:
             return np.nan
 
+    def get_integral_px_method(self, x, method='udd'):  # todo: report to Rita
+        '''
+        This function can be used to approximate the life expectancy between to ages, using the interpolation rules implemented.
+        :param x: the value of x, that should be integer
+        :param method: the chosen method to approximate px
+        :return: the integral of tpx in the interval [0,1] that can be used to approximate life expectancy between ages.
+        '''
+        if method not in self.__methods:
+            return np.nan
+        if x < 0:
+            return np.nan
+        if x > self.w:
+            return 0
+        if int(x) != x:
+            return np.nan
+        if method == 'udd':
+            return 1 - .5 * self.qx[x]
+        elif method == 'cfm':
+            if self.px[x] == 0:
+                return .0
+            return -self.qx[x] / np.log(self.px[x])
+        elif method == 'bal':
+            if self.px[x] == 0:
+                return .0
+            return -self.px[x] / self.qx[x] * np.log(self.px[x])
+        else:
+            return np.nan
+
     def nqx(self, x, n=1, method='udd'):
         '''
         Obtains the probability that a life x dies before x+t
@@ -242,3 +270,48 @@ class MortalityTable:
         self.__px[-1] = 1
         self.__lx[-1] = self.__lx[-2:-1][0]
         self.__dx[-1] = 0
+
+    def exn(self, x, n, method='udd'):
+        '''
+        Computes the approximated life expectancy between two ages.
+        :param x: Initial age.
+        :param n: Period to be considered.
+        :param method: The method used to interpolate.
+        :return: The approximated life span between x and x+n, considering the interpolation methods implemented to approximate the integral of the survival function.
+        '''
+        if method not in self.__methods:
+            return np.nan
+        if x < 0:
+            return np.nan
+        if n <= 0:
+            return 1.
+
+        n_max = n
+        if x + n > self.w:
+            n_max = self.w - x + 2
+
+        if x == int(x):
+            next_age = x
+        else:
+            next_age = int(x) + 1
+        to_complete_age = np.round(next_age - x, 6)
+        if to_complete_age >= n_max:
+            return n_max * self.npx(x, n_max / 2, method)
+
+        if to_complete_age > 0:
+            integral1 = to_complete_age * self.npx(x, to_complete_age / 2, method)
+        else:
+            integral1 = 0
+
+        complete_years = int(n_max - to_complete_age)
+        integrals = [self.npx(x, to_complete_age + t, method) *
+                     self.get_integral_px_method(next_age + t, method) for t in range(complete_years)]
+        final_period = np.round(n_max - to_complete_age - int(n_max - to_complete_age), 6)
+
+        if final_period > 0:
+            integral2 = self.npx(x, int(n_max - to_complete_age), method) * \
+                        final_period * self.npx(next_age + int(n - to_complete_age), final_period, method)
+        else:
+            integral2 = 0
+
+        return integral1 + sum(integrals) + integral2

@@ -33,18 +33,17 @@ class CommutationFunctions(MortalityTable):
             self.__Mx = self.__Mx * self.__cont
             self.__Rx = self.__Rx * self.__cont
 
-
     def __repr__(self):
-        return f"{self.__class__.__name__}({self.i, self.g, self.data_type, self.mt, self.perc, self.app_cont})"
+        return f"{self.__class__.__name__}{self.i, self.g, self.data_type, self.mt, self.perc, self.app_cont}"
 
     # getters and setters
     @property
     def i(self):
-        return self.__i*100
+        return self.__i * 100
 
     @property
     def g(self):
-        return self.__g*100
+        return self.__g * 100
 
     @property
     def v(self):
@@ -85,7 +84,6 @@ class CommutationFunctions(MortalityTable):
     @property
     def Rx(self):
         return self.__Rx
-
 
     def df_commutation_table(self):
         data = {'Dx': self.__Dx, 'Nx': self.__Nx, 'Sx': self.__Sx, 'Cx': self.__Cx, 'Mx': self.__Mx, 'Rx': self.__Rx}
@@ -548,10 +546,10 @@ class CommutationFunctions(MortalityTable):
             return .0
 
         term1 = first_amount * self.t_naax(x=x, n=n, m=m, defer=defer)
-        list_increases = [increase_amount * self.t_nax(x=x + defer, n=n-j, m=m, defer=defer + j - 1)
+        list_increases = [increase_amount * self.t_nax(x=x + defer, n=n - j, m=m, defer=defer + j - 1)
                           for j in range(1, n)]
 
-        return term1+sum(list_increases)
+        return term1 + sum(list_increases)
 
     def t_nIax(self, x, n, m=1, defer=0, first_amount=1, increase_amount=1):
         '''
@@ -571,10 +569,10 @@ class CommutationFunctions(MortalityTable):
             return .0
 
         term1 = first_amount * self.t_nax(x=x, n=n, m=m, defer=defer)
-        list_increases = [increase_amount * self.t_nax(x=x + defer, n=n-j, m=m, defer=defer + j)
+        list_increases = [increase_amount * self.t_nax(x=x + defer, n=n - j, m=m, defer=defer + j)
                           for j in range(1, n)]
 
-        return term1+sum(list_increases)
+        return term1 + sum(list_increases)
 
     '''
     Standard types of Variable Life Insurance Increasing and Decreasing Arithmetically
@@ -599,8 +597,3 @@ class CommutationFunctions(MortalityTable):
                           for j in range(1, n)]
 
         return term1 + sum(list_increases)
-
-
-
-
-
