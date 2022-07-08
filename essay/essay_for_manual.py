@@ -29,7 +29,18 @@ print(lst_npx_2)
 
 ''' Commutation Table '''
 tv7377_ct = commutation_table.CommutationFunctions(i=2, g=0, data_type='q', mt=soa.table_qx, perc=100, app_cont=False)
+tv7377_ct_ = commutation_table.CommutationFunctions(i=2, g=0, data_type='q', mt=soa.table_qx, perc=100, app_cont=True)
 grf95_ct = commutation_table.CommutationFunctions(i=1.5, g=0, data_type='q',
                                                   mt=list(table_manual_qx['GRF95']), perc=100, app_cont=False)
 grm95_ct = commutation_table.CommutationFunctions(i=1.5, g=0, data_type='l',
                                                   mt=list(table_manual_lx['GRM95']), perc=100, app_cont=False)
+
+''' Present Value'''
+print()
+pv = tv7377_ct.present_value(probs=1, age=None,
+                             spot_rates=[1.2, 1.4, 1.8, 1.6, 1.9], capital=[100, -25, 120, 300, -50])
+print('Present Value:', pv)
+
+pv = tv7377_ct.present_value(probs=None, age=35,
+                             spot_rates=[1.2, 1.4, 1.8, 1.6, 1.9], capital=[100, -25, 120, 300, -50])
+print('Present Value:', pv)

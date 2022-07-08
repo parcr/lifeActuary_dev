@@ -30,6 +30,7 @@ class CommutationFunctions(MortalityTable):
         self.__Mx = np.array([np.sum(self.__Cx[x:]) for x in range(len(self.__Cx))])
         self.__Rx = np.array([np.sum(self.__Mx[x:]) for x in range(len(self.__Mx))])
         if self.__app_cont:
+            self.__Cx = self.__Cx * self.__cont
             self.__Mx = self.__Mx * self.__cont
             self.__Rx = self.__Rx * self.__cont
 
@@ -541,7 +542,7 @@ class CommutationFunctions(MortalityTable):
         '''
 
         if first_amount + (n - 1) * increase_amount < 0:
-            return .0
+            return np.nan
         if x + n + defer > self.w:
             return .0
 
@@ -551,6 +552,7 @@ class CommutationFunctions(MortalityTable):
 
         return term1 + sum(list_increases)
 
+    # todo: Rita
     def t_nIax(self, x, n, m=1, defer=0, first_amount=1, increase_amount=1):
         '''
 
@@ -564,7 +566,7 @@ class CommutationFunctions(MortalityTable):
         '''
 
         if first_amount + (n - 1) * increase_amount < 0:
-            return .0
+            return np.nan
         if x + n + defer > self.w:
             return .0
 
@@ -579,9 +581,10 @@ class CommutationFunctions(MortalityTable):
     '''
 
     # todo: Rita
-    def nIAx_g(self, x, n, defer=0, first_amount=1, increase_amount=1):
+    def nGAx(self, x, n, defer=0, first_amount=1, increase_amount=1):
         '''
 
+        :param defer:
         :param x:
         :param n:
         :param increase_amount:
@@ -590,10 +593,35 @@ class CommutationFunctions(MortalityTable):
         '''
 
         if first_amount + (n - 1) * increase_amount < 0:
-            return .0
+            return np.nan
 
         term1 = first_amount * self.t_nAx(x=x, n=n, defer=defer)
         list_increases = [increase_amount * self.t_nAx(x=x + defer, n=n - j, defer=defer + j)
                           for j in range(1, n)]
 
         return term1 + sum(list_increases)
+
+    def present_value(self, probs, age, spot_rates, capital):
+        '''
+        This function computes the expected present value of a cash-flow, that can be contingent on some probabilities.
+        The payments are considered at the end of the period.
+        :param probs:
+        :param spot_rates:
+        :param capital:
+        :return: the expected present value of a cash-flow, that can be contingent on some probabilities.
+        '''
+        if len(spot_rates) != len(capital):
+            return np.nan
+        probs_ = None
+        if probs is None:
+            if age is None:
+                return np.nan
+            else:
+                probs_ = [self.npx(age, n + 1) for n in range(len(capital))]
+
+        if isinstance(probs, (float, int)):
+            probs_ = [probs] * len(capital)
+        discount = 1 + np.array(spot_rates) / 100.
+        discount = np.cumprod(1 / discount)
+
+        return sum([p * capital[idx_p] * discount[idx_p] for idx_p, p in enumerate(probs_)])

@@ -8,7 +8,7 @@ import logging
 
 
 class Age(object):
-    """ class to instantiate forms of computing the time difference, based on  2 dates"""
+    """ class to instantiate forms of computing the time difference, based on 2 dates"""
 
     def __new__(cls, date1, date2):
         """
