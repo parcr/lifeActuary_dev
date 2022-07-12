@@ -581,7 +581,7 @@ class CommutationFunctions(MortalityTable):
     '''
 
     # todo: Rita
-    def nGAx(self, x, n, defer=0, first_amount=1, increase_amount=1):
+    def nIArx(self, x, n, defer=0, first_amount=1, increase_amount=1):
         '''
 
         :param defer:
@@ -601,6 +601,7 @@ class CommutationFunctions(MortalityTable):
 
         return term1 + sum(list_increases)
 
+    # todo: Rita
     def present_value(self, probs, age, spot_rates, capital):
         '''
         This function computes the expected present value of a cash-flow, that can be contingent on some probabilities.
