@@ -132,6 +132,25 @@ class CommutationFunctions(MortalityTable):
         self.msn.append(f"A_{x}={M_x} / {D_x}")
         return M_x / D_x / (1 + self.__g)
 
+    def Ax_(self, x):
+        """
+        Whole life insurance
+        :param x: age at the beginning of the contract
+        :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1, at the
+        moment of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+        """
+        if x < 0:
+            return np.nan
+        if x > self.w:  # it will die before year's end, because already attained age>w
+            return self.__v ** .5
+        D_x = self.__Dx[x]
+        if self.__app_cont:
+            M_x = self.__Mx[x]
+        else:
+            M_x = self.__Mx[x] * self.__cont
+        self.msn.append(f"A_{x}_={M_x} / {D_x}")
+        return M_x / D_x / (1 + self.__g)
+
     def IAx(self, x):
         """
         Whole life insurance
@@ -152,24 +171,25 @@ class CommutationFunctions(MortalityTable):
         self.msn.append(f"A_{x}={R_x} / {D_x}")
         return R_x / D_x
 
-    def Ax_(self, x):
+    def IAx_(self, x):
         """
         Whole life insurance
         :param x: age at the beginning of the contract
-        :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1, at the
-        moment of death. It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+        :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m, at the
+        moment of the year of death, if death happens between age x+m and x+m+1.
+        It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
         """
         if x < 0:
             return np.nan
-        if x > self.w:  # it will die before year's end, because already attained age>w
-            return self.__v ** .5
+        if x > self.w:
+            return self.__v ** .5  # it will die before year's end, because already attained age>w
         D_x = self.__Dx[x]
         if self.__app_cont:
-            M_x = self.__Mx[x]
+            R_x = self.__Rx[x]
         else:
-            M_x = self.__Mx[x] * self.__cont
-        self.msn.append(f"A_{x}_={M_x} / {D_x}")
-        return M_x / D_x / (1 + self.__g)
+            R_x = self.__Rx[x] * self.__cont
+        self.msn.append(f"A_{x}={R_x} / {D_x}")
+        return R_x / D_x
 
     def nAx(self, x, n):
         """
@@ -220,6 +240,33 @@ class CommutationFunctions(MortalityTable):
             M_x_n = self.__Mx[x + n]
             R_x = self.__Rx[x]
             R_x_n = self.__Rx[x + n]
+        self.msn.append(f"A_{x}=({R_x}-{R_x_n}-{n}x{M_x_n} / {D_x}")
+        return (R_x - R_x_n - n * M_x_n) / D_x
+
+    def nIAx_(self, x, n):
+        """
+        Whole life insurance
+        :param x: age at the beginning of the contract
+        :param n: period of the contract
+        :return: Expected Present Value (EPV) of a whole life insurance (i.e. net single premium), that pays 1+m, at the
+        moment of the year of death, if death happens between age x+m and x+m+1.
+        It is also commonly referred to as the Actuarial Value or Actuarial Present Value.
+        """
+        if x < 0:
+            return np.nan
+        if n < 0:
+            return np.nan
+        if x > self.w:
+            return self.__v**.5  # it will die before year's end, because already attained age>w
+        D_x = self.__Dx[x]
+        if self.__app_cont:
+            M_x_n = self.__Mx[x + n]
+            R_x = self.__Rx[x]
+            R_x_n = self.__Rx[x + n]
+        else:
+            M_x_n = self.__Mx[x + n] * self.__cont
+            R_x = self.__Rx[x] * self.__cont
+            R_x_n = self.__Rx[x + n] * self.__cont
         self.msn.append(f"A_{x}=({R_x}-{R_x_n}-{n}x{M_x_n} / {D_x}")
         return (R_x - R_x_n - n * M_x_n) / D_x
 
@@ -597,6 +644,27 @@ class CommutationFunctions(MortalityTable):
 
         term1 = first_amount * self.t_nAx(x=x, n=n, defer=defer)
         list_increases = [increase_amount * self.t_nAx(x=x + defer, n=n - j, defer=defer + j)
+                          for j in range(1, n)]
+
+        return term1 + sum(list_increases)
+
+    # todo: Rita
+    def nIArx_(self, x, n, defer=0, first_amount=1, increase_amount=1):
+        '''
+
+        :param defer:
+        :param x:
+        :param n:
+        :param increase_amount:
+        :param first_amount:
+        :return:
+        '''
+
+        if first_amount + (n - 1) * increase_amount < 0:
+            return np.nan
+
+        term1 = first_amount * self.t_nAx_(x=x, n=n, defer=defer)
+        list_increases = [increase_amount * self.t_nAx_(x=x + defer, n=n - j, defer=defer + j)
                           for j in range(1, n)]
 
         return term1 + sum(list_increases)

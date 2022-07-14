@@ -44,3 +44,12 @@ print('Present Value:', pv)
 pv = tv7377_ct.present_value(probs=None, age=35,
                              spot_rates=[1.2, 1.4, 1.8, 1.6, 1.9], capital=[100, -25, 120, 300, -50])
 print('Present Value:', pv)
+
+
+''' cenas com diferimento'''
+
+print()
+a= tv7377_ct.nIArx(50,10,0,1000,50)
+print(a)
+b= tv7377_ct.nIArx(40,10,10,1000,50)
+print(b)
