@@ -37,8 +37,8 @@ ages = np.linspace(start=35, stop=35, num=1, dtype=int)
 capital = 200000
 terms = 20
 
-ac = annuities_certain.Annuities_Certain(interest_rate=interest_rate, frequency=1)
-ac_certain = ac.annuity_immediate(terms=terms)
+ac = annuities_certain.Annuities_Certain(interest_rate=interest_rate, m=1)
+ac_certain = ac.an(terms=terms)
 equal_instalments_dict = {'table': [], 'x': [], 'annuity_certain': [], 'annuity': [], 'premium': [],
                           'annuity_level': [], 'premium_leveled': []}
 
@@ -90,8 +90,8 @@ equal_amortizations_df.to_excel(excel_writer='equal_amortizations' + '.xlsx',
 \item The loss for the insurer the lady dies immediately after paying the $10^{th}$ instalment.
 '''
 annuity_terms = 10
-annuities_certain_m = ac.annuity_immediate(terms=annuity_terms)
-annuities_certain_n_m = ac.annuity_immediate(terms=terms - annuity_terms)
+annuities_certain_m = ac.an(terms=annuity_terms)
+annuities_certain_n_m = ac.an(terms=terms - annuity_terms)
 
 loan_balance = capital / ac_certain * annuities_certain_n_m
 premiums_paid = equal_instalments_dict['premium_leveled'][1] * annuities_certain_m * (

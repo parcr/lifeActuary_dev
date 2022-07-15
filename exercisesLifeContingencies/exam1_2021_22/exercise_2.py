@@ -103,8 +103,8 @@ print('\n q3')
 x = 65
 terms_certain = 10
 capital = 10000
-ac = annuities_certain.Annuities_Certain(interest_rate=interest_rate, frequency=1)
-ac10 = ac.annuity_due(terms=terms_certain)
+ac = annuities_certain.Annuities_Certain(interest_rate=interest_rate, m=1)
+ac10 = ac.aan(terms=terms_certain)
 print('renda certa', ac10)
 renda_vital = ct.aax(x=x)
 print('renda vital', round(renda_vital, 5))

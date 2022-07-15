@@ -11,8 +11,8 @@ wlad75_12 = mml.annuity(x=x + defer, interest_rate=interest_rate, age_first_inst
                         terms=np.inf, fraction=12, w=130)
 nEx = mml.nEx(x=x, interest_rate=interest_rate, defer=defer)
 
-ac = annuities_certain.Annuities_Certain(interest_rate=interest_rate, frequency=12)
-ac10 = ac.annuity_due(terms=10)
+ac = annuities_certain.Annuities_Certain(interest_rate=interest_rate, m=12)
+ac10 = ac.aan(terms=10)
 
 wlad65_12_10 = mml.annuity(x=x, interest_rate=interest_rate, age_first_instalment=65, terms=10, fraction=12, w=130)
 test_wlad65_12 = wlad65_12_10 + nEx * wlad75_12

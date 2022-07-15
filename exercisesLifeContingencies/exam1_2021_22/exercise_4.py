@@ -56,8 +56,8 @@ capital = 300000
 terms = 25
 terms_annuity_leveled = 5
 
-ac = annuities_certain.Annuities_Certain(interest_rate=interest_rate, frequency=1)
-ac_certain = ac.annuity_immediate(terms=terms)
+ac = annuities_certain.Annuities_Certain(interest_rate=interest_rate, m=1)
+ac_certain = ac.an(terms=terms)
 equal_instalments_dict = {'table': [], 'x': [], 'annuity_certain': [], 'annuity': [], 'premium': [],
                           'annuity_level': [], 'premium_leveled': []}
 
