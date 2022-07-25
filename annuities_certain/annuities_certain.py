@@ -6,12 +6,19 @@ class Annuities_Certain:
 
     '''
 
+    def __new__(cls, interest_rate, m):
+        if interest_rate < 0 or m < 0 or int(m) != m:
+            print(f"We need a rate of interest non negative and a positive integer frequency")
+            return None
+        return object.__new__(cls)
+
     def __init__(self, interest_rate, m=1):
         '''
 
         :param interest_rate:
         :param m:
         '''
+
         self.interest_rate = interest_rate / 100.
         self.frequency = m
 
@@ -20,6 +27,23 @@ class Annuities_Certain:
         self.vm = np.power((1 + self.im / self.frequency), -1)
         self.dm = self.im * self.vm
 
+    def check_terms(func):
+        def func_wrapper(self, terms, *args, **kwargs):
+            if terms < 0 or int(terms) != terms:
+                return np.nan
+            res = func(self, terms)
+            return res
+        return func_wrapper
+
+    def check_grow(func):
+        def func_wrapper(self, grow, *args, **kwargs):
+            if grow <=-1:
+                return np.nan
+            res = func(self, grow)
+            return res
+        return func_wrapper
+
+    @check_terms
     def aan(self, terms):
         '''
 
@@ -30,6 +54,7 @@ class Annuities_Certain:
             return 1 / self.dm
         return (1 - np.power(self.vm, terms * self.frequency)) / self.dm
 
+    @check_terms
     def an(self, terms):
         '''
 
@@ -40,7 +65,8 @@ class Annuities_Certain:
             return 1 / self.im
         return (1 - np.power(self.vm, terms * self.frequency)) / self.im
 
-    # todo: Rita
+    #todo: This name ia wrong, it should be Imaan
+    @check_terms
     def Iaan(self, terms, payment=1, increase=1):
         '''
 
@@ -51,7 +77,7 @@ class Annuities_Certain:
         '''
         return self.Iman(terms, payment, increase) / self.vm
 
-    # todo: Rita
+    @check_terms
     def Iman(self, terms, payment=1, increase=1):
         '''
 
@@ -68,7 +94,7 @@ class Annuities_Certain:
                * (self.v ** terms * ((terms * self.frequency) * (self.vm - 1) - 1) + 1) \
                / (self.frequency * self.v ** ((self.frequency - 1) / self.frequency) * (self.vm - 1) ** 2)
 
-    # todo: Rita & Pedro
+    @check_terms
     def Ian(self, terms, payment=1, increase=1):
         '''
 
@@ -83,7 +109,8 @@ class Annuities_Certain:
         return payment * self.an(terms) + increase / self.im * (
                 (1 - self.v ** terms) / self.interest_rate - terms * self.v ** terms)
 
-    # todo: Rita
+    @check_terms
+    @check_grow
     def Gaan(self, terms, payment=1, grow=0):
         '''
 
@@ -95,7 +122,8 @@ class Annuities_Certain:
         v = (1 + grow / 100) * self.v
         return self.Gan(terms, payment, grow) / v ** (1 / self.frequency)
 
-    # todo: Rita
+    @check_terms
+    @check_grow
     def Gan(self, terms, payment=1, grow=0):
         '''
 
@@ -110,7 +138,8 @@ class Annuities_Certain:
         return payment / (1 + grow / 100) ** (1 / self.frequency) * (1 - v ** terms) / \
                (1 - v ** (1 / self.frequency)) * v ** (1 / self.frequency) / self.frequency
 
-
+    @check_terms
+    @check_grow
     def Gmaan(self, terms, payment=1, grow=0):
         '''
 
@@ -122,7 +151,8 @@ class Annuities_Certain:
         v = (1 + grow / 100) * self.v
         return self.Gman(terms, payment, grow) / v ** (1 / self.frequency)
 
-    # todo: Rita
+    @check_terms
+    @check_grow
     def Gman(self, terms, payment=1, grow=0):
         '''
 
@@ -138,3 +168,4 @@ class Annuities_Certain:
         vg = 1 / (1 + ig)
         a2 = (1 - vg ** terms) / (1 - vg)
         return payment * a1 * a2
+

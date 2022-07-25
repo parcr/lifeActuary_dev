@@ -31,6 +31,7 @@ print()
 a5 = ac.Annuities_Certain(interest_rate=2, m=2)
 r5 = a5.Ian(terms=2, payment=1, increase=1)
 print(r5)
+
 r6 = a5.Iaan(terms=2, payment=1, increase=1)
 print(r6)
 
@@ -56,3 +57,14 @@ print(r8)
 
 r9 = a7.Gman(terms=2, payment=1, grow=1)
 print(r9)
+
+
+''' cenas com taxa de juro negativa'''
+a8 = ac.Annuities_Certain(interest_rate=-2, m=2)
+a9 = ac.Annuities_Certain(interest_rate=2, m=-2)
+
+a1 = ac.Annuities_Certain(interest_rate=2, m=2)
+r1 = a1.aan(2.1)
+print(r1)
+r1 = a1.aan(2)
+print(r1)
