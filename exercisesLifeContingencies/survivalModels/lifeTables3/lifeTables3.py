@@ -37,7 +37,7 @@ for idx, lt in enumerate(lt_lst):
 plt.xlabel(r'$x$')
 plt.ylabel(r'${e}_{x}+1/2$')
 plt.title('Complete Expectation of Life')
-plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
+plt.grid(visible=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
 plt.legend()
 plt.savefig(this_py + '.eps', format='eps', dpi=3600)
 plt.show()
@@ -53,7 +53,25 @@ for idx, lt in enumerate(ct_lst):
 plt.xlabel(r'$x$')
 plt.ylabel(r'$ln(D_x)$')
 plt.title(r'ln(D_x)')
-plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
+plt.grid(visible=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
+plt.legend()
+plt.savefig(this_py + '_comm1' + '.eps', format='eps', dpi=3600)
+plt.show()
+
+
+
+'''
+Plot lx
+'''
+fig, axes = plt.subplots()
+for idx, lt in enumerate(ct_lst):
+    ages = np.arange(0, lt.w + 2)
+    plt.plot(ages, lt.lx, label=table_names[idx])
+
+plt.xlabel(r'$x$')
+plt.ylabel(r'$l_x$')
+plt.title(r'l_x')
+plt.grid(visible=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
 plt.legend()
 plt.savefig(this_py + '_comm1' + '.eps', format='eps', dpi=3600)
 plt.show()

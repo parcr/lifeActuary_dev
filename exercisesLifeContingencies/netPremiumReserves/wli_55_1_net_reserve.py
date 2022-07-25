@@ -73,7 +73,7 @@ for idx_clt, clt in enumerate(wli_55_1.ct_lst):
 plt.xlabel(r'$x$')
 plt.ylabel('Reserves')
 plt.title('Net Premium Reserves Endowment')
-plt.grid(b=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
+plt.grid(visible=True, which='both', axis='both', color='grey', linestyle='-', linewidth=.1)
 plt.legend()
 # plt.savefig(this_py + '.eps', format='eps', dpi=3600)
 plt.show()

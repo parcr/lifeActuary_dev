@@ -53,3 +53,6 @@ a= tv7377_ct.nIArx(50,10,0,1000,50)
 print(a)
 b= tv7377_ct.nIArx(40,10,10,1000,50)
 print(b)
+
+
+

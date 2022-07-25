@@ -31,6 +31,28 @@ print()
 a5 = ac.Annuities_Certain(interest_rate=2, m=2)
 r5 = a5.Ian(terms=2, payment=1, increase=1)
 print(r5)
+r6 = a5.Iaan(terms=2, payment=1, increase=1)
+print(r6)
+
+r7 = a5.an(terms=-1)
+print(r7)
+
+
+'''
+'''
+''' cenas com crescimento geométrico ano-a-ano'''
+print()
+print()
+a7= ac.Annuities_Certain(interest_rate=2, m=2)
+r8 = a7.Gman(terms=2, payment=1, grow=1)
+print(r8)
 
 
 
+''' cenas com crescimento igual à taxa de juro'''
+a7= ac.Annuities_Certain(interest_rate=2, m=2)
+r8 = a7.Gan(terms=2, payment=1, grow=2)
+print(r8)
+
+r9 = a7.Gman(terms=2, payment=1, grow=1)
+print(r9)

@@ -5,6 +5,7 @@ class Annuities_Certain:
     '''
 
     '''
+
     def __init__(self, interest_rate, m=1):
         '''
 
@@ -48,7 +49,7 @@ class Annuities_Certain:
         :param increase:
         :return:
         '''
-        self.Iman(terms, payment, increase) / self.vm
+        return self.Iman(terms, payment, increase) / self.vm
 
     # todo: Rita
     def Iman(self, terms, payment=1, increase=1):
@@ -79,7 +80,8 @@ class Annuities_Certain:
         if payment + increase * terms < 0:
             return np.nan
         # (payment - increase) * self.an(terms) + increase * (self.aan(terms) - terms * self.v ** terms) / self.im
-        return payment*self.an(terms)+increase/self.im*((1-self.v**terms)/self.interest_rate-terms*self.v**terms)
+        return payment * self.an(terms) + increase / self.im * (
+                (1 - self.v ** terms) / self.interest_rate - terms * self.v ** terms)
 
     # todo: Rita
     def Gaan(self, terms, payment=1, grow=0):
@@ -103,5 +105,36 @@ class Annuities_Certain:
         :return:
         '''
         v = (1 + grow / 100) * self.v
-        return payment / (1 + grow / 100) ** (1 / self.frequency) * (1 - v ** terms) / (
-                1 - v ** (1 / self.frequency)) * v ** (1 / self.frequency)
+        if self.interest_rate == grow / 100:
+            return payment * terms * self.frequency * self.vm / self.frequency
+        return payment / (1 + grow / 100) ** (1 / self.frequency) * (1 - v ** terms) / \
+               (1 - v ** (1 / self.frequency)) * v ** (1 / self.frequency) / self.frequency
+
+
+    def Gmaan(self, terms, payment=1, grow=0):
+        '''
+
+        :param terms:
+        :param payment:
+        :param grow:
+        :return:
+        '''
+        v = (1 + grow / 100) * self.v
+        return self.Gman(terms, payment, grow) / v ** (1 / self.frequency)
+
+    # todo: Rita
+    def Gman(self, terms, payment=1, grow=0):
+        '''
+
+        :param terms:
+        :param payment:
+        :param grow:
+        :return:
+        '''
+        a1 = (1 - self.v) / self.im
+        if self.interest_rate == grow / 100:
+            return a1 * terms
+        ig = (self.interest_rate - grow / 100) / (1 + grow / 100)
+        vg = 1 / (1 + ig)
+        a2 = (1 - vg ** terms) / (1 - vg)
+        return payment * a1 * a2
