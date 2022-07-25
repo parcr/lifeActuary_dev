@@ -33,14 +33,16 @@ class Annuities_Certain:
                 return np.nan
             res = func(self, terms)
             return res
+
         return func_wrapper
 
     def check_grow(func):
-        def func_wrapper(self, grow, *args, **kwargs):
-            if grow <=-1:
+        def func_wrapper(self, terms, payment, grow):
+            if grow/100 <= -1 or terms < 0 or int(terms) != terms:
                 return np.nan
-            res = func(self, grow)
+            res = func(self, terms, payment, grow)
             return res
+
         return func_wrapper
 
     @check_terms
@@ -65,9 +67,8 @@ class Annuities_Certain:
             return 1 / self.im
         return (1 - np.power(self.vm, terms * self.frequency)) / self.im
 
-    #todo: This name ia wrong, it should be Imaan
     @check_terms
-    def Iaan(self, terms, payment=1, increase=1):
+    def Imaan(self, terms, payment=1, increase=1):
         '''
 
         :param terms:
@@ -109,7 +110,6 @@ class Annuities_Certain:
         return payment * self.an(terms) + increase / self.im * (
                 (1 - self.v ** terms) / self.interest_rate - terms * self.v ** terms)
 
-    @check_terms
     @check_grow
     def Gaan(self, terms, payment=1, grow=0):
         '''
@@ -122,7 +122,6 @@ class Annuities_Certain:
         v = (1 + grow / 100) * self.v
         return self.Gan(terms, payment, grow) / v ** (1 / self.frequency)
 
-    @check_terms
     @check_grow
     def Gan(self, terms, payment=1, grow=0):
         '''
@@ -138,7 +137,6 @@ class Annuities_Certain:
         return payment / (1 + grow / 100) ** (1 / self.frequency) * (1 - v ** terms) / \
                (1 - v ** (1 / self.frequency)) * v ** (1 / self.frequency) / self.frequency
 
-    @check_terms
     @check_grow
     def Gmaan(self, terms, payment=1, grow=0):
         '''
@@ -151,7 +149,7 @@ class Annuities_Certain:
         v = (1 + grow / 100) * self.v
         return self.Gman(terms, payment, grow) / v ** (1 / self.frequency)
 
-    @check_terms
+
     @check_grow
     def Gman(self, terms, payment=1, grow=0):
         '''
@@ -168,4 +166,3 @@ class Annuities_Certain:
         vg = 1 / (1 + ig)
         a2 = (1 - vg ** terms) / (1 - vg)
         return payment * a1 * a2
-
