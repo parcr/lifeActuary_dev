@@ -61,5 +61,7 @@ a9 = ac.Annuities_Certain(interest_rate=2, m=-2)
 a1 = ac.Annuities_Certain(interest_rate=2, m=2)
 r1 = a1.aan(2.1)
 print(r1)
-r1 = a1.aan(2)
+r1 = a1.aan(None)
 print(r1)
+
+

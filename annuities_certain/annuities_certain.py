@@ -29,18 +29,22 @@ class Annuities_Certain:
 
     def check_terms(func):
         def func_wrapper(self, terms, *args, **kwargs):
+            if not terms:
+                terms = 0
             if terms < 0 or int(terms) != terms:
                 return np.nan
             res = func(self, terms)
             return res
+
         return func_wrapper
 
     def check_grow(func):
         def func_wrapper(self, terms, payment, grow):
-            if grow/100 <= -1 or terms < 0 or int(terms) != terms:
+            if grow / 100 <= -1 or terms < 0 or int(terms) != terms:
                 return np.nan
             res = func(self, terms, payment, grow)
             return res
+
         return func_wrapper
 
     @check_terms
@@ -92,6 +96,17 @@ class Annuities_Certain:
                + increase * self.v \
                * (self.v ** terms * ((terms * self.frequency) * (self.vm - 1) - 1) + 1) \
                / (self.frequency * self.v ** ((self.frequency - 1) / self.frequency) * (self.vm - 1) ** 2)
+
+    @check_terms
+    def Iaan(self, terms, payment=1, increase=1):
+        '''
+
+        :param terms:
+        :param payment:
+        :param increase:
+        :return:
+        '''
+        return self.Ian(terms, payment, increase) / self.vm
 
     @check_terms
     def Ian(self, terms, payment=1, increase=1):
@@ -146,7 +161,6 @@ class Annuities_Certain:
         '''
         v = (1 + grow / 100) * self.v
         return self.Gman(terms, payment, grow) / v ** (1 / self.frequency)
-
 
     @check_grow
     def Gman(self, terms, payment=1, grow=0):
