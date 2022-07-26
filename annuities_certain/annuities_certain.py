@@ -33,7 +33,6 @@ class Annuities_Certain:
                 return np.nan
             res = func(self, terms)
             return res
-
         return func_wrapper
 
     def check_grow(func):
@@ -42,7 +41,6 @@ class Annuities_Certain:
                 return np.nan
             res = func(self, terms, payment, grow)
             return res
-
         return func_wrapper
 
     @check_terms
