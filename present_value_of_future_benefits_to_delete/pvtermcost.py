@@ -105,13 +105,13 @@ class PVTermCost:
         '''
         if x <= self.x: return 1
         if x < self.age_of_term_cost:
-            tpx_T = self.multi_table.net_table.tpx(self.x, t=x - self.x, method='udd')
+            tpx_T = self.multi_table.net_table.npx(self.x, n=x - self.x, method='udd')
         else:
             bool_decrement = bool(self.decrement)
-            tpx_T = self.multi_table.net_table.tpx(self.x, t=self.age_of_term_cost - self.x - bool_decrement,
+            tpx_T = self.multi_table.net_table.npx(self.x, n=self.age_of_term_cost - self.x - bool_decrement,
                                                    method='udd') * \
-                    self.multi_table.unidecrement_tables['mortality'].tpx(self.age_of_term_cost,
-                                                                          t=x - self.age_of_term_cost, method='udd')
+                    self.multi_table.unidecrement_tables['mortality'].npx(self.age_of_term_cost,
+                                                                          n=x - self.age_of_term_cost, method='udd')
         return tpx_T
 
     def pvftc(self, x):
@@ -127,25 +127,25 @@ class PVTermCost:
         '''
         if x < self.y: return 0  # no liability before entry age
         if self.decrement:
-            q_d_x = self.multi_table.multidecrement_tables[self.decrement].tqx(self.age_of_term_cost - 1, t=1,
+            q_d_x = self.multi_table.multidecrement_tables[self.decrement].nqx(self.age_of_term_cost - 1, n=1,
                                                                                method='udd')
         else:
             q_d_x = 1
         if x >= self.age_first_payment: return q_d_x  # full amortization
         if self.y <= x < self.age_of_term_cost:
             if self.decrement:
-                tpx_T = self.multi_table.net_table.tpx(x, t=self.age_of_term_cost - x - 1, method='udd')
+                tpx_T = self.multi_table.net_table.npx(x, n=self.age_of_term_cost - x - 1, method='udd')
             else:
-                tpx_T = self.multi_table.net_table.tpx(x, t=self.age_of_term_cost - x, method='udd')
+                tpx_T = self.multi_table.net_table.npx(x, n=self.age_of_term_cost - x, method='udd')
             pvft = tpx_T * q_d_x * np.power(self.v, self.age_of_term_cost - x)
             if self.waiting > 0:
-                tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x=self.age_of_term_cost, t=self.waiting,
+                tpx = self.multi_table.unidecrement_tables['mortality'].npx(x=self.age_of_term_cost, n=self.waiting,
                                                                             method='udd')
                 deferment = tpx * np.power(self.v, self.waiting)
                 pvft *= deferment
         else:  # no more instalments but still compounding until the first payment
             waiting = self.age_first_payment - x
-            tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x, t=waiting, method='udd')
+            tpx = self.multi_table.unidecrement_tables['mortality'].npx(x, n=waiting, method='udd')
             deferment = np.power(self.v, waiting)
             pvft = q_d_x * tpx * deferment
         return pvft

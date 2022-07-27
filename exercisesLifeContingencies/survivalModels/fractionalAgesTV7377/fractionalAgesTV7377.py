@@ -22,13 +22,13 @@ ct_lst = [commutation_table.CommutationFunctions(i=1.4, g=1, mt=mt.table_qx) for
 Exercises
 '''
 mt = lt_lst[0]
-a = mt.tqx(x=52.4, t=0.2, method='udd')
+a = mt.nqx(x=52.4, n=0.2, method='udd')
 print(a)
-b = mt.tqx(x=52.4, t=0.2, method='cfm')
+b = mt.nqx(x=52.4, n=0.2, method='cfm')
 print(b)
-c = mt.tpx(x=52.4, t=5.7, method='udd')
+c = mt.npx(x=52.4, n=5.7, method='udd')
 print(c)
-d = mt.tpx(x=52.4, t=5.7, method='cfm')
+d = mt.npx(x=52.4, n=5.7, method='cfm')
 print(d)
 e = mt.t_nqx(x=52.4, t=3.2, n=2.5, method='udd')
 print(e)

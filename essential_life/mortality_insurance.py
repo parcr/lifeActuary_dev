@@ -26,7 +26,7 @@ def A_x(mt, x, x_first, x_last, i=None, g=.0, method='udd'):
     number_of_payments = int((x_last - x_first) + 1)
     if number_of_payments < 1: return 1.  # according to the mortality table x is going to die before x+1
     payments_instants = np.linspace(x_first - x, x_last - x, number_of_payments)
-    instalments = [mt.tpx(x, t=t - 1, method=method) * mt.tqx(x + t - 1, t=1, method=method) * np.power(v, t)
+    instalments = [mt.npx(x, n=t - 1, method=method) * mt.nqx(x + t - 1, n=1, method=method) * np.power(v, t)
                    for t in payments_instants]
     instalments = np.array(instalments) / np.power(1 + g, payments_instants[0])
     return np.sum(instalments)
@@ -263,7 +263,7 @@ def IA_x(mt, x, x_first, x_last, i=None, inc=1., method='udd'):
     number_of_payments = int((x_last - x_first) + 1)
     if number_of_payments < 1: return 1.  # according to the mortality table x is going to die before x+1
     payments_instants = np.linspace(x_first - x, x_last - x, number_of_payments)
-    instalments = [mt.tpx(x, t=t - 1, method=method) * mt.tqx(x + t - 1, t=1, method=method) * np.power(i, t) *
+    instalments = [mt.npx(x, n=t - 1, method=method) * mt.nqx(x + t - 1, n=1, method=method) * np.power(i, t) *
                    ((t - (x_first - x)) * inc + 1) for t in payments_instants]
     instalments = np.array(instalments)
     return np.sum(instalments)

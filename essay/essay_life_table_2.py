@@ -1,4 +1,4 @@
-# author: PedroCR #
+__author__ = "PedroCR"
 from soa_tables import read_soa_table_xml as rst
 from essential_life import mortality_table, commutation_table
 

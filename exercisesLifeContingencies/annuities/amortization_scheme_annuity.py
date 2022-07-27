@@ -32,7 +32,7 @@ dict_reserves = {'t': [], 'x': [], 'insured': [], 'insurer': [], 'reserve': []}
 for idx, x in enumerate(range(dict_annuity['x'], lt.w + 1 + 1)):
     dict_liability['t'].append(idx)
     dict_liability['x'].append(x)
-    dict_liability['tpx'].append(lt.tpx(x=dict_annuity['x'], t=idx))
+    dict_liability['tpx'].append(lt.npx(x=dict_annuity['x'], n=idx))
     if idx <= premium_instalments - 1:
         dict_liability['premium1'].append(dict_liability['tpx'][-1] * premium1)
     else:

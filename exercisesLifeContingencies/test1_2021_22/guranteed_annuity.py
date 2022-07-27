@@ -25,8 +25,8 @@ ct.df_commutation_table().to_excel(excel_writer=name + '_comm' + '.xlsx', sheet_
                                    index=False, freeze_panes=(1, 1))
 
 capital = 10000
-ac = annuities_certain.Annuities_Certain(interest_rate=interest_rate, frequency=1)
-ac5 = ac.annuity_due(terms=5)
+ac = annuities_certain.Annuities_Certain(interest_rate=interest_rate, m=1)
+ac5 = ac.aan(terms=5)
 print('renda certa', ac5)
 renda_vital = ct.aax(x=70)
 print('renda vital', renda_vital)

@@ -26,8 +26,8 @@ Prepare the solution for Equal Instalments
 '''
 capital = 100000
 terms = 25
-ac = annuities_certain.Annuities_Certain(interest_rate=interest_rate, frequency=1)
-ac_certain = ac.annuity_immediate(terms=terms)
+ac = annuities_certain.Annuities_Certain(interest_rate=interest_rate, m=1)
+ac_certain = ac.an(terms=terms)
 equal_instalments_dict = {'table': [], 'x': [], 'annuity_certain': [], 'annuity': [], 'premium': []}
 
 for id_ct, ct in enumerate(ct_lst):

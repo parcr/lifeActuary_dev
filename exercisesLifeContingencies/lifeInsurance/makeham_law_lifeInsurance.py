@@ -29,11 +29,12 @@ compute Whole Life Insurance using Commutation Functions
 '''
 
 # wli = [[age, ct.Ax(age)] for age in range(ct.w + 1)]
-wli = {'age': [], 'Ax': []}
+wli = {'age': [], 'Ax': [], 'Ax_': []}
 ages = range(ct.w + 1)
 for idx, x in enumerate(ages):
     wli['age'].append(x)
     wli['Ax'].append(ct.Ax(x))
+    wli['Ax_'].append(mml.Ax(x=x, interest_rate=interest_rate))
 wli_df = pd.DataFrame(wli)
 wli_df.to_excel(excel_writer='makeham_wli' + '.xlsx', sheet_name='makeham_wli',
                 index=False, freeze_panes=(1, 1))

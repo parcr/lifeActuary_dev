@@ -33,7 +33,7 @@ class PUC:
         '''
         self.i = i / 100
         self.v = 1 / (1 + self.i)
-        self.date_of_valuation = date_of_valuation
+        self__date_of_valuation = date_of_valuation
         self.date_of_birth = date_of_birth
         self.date_of_entry = date_of_entry
         self.date_of_term_cost = date_of_term_cost
@@ -127,15 +127,15 @@ class PUC:
             return np.power(self.v, self.z + self.waiting_first_payment - x)
 
         if self.decrement:
-            tpx_T = self.multi_table.net_table.tpx(x, t=self.z - x - 1, method='udd')
+            tpx_T = self.multi_table.net_table.npx(x, n=self.z - x - 1, method='udd')
             key_decrement = list(self.multi_table.multidecrement_tables.keys())[self.decrement]
-            q_d_x = self.multi_table.multidecrement_tables[key_decrement].tqx(self.z - 1, t=1, method='udd')
+            q_d_x = self.multi_table.multidecrement_tables[key_decrement].nqx(self.z - 1, n=1, method='udd')
         else:
-            tpx_T = self.multi_table.net_table.tpx(x, t=self.z - x, method='udd')
+            tpx_T = self.multi_table.net_table.npx(x, n=self.z - x, method='udd')
             q_d_x = 1
         pvft = tpx_T * q_d_x * np.power(self.v, self.z - x)
         if self.waiting_first_payment > 0:
-            tpx = self.multi_table.unidecrement_tables['mortality'].tpx(x=self.z, t=self.waiting_first_payment,
+            tpx = self.multi_table.unidecrement_tables['mortality'].npx(x=self.z, n=self.waiting_first_payment,
                                                                         method='udd')
             deferment = tpx * np.power(self.v, self.waiting_first_payment)
             pvft *= deferment
