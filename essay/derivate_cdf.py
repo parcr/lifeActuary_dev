@@ -6,6 +6,7 @@ from scipy.stats import expon
 sym.init_session(quiet=True)
 sym.init_printing(use_latex='mathjax')
 
+print('derivative test')
 rv = expon(0, 1)
 mean, var, skew, kurt = rv.stats(moments='mvsk')
 
